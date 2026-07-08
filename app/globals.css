@@ -9,3 +9,51 @@ body {
   background: #fff8ed;
   color: #292524;
 }
+
+/* Landing-page night hero: twinkling stars, a breathing owl, a fade-up on load. */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes owl-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+.twinkle {
+  animation: twinkle 2.8s ease-in-out infinite;
+}
+
+.owl-bob {
+  animation: owl-bob 3.5s ease-in-out infinite;
+}
+
+.rise {
+  animation: rise 0.55s ease-out backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .twinkle,
+  .owl-bob,
+  .rise {
+    animation: none;
+  }
+}
