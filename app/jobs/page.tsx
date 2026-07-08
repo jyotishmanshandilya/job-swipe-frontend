@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import RequireAuth from "@/components/RequireAuth";
 import JobCard from "@/components/JobCard";
@@ -10,51 +10,67 @@ import type { Job, Page } from "@/lib/types";
 
 type Tab = "matched" | "all";
 
+/** Outcome of one fetch, tagged with the query it answered. */
+interface LoadResult {
+  key: string;
+  data: Page<Job> | null;
+  error: string | null;
+  noPreferences: boolean;
+}
+
 function JobsContent() {
   const [tab, setTab] = useState<Tab>("matched");
   const [page, setPage] = useState(0);
-  const [data, setData] = useState<Page<Job> | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [noPreferences, setNoPreferences] = useState(false);
+  const [result, setResult] = useState<LoadResult | null>(null);
 
   // Browse filters (applied on submit, not on each keystroke)
   const [titleFilter, setTitleFilter] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [applied, setApplied] = useState({ title: "", location: "" });
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    setNoPreferences(false);
-    try {
-      let path: string;
-      if (tab === "matched") {
-        path = `/api/jobs/matched?page=${page}&size=20`;
-      } else {
-        const params = new URLSearchParams({ page: String(page), size: "20" });
-        if (applied.title) params.set("title", applied.title);
-        if (applied.location) params.set("location", applied.location);
-        path = `/api/jobs?${params}`;
-      }
-      setData(await apiFetch<Page<Job>>(path));
-    } catch (err) {
-      if (err instanceof ApiRequestError && err.status === 404 && tab === "matched") {
-        // No preferences saved yet.
-        setNoPreferences(true);
-      } else {
-        setError(
-          err instanceof ApiRequestError ? err.message : "Failed to load jobs",
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [tab, page, applied]);
+  const queryKey = `${tab}|${page}|${applied.title}|${applied.location}`;
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let cancelled = false;
+    (async () => {
+      const next: LoadResult = {
+        key: queryKey,
+        data: null,
+        error: null,
+        noPreferences: false,
+      };
+      try {
+        let path: string;
+        if (tab === "matched") {
+          path = `/api/jobs/matched?page=${page}&size=20`;
+        } else {
+          const params = new URLSearchParams({ page: String(page), size: "20" });
+          if (applied.title) params.set("title", applied.title);
+          if (applied.location) params.set("location", applied.location);
+          path = `/api/jobs?${params}`;
+        }
+        next.data = await apiFetch<Page<Job>>(path);
+      } catch (err) {
+        if (err instanceof ApiRequestError && err.status === 404 && tab === "matched") {
+          // No preferences saved yet.
+          next.noPreferences = true;
+        } else {
+          next.error =
+            err instanceof ApiRequestError ? err.message : "Failed to load jobs";
+        }
+      }
+      if (!cancelled) setResult(next);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [queryKey, tab, page, applied]);
+
+  // Loading whenever the stored result doesn't answer the current query yet.
+  const loading = result?.key !== queryKey;
+  const data = loading ? null : result!.data;
+  const error = loading ? null : result!.error;
+  const noPreferences = loading ? false : result!.noPreferences;
 
   const switchTab = (t: Tab) => {
     setTab(t);

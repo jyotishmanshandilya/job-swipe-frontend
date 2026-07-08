@@ -4,8 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
-  useState,
+  useSyncExternalStore,
 } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -15,6 +14,7 @@ import {
   getRefreshToken,
   getToken,
   setTokens,
+  subscribeTokenChange,
 } from "./api";
 import type { AuthResponse } from "./types";
 
@@ -35,12 +35,15 @@ interface AuthState {
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  // localStorage is an external store; setTokens/clearTokens notify
+  // subscribers. Server snapshot is null ("still checking") so prerendered
+  // HTML shows the guard spinner until hydration reads the real value.
+  const authenticated = useSyncExternalStore<boolean | null>(
+    subscribeTokenChange,
+    () => getToken() !== null,
+    () => null,
+  );
   const router = useRouter();
-
-  useEffect(() => {
-    setAuthenticated(getToken() !== null);
-  }, []);
 
   const login = useCallback(async (username: string, password: string) => {
     const res = await apiFetch<AuthResponse>("/api/auth/authenticate", {
@@ -48,7 +51,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       body: JSON.stringify({ username, password }),
     });
     setTokens(res.token, res.refreshToken);
-    setAuthenticated(true);
   }, []);
 
   const register = useCallback(
@@ -64,7 +66,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify(data),
       });
       setTokens(res.token, res.refreshToken);
-      setAuthenticated(true);
     },
     [],
   );
@@ -80,7 +81,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }).catch(() => {});
     }
     clearTokens();
-    setAuthenticated(false);
     router.push("/login");
   }, [router]);
 

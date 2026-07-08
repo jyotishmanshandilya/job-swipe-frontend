@@ -19,11 +19,29 @@ export function getRefreshToken(): string | null {
 export function setTokens(token: string, refreshToken?: string | null) {
   localStorage.setItem(TOKEN_KEY, token);
   if (refreshToken) localStorage.setItem(REFRESH_KEY, refreshToken);
+  notifyTokenChange();
 }
 
 export function clearTokens() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(REFRESH_KEY);
+  notifyTokenChange();
+}
+
+/**
+ * Token storage as an external store (for useSyncExternalStore): subscribers
+ * are notified on every login/logout/refresh, including the forced clear when
+ * a token refresh fails mid-session.
+ */
+const tokenListeners = new Set<() => void>();
+
+export function subscribeTokenChange(listener: () => void): () => void {
+  tokenListeners.add(listener);
+  return () => tokenListeners.delete(listener);
+}
+
+function notifyTokenChange() {
+  tokenListeners.forEach((listener) => listener());
 }
 
 export class ApiRequestError extends Error {
