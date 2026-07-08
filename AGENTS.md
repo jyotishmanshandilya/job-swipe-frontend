@@ -4,10 +4,16 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# JobSwipe Web
+# RoleOwl Web
 
-Next.js 16 (App Router) + Tailwind v4 + TypeScript frontend for the JobSwipe backend
-(Spring Boot, sibling repo `../Social-Threads`, runs on port 4196).
+Next.js 16 (App Router) + Tailwind v4 + TypeScript frontend for the RoleOwl backend
+(Spring Boot, sibling repo `../Social-Threads`, runs on port 4196). Live at
+https://www.roleowl.org (Vercel).
+
+Brand: playful owl — cream background (#FFF8ED), amber primary, chunky
+"pressable" buttons (border-b-4, collapses on :active), Nunito font,
+`components/OwlMascot.tsx` SVG mascot (happy/sleepy variants). localStorage
+keys keep the legacy `jobswipe_` prefix on purpose (renaming logs users out).
 
 ## Commands
 

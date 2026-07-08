@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import RequireAuth from "@/components/RequireAuth";
 import JobCard from "@/components/JobCard";
+import OwlMascot from "@/components/OwlMascot";
 import { Alert, Button, Input, Spinner } from "@/components/ui";
 import { apiFetch, ApiRequestError } from "@/lib/api";
 import type { Job, Page } from "@/lib/types";
@@ -80,16 +81,16 @@ function JobsContent() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Jobs</h1>
-        <div className="flex rounded-md border border-gray-200 bg-white p-0.5">
+        <h1 className="text-2xl font-extrabold text-stone-800">Jobs</h1>
+        <div className="flex rounded-full border-2 border-stone-200 bg-white p-1">
           {(["matched", "all"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => switchTab(t)}
-              className={`rounded px-4 py-1.5 text-sm font-medium ${
+              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
                 tab === t
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-600 hover:text-gray-900"
+                  ? "bg-amber-400 text-amber-950"
+                  : "text-stone-500 hover:text-stone-800"
               }`}
             >
               {t === "matched" ? "For you" : "Browse all"}
@@ -127,17 +128,20 @@ function JobsContent() {
         {loading ? (
           <Spinner />
         ) : noPreferences ? (
-          <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center">
-            <p className="text-gray-700 font-medium">
-              Tell us what you&apos;re looking for
+          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+            <div className="flex justify-center">
+              <OwlMascot size={80} />
+            </div>
+            <p className="mt-4 font-extrabold text-stone-700">
+              Tell the owl what to hunt
             </p>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mx-auto mt-1 max-w-sm text-sm font-semibold text-stone-500">
               Set your job preferences to unlock personalised matches and the
               daily email digest.
             </p>
             <Link
               href="/onboarding"
-              className="mt-4 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
             >
               Set preferences
             </Link>
@@ -145,14 +149,19 @@ function JobsContent() {
         ) : error ? (
           <Alert kind="error">{error}</Alert>
         ) : !data || data.content.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500">
-            {tab === "matched"
-              ? "No matches right now — new jobs are aggregated nightly, so check back tomorrow or broaden your preferences."
-              : "No jobs found for these filters."}
+          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+            <div className="flex justify-center">
+              <OwlMascot size={80} variant="sleepy" />
+            </div>
+            <p className="mx-auto mt-4 max-w-sm text-sm font-semibold text-stone-500">
+              {tab === "matched"
+                ? "The owl found nothing new for you — it hunts every night, so check back tomorrow or broaden your preferences."
+                : "No jobs found for these filters."}
+            </p>
           </div>
         ) : (
           <>
-            <p className="mb-3 text-sm text-gray-500">
+            <p className="mb-3 text-sm font-semibold text-stone-500">
               {data.totalElements.toLocaleString()} job
               {data.totalElements === 1 ? "" : "s"}
               {tab === "matched" ? " matching your profile" : ""}
@@ -171,7 +180,7 @@ function JobsContent() {
                 >
                   ← Previous
                 </Button>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm font-bold text-stone-500">
                   Page {data.number + 1} of {data.totalPages}
                 </span>
                 <Button

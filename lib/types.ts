@@ -40,7 +40,8 @@ export interface Job {
   id: string;
   companyName: string | null;
   jobTitle: string;
-  location: string;
+  /** Boards sometimes omit location (nullable since backend V00016). */
+  location: string | null;
   applicationUrl: string;
   workplaceType: string | null;
   yearsOfExperience: number | null;

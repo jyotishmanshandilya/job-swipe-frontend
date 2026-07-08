@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { apiFetch, ApiRequestError } from "@/lib/api";
-import { Alert, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
 
 function ResetPasswordForm() {
   const token = useSearchParams().get("token") ?? "";
@@ -42,18 +42,22 @@ function ResetPasswordForm() {
     return (
       <Alert kind="error">
         This reset link is missing its token. Please use the link from your
-        email, or <Link href="/forgot-password" className="underline">request a new one</Link>.
+        email, or{" "}
+        <Link href="/forgot-password" className="underline">
+          request a new one
+        </Link>
+        .
       </Alert>
     );
   }
 
   if (done) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 text-center">
         <Alert kind="success">Your password has been updated.</Alert>
         <Link
           href="/login"
-          className="inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
         >
           Log in with your new password
         </Link>
@@ -97,14 +101,13 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="text-2xl font-bold text-gray-900">Choose a new password</h1>
-      <p className="mt-1 mb-8 text-sm text-gray-500">
-        The reset link is valid for 1 hour and can be used once.
-      </p>
+    <AuthShell
+      title="Choose a new password"
+      subtitle="The reset link is valid for 1 hour and can be used once."
+    >
       <Suspense>
         <ResetPasswordForm />
       </Suspense>
-    </div>
+    </AuthShell>
   );
 }

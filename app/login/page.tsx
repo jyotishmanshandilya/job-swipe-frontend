@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { ApiRequestError } from "@/lib/api";
-import { Alert, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
 
 function LoginForm() {
   const { login } = useAuth();
@@ -34,11 +34,8 @@ function LoginForm() {
   };
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-      <p className="mt-1 text-sm text-gray-500">Log in to see your matches.</p>
-
-      <form onSubmit={submit} className="mt-8 space-y-4">
+    <AuthShell title="Welcome back" subtitle="The owl kept watch. Log in to see what it found.">
+      <form onSubmit={submit} className="space-y-4">
         {expired && (
           <Alert kind="info">Your session expired — please log in again.</Alert>
         )}
@@ -71,15 +68,15 @@ function LoginForm() {
         </Button>
       </form>
 
-      <div className="mt-4 flex justify-between text-sm">
-        <Link href="/forgot-password" className="text-blue-600 hover:underline">
+      <div className="mt-4 flex justify-between text-sm font-bold">
+        <Link href="/forgot-password" className="text-amber-700 hover:underline">
           Forgot password?
         </Link>
-        <Link href="/register" className="text-blue-600 hover:underline">
+        <Link href="/register" className="text-amber-700 hover:underline">
           Create an account
         </Link>
       </div>
-    </div>
+    </AuthShell>
   );
 }
 

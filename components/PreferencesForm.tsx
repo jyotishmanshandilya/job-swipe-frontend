@@ -107,7 +107,10 @@ export default function PreferencesForm({
         <Label>Employment type</Label>
         <div className="flex gap-4">
           {EMPLOYMENT_TYPES.map((t) => (
-            <label key={t} className="flex items-center gap-2 text-sm text-gray-700">
+            <label
+              key={t}
+              className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-stone-700"
+            >
               <input
                 type="checkbox"
                 checked={employment.includes(t)}
@@ -118,7 +121,7 @@ export default function PreferencesForm({
                       : employment.filter((x) => x !== t),
                   )
                 }
-                className="h-4 w-4 rounded border-gray-300 text-blue-600"
+                className="h-4 w-4 cursor-pointer rounded accent-amber-500"
               />
               {t}
             </label>

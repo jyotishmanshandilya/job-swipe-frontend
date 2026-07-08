@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { ApiRequestError } from "@/lib/api";
-import { Alert, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
 
 export default function RegisterPage() {
   const { register } = useAuth();
@@ -48,17 +48,15 @@ export default function RegisterPage() {
 
   const fieldError = (name: string) =>
     fieldErrors[name] && (
-      <p className="mt-1 text-xs text-red-600">{fieldErrors[name]}</p>
+      <p className="mt-1 text-xs font-bold text-rose-600">{fieldErrors[name]}</p>
     );
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-      <p className="mt-1 text-sm text-gray-500">
-        Set your preferences once — get matching jobs every day.
-      </p>
-
-      <form onSubmit={submit} className="mt-8 space-y-4">
+    <AuthShell
+      title="Join the nest"
+      subtitle="Set your preferences once — wake up to matching jobs every day."
+    >
+      <form onSubmit={submit} className="space-y-4">
         {error && <Alert kind="error">{error}</Alert>}
 
         <div className="grid grid-cols-2 gap-3">
@@ -80,7 +78,7 @@ export default function RegisterPage() {
           <Label htmlFor="email">Email</Label>
           <Input id="email" type="email" value={form.email} onChange={set("email")} required />
           {fieldError("email")}
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs font-semibold text-stone-400">
             We&apos;ll send a verification link — daily digests only go to verified emails.
           </p>
         </div>
@@ -99,16 +97,16 @@ export default function RegisterPage() {
         </div>
 
         <Button type="submit" disabled={busy} className="w-full">
-          {busy ? "Creating account…" : "Sign up"}
+          {busy ? "Creating account…" : "Sign up free"}
         </Button>
       </form>
 
-      <p className="mt-4 text-sm text-gray-500">
+      <p className="mt-4 text-center text-sm font-semibold text-stone-500">
         Already have an account?{" "}
-        <Link href="/login" className="text-blue-600 hover:underline">
+        <Link href="/login" className="font-bold text-amber-700 hover:underline">
           Log in
         </Link>
       </p>
-    </div>
+    </AuthShell>
   );
 }

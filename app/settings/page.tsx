@@ -142,7 +142,7 @@ function DigestSection() {
 
   if (enabled === null)
     return (
-      <p className="text-sm text-gray-500">
+      <p className="text-sm font-semibold text-stone-500">
         Set your job preferences first to manage the daily digest.
       </p>
     );
@@ -181,8 +181,8 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-gray-200 bg-white p-6">
-      <h2 className="mb-4 text-lg font-semibold text-gray-900">{title}</h2>
+    <section className="rounded-2xl border-2 border-stone-200 border-b-4 bg-white p-6">
+      <h2 className="mb-4 text-lg font-extrabold text-stone-800">{title}</h2>
       {children}
     </section>
   );
@@ -192,7 +192,7 @@ export default function SettingsPage() {
   return (
     <RequireAuth>
       <div className="mx-auto max-w-lg space-y-6 px-4 py-8">
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+        <h1 className="text-2xl font-extrabold text-stone-800">Settings</h1>
         <Section title="Profile">
           <ProfileSection />
         </Section>

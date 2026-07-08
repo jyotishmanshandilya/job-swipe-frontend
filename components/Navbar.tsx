@@ -3,23 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import OwlMascot from "./OwlMascot";
 
 export default function Navbar() {
   const { authenticated, logout } = useAuth();
   const pathname = usePathname();
 
   const linkClass = (href: string) =>
-    `px-3 py-2 text-sm rounded-md ${
+    `px-3 py-1.5 text-sm font-bold rounded-full transition-colors ${
       pathname === href
-        ? "text-white bg-gray-700"
-        : "text-gray-300 hover:text-white hover:bg-gray-800"
+        ? "bg-amber-100 text-amber-900"
+        : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
     }`;
 
   return (
-    <nav className="bg-gray-900">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-white">
-          JobSwipe
+    <nav className="sticky top-0 z-10 border-b-2 border-stone-200/70 bg-[#FFF8ED]/90 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2.5">
+        <Link href="/" className="flex items-center gap-2">
+          <OwlMascot size={30} />
+          <span className="text-lg font-extrabold text-stone-800">
+            Role<span className="text-amber-600">Owl</span>
+          </span>
         </Link>
         <div className="flex items-center gap-1">
           {authenticated ? (
@@ -32,7 +36,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={logout}
-                className="px-3 py-2 text-sm text-gray-300 rounded-md hover:text-white hover:bg-gray-800"
+                className="cursor-pointer rounded-full px-3 py-1.5 text-sm font-bold text-stone-600 hover:bg-stone-100 hover:text-stone-900"
               >
                 Log out
               </button>
@@ -44,7 +48,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/register"
-                className="ml-2 rounded-md bg-blue-600 px-3 py-2 text-sm text-white hover:bg-blue-700"
+                className="ml-2 rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-1.5 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
               >
                 Sign up
               </Link>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { apiFetch, ApiRequestError } from "@/lib/api";
-import { Alert, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -31,24 +31,25 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-16">
-      <h1 className="text-2xl font-bold text-gray-900">Reset your password</h1>
-      <p className="mt-1 text-sm text-gray-500">
-        Enter your email and we&apos;ll send you a reset link.
-      </p>
-
+    <AuthShell
+      title="Reset your password"
+      subtitle="Enter your email and we'll send you a reset link."
+    >
       {sent ? (
-        <div className="mt-8 space-y-4">
+        <div className="space-y-4">
           <Alert kind="success">
-            If an account exists for {email}, a reset link is on its way.
-            The link is valid for 1 hour.
+            If an account exists for {email}, a reset link is on its way. The
+            link is valid for 1 hour.
           </Alert>
-          <Link href="/login" className="block text-sm text-blue-600 hover:underline">
+          <Link
+            href="/login"
+            className="block text-center text-sm font-bold text-amber-700 hover:underline"
+          >
             Back to login
           </Link>
         </div>
       ) : (
-        <form onSubmit={submit} className="mt-8 space-y-4">
+        <form onSubmit={submit} className="space-y-4">
           {error && <Alert kind="error">{error}</Alert>}
           <div>
             <Label htmlFor="email">Email</Label>
@@ -65,6 +66,6 @@ export default function ForgotPasswordPage() {
           </Button>
         </form>
       )}
-    </div>
+    </AuthShell>
   );
 }
