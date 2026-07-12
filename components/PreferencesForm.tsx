@@ -24,8 +24,6 @@ const LOCATION_SUGGESTIONS = [
   "Remote India",
 ];
 
-const EMPLOYMENT_TYPES = ["full time", "contract", "internship"];
-
 export default function PreferencesForm({
   initial,
   submitLabel,
@@ -40,9 +38,6 @@ export default function PreferencesForm({
   );
   const [locations, setLocations] = useState<string[]>(
     initial?.preferredLocations ?? [],
-  );
-  const [employment, setEmployment] = useState<string[]>(
-    initial?.employmentType ?? ["full time"],
   );
   const [remoteOk, setRemoteOk] = useState(initial?.remoteOk ?? false);
   const [relocate, setRelocate] = useState(
@@ -64,7 +59,9 @@ export default function PreferencesForm({
       const body: PreferencesRequest = {
         preferredJobTitles: titles,
         preferredLocations: locations,
-        employmentType: employment,
+        // Employment type isn't collected anymore (jobs carry no such data);
+        // preserve whatever was stored so older rows aren't clobbered.
+        employmentType: initial?.employmentType ?? [],
         remoteOk,
         willingToRelocate: relocate,
         yearsOfExperience: yoe,
@@ -104,32 +101,6 @@ export default function PreferencesForm({
       />
 
       <div>
-        <Label>Employment type</Label>
-        <div className="flex gap-4">
-          {EMPLOYMENT_TYPES.map((t) => (
-            <label
-              key={t}
-              className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-stone-700"
-            >
-              <input
-                type="checkbox"
-                checked={employment.includes(t)}
-                onChange={(e) =>
-                  setEmployment(
-                    e.target.checked
-                      ? [...employment, t]
-                      : employment.filter((x) => x !== t),
-                  )
-                }
-                className="h-4 w-4 cursor-pointer rounded accent-amber-500"
-              />
-              {t}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div>
         <Label htmlFor="yoe">Years of experience</Label>
         <Input
           id="yoe"
@@ -151,6 +122,7 @@ export default function PreferencesForm({
         />
         <Toggle
           label="Willing to relocate"
+          description="Show matching jobs from every location"
           checked={relocate}
           onChange={setRelocate}
         />

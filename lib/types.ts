@@ -45,6 +45,8 @@ export interface Job {
   applicationUrl: string;
   workplaceType: string | null;
   yearsOfExperience: number | null;
+  /** EXTRACTED = found in the posting content; TITLE_INFERRED = guessed from seniority words. */
+  yoeSource: "EXTRACTED" | "TITLE_INFERRED" | null;
   postedDate: string | null;
   firstSeenAt: string | null;
 }

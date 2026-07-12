@@ -1,5 +1,13 @@
 import type { Job } from "@/lib/types";
 
+function yoeLabel(job: Job): string {
+  if (job.yearsOfExperience == null) return "Experience not listed";
+  if (job.yearsOfExperience === 0) return "Entry level";
+  if (job.yoeSource === "TITLE_INFERRED")
+    return `~${job.yearsOfExperience} yrs (from title)`;
+  return `${job.yearsOfExperience}+ yrs`;
+}
+
 function timeAgo(iso: string | null): string | null {
   if (!iso) return null;
   const diffMs = Date.now() - new Date(iso).getTime();
@@ -40,7 +48,7 @@ export default function JobCard({ job }: { job: Job }) {
             {job.companyName && " · "}
             {job.location ?? "Location not listed"}
             {job.workplaceType && ` · ${job.workplaceType}`}
-            {job.yearsOfExperience != null && ` · ${job.yearsOfExperience}+ yrs`}
+            {` · ${yoeLabel(job)}`}
           </p>
           {seen && (
             <p className="mt-0.5 text-xs font-semibold text-stone-400">
