@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
@@ -95,11 +93,6 @@ const DIGEST_JOBS = [
 
 export default function Home() {
   const { authenticated } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (authenticated === true) router.replace("/jobs");
-  }, [authenticated, router]);
 
   return (
     <div className="mx-auto max-w-5xl px-4">
@@ -166,18 +159,29 @@ export default function Home() {
               className="rise mt-8 flex justify-center gap-3 md:justify-start"
               style={{ animationDelay: "0.16s" }}
             >
-              <Link
-                href="/register"
-                className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2"
-              >
-                Start free
-              </Link>
-              <Link
-                href="/login"
-                className="rounded-2xl border-2 border-b-4 border-[#4B4478] bg-[#3E3768] px-6 py-3 text-base font-extrabold text-[#EDEAFF] transition-all hover:bg-[#474071] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 active:translate-y-[2px] active:border-b-2"
-              >
-                Log in
-              </Link>
+              {authenticated ? (
+                <Link
+                  href="/jobs"
+                  className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2"
+                >
+                  Go to my jobs →
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    href="/register"
+                    className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2"
+                  >
+                    Start free
+                  </Link>
+                  <Link
+                    href="/login"
+                    className="rounded-2xl border-2 border-b-4 border-[#4B4478] bg-[#3E3768] px-6 py-3 text-base font-extrabold text-[#EDEAFF] transition-all hover:bg-[#474071] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 active:translate-y-[2px] active:border-b-2"
+                  >
+                    Log in
+                  </Link>
+                </>
+              )}
             </div>
             <p
               className="rise mt-6 text-sm font-bold text-[#A9A3D6]"
@@ -283,10 +287,10 @@ export default function Home() {
           </ul>
           <div className="px-5 py-4 text-center">
             <Link
-              href="/register"
+              href={authenticated ? "/jobs" : "/register"}
               className="text-sm font-extrabold text-amber-700 underline decoration-2 underline-offset-4 hover:text-amber-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/40"
             >
-              See all 7 matches
+              {authenticated ? "See my matches" : "See all 7 matches"}
             </Link>
           </div>
           </div>
@@ -309,10 +313,10 @@ export default function Home() {
           and you can unsubscribe with one click.
         </p>
         <Link
-          href="/register"
+          href={authenticated ? "/jobs" : "/register"}
           className="mt-6 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/40 active:translate-y-[2px] active:border-b-2"
         >
-          Create my account
+          {authenticated ? "Go to my jobs →" : "Create my account"}
         </Link>
       </section>
 
