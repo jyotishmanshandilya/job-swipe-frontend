@@ -90,7 +90,7 @@ export function AuthShell({
 }) {
   return (
     <div className="mx-auto max-w-md px-4 py-12">
-      <div className="rounded-3xl border-2 border-stone-200 border-b-4 bg-white p-8">
+      <div className="rise rounded-3xl border-2 border-stone-200 border-b-4 bg-white p-8">
         <div className="flex justify-center">
           <OwlMascot size={72} variant={variant} />
         </div>
@@ -132,7 +132,7 @@ export function TagInput({
         {values.map((v) => (
           <span
             key={v}
-            className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-900"
+            className="pop-in inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-900"
           >
             {v}
             <button

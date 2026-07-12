@@ -22,7 +22,7 @@ export default function JobCard({ job }: { job: Job }) {
   const seen = timeAgo(job.firstSeenAt);
   const isNew = seen === "today" || seen === "yesterday";
   return (
-    <div className="rounded-2xl border-2 border-stone-200 border-b-4 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-amber-300">
+    <div className="rounded-2xl border-2 border-stone-200 border-b-4 bg-white p-4 transition-all hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md hover:shadow-amber-900/5">
       <div className="flex items-start gap-3.5">
         {/* company avatar */}
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-lg font-extrabold uppercase text-amber-800">

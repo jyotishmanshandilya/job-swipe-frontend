@@ -11,7 +11,7 @@ export default function OnboardingPage() {
   return (
     <RequireAuth>
       <div className="mx-auto max-w-lg px-4 py-10">
-        <div className="flex items-center gap-4">
+        <div className="rise flex items-center gap-4">
           <OwlMascot size={64} />
           <div>
             <h1 className="text-2xl font-extrabold text-stone-800">
@@ -23,7 +23,10 @@ export default function OnboardingPage() {
             </p>
           </div>
         </div>
-        <div className="mt-8 rounded-3xl border-2 border-stone-200 border-b-4 bg-white p-6">
+        <div
+          className="rise mt-8 rounded-3xl border-2 border-stone-200 border-b-4 bg-white p-6"
+          style={{ animationDelay: "80ms" }}
+        >
           <PreferencesForm
             submitLabel="Save and see my matches"
             onSaved={() => router.push("/jobs")}

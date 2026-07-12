@@ -128,7 +128,7 @@ function JobsContent() {
         {loading ? (
           <Spinner />
         ) : noPreferences ? (
-          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+          <div className="rise rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
             <div className="flex justify-center">
               <OwlMascot size={80} />
             </div>
@@ -149,9 +149,9 @@ function JobsContent() {
         ) : error ? (
           <Alert kind="error">{error}</Alert>
         ) : !data || data.content.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+          <div className="rise rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
             <div className="flex justify-center">
-              <OwlMascot size={80} variant="sleepy" />
+              <OwlMascot size={80} variant="sleepy" className="owl-snooze" />
             </div>
             <p className="mx-auto mt-4 max-w-sm text-sm font-semibold text-stone-500">
               {tab === "matched"
@@ -167,8 +167,14 @@ function JobsContent() {
               {tab === "matched" ? " matching your profile" : ""}
             </p>
             <div className="space-y-3">
-              {data.content.map((job) => (
-                <JobCard key={job.id} job={job} />
+              {data.content.map((job, i) => (
+                <div
+                  key={job.id}
+                  className="rise"
+                  style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
+                >
+                  <JobCard job={job} />
+                </div>
               ))}
             </div>
             {data.totalPages > 1 && (

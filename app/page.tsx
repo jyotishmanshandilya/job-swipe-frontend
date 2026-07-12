@@ -4,7 +4,30 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
+import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
+
+/** Rises into place the first time it scrolls into view. */
+function Reveal({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const { ref, isVisible } = useScrollReveal();
+  return (
+    <div
+      ref={ref}
+      className={`${className} ${isVisible ? "rise" : "opacity-0"}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 // `centerField` stars sit where the headline lives on small screens — desktop only.
 const STARS: {
@@ -190,9 +213,10 @@ export default function Home() {
             aria-hidden="true"
           />
           <div className="grid gap-8 md:grid-cols-3">
-            {NIGHT_SHIFT.map((step) => (
-              <div
+            {NIGHT_SHIFT.map((step, i) => (
+              <Reveal
                 key={step.time}
+                delay={i * 120}
                 className="relative border-l-2 border-dashed border-amber-300 pl-5 md:border-l-0 md:pl-0"
               >
                 <span className="relative z-10 inline-block rounded-full border-2 border-stone-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-stone-600">
@@ -204,7 +228,7 @@ export default function Home() {
                 <p className="mt-1.5 text-sm font-semibold leading-relaxed text-stone-500">
                   {step.body}
                 </p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -218,7 +242,8 @@ export default function Home() {
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
           One email. Only new roles, only your kind of roles.
         </p>
-        <div className="mx-auto mt-10 max-w-lg -rotate-1 rounded-2xl border-2 border-b-8 border-stone-200 bg-white shadow-sm">
+        <Reveal className="mx-auto mt-10 max-w-lg">
+          <div className="-rotate-1 rounded-2xl border-2 border-b-8 border-stone-200 bg-white shadow-sm">
           <div className="flex items-center gap-3 border-b-2 border-stone-100 px-5 py-4">
             <OwlMascot size={36} />
             <div className="min-w-0 flex-1">
@@ -264,7 +289,8 @@ export default function Home() {
               See all 7 matches
             </Link>
           </div>
-        </div>
+          </div>
+        </Reveal>
         <p className="mt-4 text-center text-xs font-bold text-stone-400">
           Sample digest. Yours will match your preferences.
         </p>
