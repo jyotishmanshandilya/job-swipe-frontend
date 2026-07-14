@@ -44,6 +44,7 @@ export default function PreferencesForm({
     initial?.willingToRelocate ?? false,
   );
   const [yoe, setYoe] = useState(initial?.yearsOfExperience ?? 0);
+  const [stretch, setStretch] = useState(initial?.stretchYears ?? 0);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -65,6 +66,7 @@ export default function PreferencesForm({
         remoteOk,
         willingToRelocate: relocate,
         yearsOfExperience: yoe,
+        stretchYears: stretch,
       };
       const saved = await apiFetch<Preferences>("/api/preferences", {
         method: "POST",
@@ -111,6 +113,31 @@ export default function PreferencesForm({
           onChange={(e) => setYoe(Number(e.target.value))}
           className="max-w-[120px]"
         />
+      </div>
+
+      <div>
+        <Label>Also show roles asking for more experience</Label>
+        <div className="flex overflow-hidden rounded-xl border-2 border-stone-200">
+          {[0, 1, 2, 3].map((n) => (
+            <button
+              key={n}
+              type="button"
+              onClick={() => setStretch(n)}
+              className={`flex-1 px-3 py-2 text-sm font-bold transition-colors ${
+                stretch === n
+                  ? "bg-amber-400 text-amber-950"
+                  : "bg-white text-stone-500 hover:bg-stone-50"
+              } ${n > 0 ? "border-l-2 border-stone-200" : ""}`}
+            >
+              {n === 0 ? "Strict" : `+${n} yrs`}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1.5 text-xs text-stone-500">
+          {stretch === 0
+            ? "Only roles at or below your experience level"
+            : `Includes roles asking up to ${stretch} year${stretch > 1 ? "s" : ""} more than you have`}
+        </p>
       </div>
 
       <div className="space-y-4">

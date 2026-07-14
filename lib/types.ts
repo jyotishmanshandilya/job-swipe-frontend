@@ -24,6 +24,8 @@ export interface Preferences {
   remoteOk: boolean;
   willingToRelocate: boolean;
   yearsOfExperience: number;
+  /** Extra years above own experience still shown (0 = strict). */
+  stretchYears: number;
   emailNotificationsEnabled: boolean;
 }
 
@@ -34,6 +36,7 @@ export interface PreferencesRequest {
   remoteOk: boolean;
   willingToRelocate: boolean;
   yearsOfExperience: number;
+  stretchYears: number;
 }
 
 export interface Job {
