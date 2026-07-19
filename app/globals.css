@@ -109,17 +109,14 @@ h6 {
 }
 
 /* Hard offset shadow for non-pressable sticker surfaces: cards, chips, stat badges.
-   (Buttons keep their border-b-4 press collapse instead — see components/ui.tsx.) */
-.shadow-hard {
+   (Buttons keep their border-b-4 press collapse instead — see components/ui.tsx.)
+   @utility, not plain classes, so Tailwind variants compose (e.g. open:shadow-hard-sm). */
+@utility shadow-hard {
   box-shadow: 4px 4px 0 0 rgb(41 37 36 / 0.9);
 }
 
-.shadow-hard-sm {
+@utility shadow-hard-sm {
   box-shadow: 3px 3px 0 0 rgb(41 37 36 / 0.9);
-}
-
-.shadow-hard-grape {
-  box-shadow: 4px 4px 0 0 var(--color-grape-700);
 }
 
 /* Fixed film-grain overlay — a tiny inline-SVG noise tile at low opacity. */

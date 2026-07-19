@@ -29,7 +29,7 @@ const FAQS = [
 export default function Faq() {
   return (
     <section className="pb-16 md:pb-20">
-      <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
+      <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
         Sensible questions, owl answers
       </h2>
       <div className="mx-auto mt-8 max-w-lg space-y-3">

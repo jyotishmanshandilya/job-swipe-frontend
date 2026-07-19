@@ -144,7 +144,7 @@ export default function Home() {
         <div className="relative flex flex-col items-center gap-8 px-6 pb-0 pt-16 md:flex-row md:items-end md:justify-between md:gap-12 md:px-14 md:pt-16">
           <div className="max-w-xl pb-10 text-center md:pb-16 md:text-left">
             <h1
-              className="rise text-4xl font-black leading-tight tracking-tight text-[#FFF8ED] md:text-6xl"
+              className="rise text-4xl font-extrabold leading-tight tracking-tight text-[#FFF8ED] md:text-6xl"
               style={{ animationDelay: "0s" }}
             >
               The owl hunts{" "}
@@ -236,7 +236,7 @@ export default function Home() {
           size={28}
           className="absolute right-[12%] top-12 hidden text-amber-400 md:block"
         />
-        <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
           The night shift
         </h2>
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
@@ -272,7 +272,7 @@ export default function Home() {
 
       {/* the deliverable itself: the 8 AM digest */}
       <section className="pb-16 md:pb-20">
-        <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
           What 8 AM looks like
         </h2>
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
@@ -346,7 +346,7 @@ export default function Home() {
         <div className="flex justify-center">
           <OwlMascot size={72} />
         </div>
-        <h2 className="mt-4 text-2xl font-black text-stone-800">
+        <h2 className="mt-4 text-2xl font-extrabold text-stone-800">
           Apply before LinkedIn shows it.
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm font-semibold text-stone-500">

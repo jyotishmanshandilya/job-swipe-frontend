@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import type { JobCardMode } from "./JobCard";
 
 // Legacy prefix kept for consistency with the auth keys (see lib/api.ts).
 const STORAGE_KEY = "jobswipe_jobview";
 
-/**
- * Card ⁄ list view preference, persisted to localStorage. Card is the default —
- * including first visit — so we render "card" on the server and only swap after
- * mount if a stored preference disagrees (avoids a hydration mismatch).
- */
+// Tiny external store over localStorage, read via useSyncExternalStore: the
+// server snapshot is "card" (the default — including first visit) and React
+// swaps in the stored client value right after hydration. No mismatch, no
+// setState-in-effect.
+const listeners = new Set<() => void>();
+const subscribe = (cb: () => void) => {
+  listeners.add(cb);
+  return () => {
+    listeners.delete(cb);
+  };
+};
+const getSnapshot = (): JobCardMode =>
+  localStorage.getItem(STORAGE_KEY) === "list" ? "list" : "card";
+const getServerSnapshot = (): JobCardMode => "card";
+
+/** Card ⁄ list view preference, persisted to localStorage. Card is the default. */
 export function useJobView(): [JobCardMode, (m: JobCardMode) => void] {
-  const [mode, setMode] = useState<JobCardMode>("card");
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "list") setMode("list");
-  }, []);
-
+  const mode = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   const update = (m: JobCardMode) => {
-    setMode(m);
     localStorage.setItem(STORAGE_KEY, m);
+    listeners.forEach((cb) => cb());
   };
   return [mode, update];
 }
