@@ -28,14 +28,21 @@ export default function PreferencesForm({
   initial,
   submitLabel,
   onSaved,
+  onProgress,
 }: {
   initial?: Preferences | null;
   submitLabel: string;
   onSaved: (saved: Preferences) => void;
+  /** Fires as the form fills in — lets the page's owl wake up (see /onboarding). */
+  onProgress?: (progress: { hasTitles: boolean }) => void;
 }) {
-  const [titles, setTitles] = useState<string[]>(
+  const [titles, setTitlesState] = useState<string[]>(
     initial?.preferredJobTitles ?? [],
   );
+  const setTitles = (next: string[]) => {
+    setTitlesState(next);
+    onProgress?.({ hasTitles: next.length > 0 });
+  };
   const [locations, setLocations] = useState<string[]>(
     initial?.preferredLocations ?? [],
   );
@@ -117,7 +124,7 @@ export default function PreferencesForm({
 
       <div>
         <Label>Also show roles asking for more experience</Label>
-        <div className="flex overflow-hidden rounded-xl border-2 border-stone-200">
+        <div className="flex overflow-hidden rounded-2xl border-2 border-stone-200">
           {[0, 1, 2, 3].map((n) => (
             <button
               key={n}

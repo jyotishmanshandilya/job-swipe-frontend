@@ -37,7 +37,10 @@ function LoginForm() {
     <AuthShell title="Welcome back" subtitle="The owl kept watch. Log in to see what it found.">
       <form onSubmit={submit} className="space-y-4">
         {expired && (
-          <Alert kind="info">Your session expired — please log in again.</Alert>
+          <Alert kind="info">
+            The owl dozed off and your session expired — log back in to pick up
+            the hunt.
+          </Alert>
         )}
         {error && <Alert kind="error">{error}</Alert>}
 
