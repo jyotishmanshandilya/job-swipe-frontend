@@ -20,14 +20,22 @@ export function Label({
   );
 }
 
-export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
+export function Input({
+  accent = "amber",
+  className,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement> & { accent?: "amber" | "grape" }) {
+  const focus =
+    accent === "grape"
+      ? "focus:border-grape-500 focus:ring-grape-200"
+      : "focus:border-amber-400 focus:ring-amber-200";
   return (
     <input
       {...props}
-      className={`w-full rounded-xl border-2 border-stone-200 bg-white px-3.5 py-2.5 text-sm
-        text-stone-800 placeholder-stone-400 focus:border-amber-400 focus:outline-none
-        focus:ring-2 focus:ring-amber-200 disabled:bg-stone-100 disabled:text-stone-500
-        ${props.className ?? ""}`}
+      className={`w-full rounded-2xl border-2 border-stone-200 bg-white px-3.5 py-2.5 text-sm
+        text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 ${focus}
+        disabled:bg-stone-100 disabled:text-stone-500
+        ${className ?? ""}`}
     />
   );
 }
@@ -37,7 +45,7 @@ export function Button({
   variant = "primary",
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" | "grape";
 }) {
   const styles = {
     primary:
@@ -46,6 +54,8 @@ export function Button({
       "bg-white text-stone-700 border-stone-300 hover:bg-stone-50 disabled:text-stone-400",
     danger:
       "bg-rose-500 text-white border-rose-700 hover:bg-rose-400 disabled:bg-rose-300 disabled:border-rose-400",
+    grape:
+      "bg-grape-600 text-white border-grape-800 hover:bg-grape-500 disabled:bg-grape-300 disabled:text-grape-100 disabled:border-grape-400",
   }[variant];
   return (
     <button
@@ -90,7 +100,7 @@ export function AuthShell({
 }) {
   return (
     <div className="mx-auto max-w-md px-4 py-12">
-      <div className="rise rounded-3xl border-2 border-stone-200 border-b-4 bg-white p-8">
+      <div className="rise shadow-hard rounded-3xl border-2 border-stone-800/90 bg-white p-8">
         <div className="flex justify-center">
           <OwlMascot size={72} variant={variant} />
         </div>
@@ -128,23 +138,28 @@ export function TagInput({
   return (
     <div>
       <Label>{label}</Label>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {values.map((v) => (
-          <span
-            key={v}
-            className="pop-in inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-sm font-bold text-amber-900"
-          >
-            {v}
-            <button
-              type="button"
-              aria-label={`Remove ${v}`}
-              onClick={() => onChange(values.filter((x) => x !== v))}
-              className="cursor-pointer text-amber-500 hover:text-amber-900"
+      <div className="flex flex-wrap gap-2.5 mb-2">
+        {values.map((v, i) => {
+          // Alternating slight tilt gives the "stuck-on sticker" feel.
+          const tilt = i % 2 === 0 ? "-2deg" : "2deg";
+          return (
+            <span
+              key={v}
+              style={{ "--sticker-tilt": tilt, rotate: tilt } as React.CSSProperties}
+              className="sticker-pop shadow-hard-sm inline-flex items-center gap-1 rounded-xl border-2 border-stone-800/90 bg-amber-200 px-3 py-1 text-sm font-extrabold text-amber-950"
             >
-              ×
-            </button>
-          </span>
-        ))}
+              {v}
+              <button
+                type="button"
+                aria-label={`Remove ${v}`}
+                onClick={() => onChange(values.filter((x) => x !== v))}
+                className="cursor-pointer text-amber-700 hover:text-amber-950"
+              >
+                ×
+              </button>
+            </span>
+          );
+        })}
       </div>
       <Input
         placeholder={placeholder}
@@ -205,7 +220,7 @@ export function Toggle({
         }`}
       >
         <span
-          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-300 ease-[cubic-bezier(0.68,-0.55,0.27,1.55)] ${
             checked ? "translate-x-6" : "translate-x-1"
           }`}
         />

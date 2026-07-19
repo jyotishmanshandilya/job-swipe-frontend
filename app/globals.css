@@ -2,12 +2,36 @@
 
 @theme inline {
   --font-sans: var(--font-nunito);
+  /* Bricolage Grotesque — chunky display face for headings + hero. */
+  --font-display: var(--font-bricolage);
+
+  /* Grape: the new secondary accent alongside amber/teal. grape-700 is the base #3B3364. */
+  --color-grape-50: #f3f2f8;
+  --color-grape-100: #e6e4f1;
+  --color-grape-200: #cdc9e3;
+  --color-grape-300: #a79fce;
+  --color-grape-400: #7d72b3;
+  --color-grape-500: #5d5197;
+  --color-grape-600: #4a3f7b;
+  --color-grape-700: #3b3364;
+  --color-grape-800: #2f294f;
+  --color-grape-900: #241f3c;
 }
 
 body {
-  /* Warm cream canvas; ink text. The brand palette is amber/stone/teal. */
+  /* Warm cream canvas; ink text. The brand palette is amber/stone/teal/grape. */
   background: #fff8ed;
   color: #292524;
+}
+
+/* Headings wear the display face by default; body copy stays Nunito. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
 }
 
 /* Landing-page night hero: twinkling stars, a breathing owl, a fade-up on load. */
@@ -75,6 +99,93 @@ body {
 
 .owl-snooze {
   animation: snooze 5s ease-in-out infinite;
+}
+
+/* --- "Balanced Quirk" additions --- */
+
+/* Force the display face where the cascade isn't enough (e.g. a styled span). */
+.font-display {
+  font-family: var(--font-display), var(--font-sans), system-ui, sans-serif;
+}
+
+/* Hard offset shadow for non-pressable sticker surfaces: cards, chips, stat badges.
+   (Buttons keep their border-b-4 press collapse instead — see components/ui.tsx.) */
+.shadow-hard {
+  box-shadow: 4px 4px 0 0 rgb(41 37 36 / 0.9);
+}
+
+.shadow-hard-sm {
+  box-shadow: 3px 3px 0 0 rgb(41 37 36 / 0.9);
+}
+
+.shadow-hard-grape {
+  box-shadow: 4px 4px 0 0 var(--color-grape-700);
+}
+
+/* Fixed film-grain overlay — a tiny inline-SVG noise tile at low opacity. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Ticker marquee: a duplicated track scrolls left by exactly half its width. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Springy wiggle for playful hover accents. */
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-4deg);
+  }
+  75% {
+    transform: rotate(4deg);
+  }
+}
+
+.wiggle-hover:hover {
+  animation: wiggle 0.4s ease-in-out;
+}
+
+/* Sticker tags popping in with a little overshoot. */
+@keyframes sticker-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) rotate(-6deg);
+  }
+  70% {
+    transform: scale(1.08) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--sticker-tilt, 0deg));
+  }
+}
+
+.sticker-pop {
+  animation: sticker-pop 0.25s ease-out backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
