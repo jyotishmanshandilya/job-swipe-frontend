@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
+import JobTicker from "@/components/JobTicker";
+import Faq from "@/components/Faq";
+import { Star, Squiggle } from "@/components/Doodles";
 
 /** Rises into place the first time it scrolls into view. */
 function Reveal({
@@ -95,7 +98,7 @@ export default function Home() {
   const { authenticated } = useAuth();
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="grain mx-auto max-w-5xl px-4">
       {/* night-shift hero: the one dark moment on a cream page */}
       <section className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-b-8 border-[#211C3D] bg-gradient-to-b from-[#262143] to-[#3B3364] md:mt-10">
         {/* sky */}
@@ -183,12 +186,6 @@ export default function Home() {
                 </>
               )}
             </div>
-            <p
-              className="rise mt-6 text-sm font-bold text-[#A9A3D6]"
-              style={{ animationDelay: "0.24s" }}
-            >
-              25,000+ live Greenhouse roles · up to 24 hrs before LinkedIn
-            </p>
           </div>
 
           {/* the owl on watch, perched in the dawn glow */}
@@ -202,8 +199,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* last night's haul, scrolling past */}
+      <JobTicker />
+
+      {/* the numbers, as stickers slapped on the page */}
+      <section className="mt-10 flex flex-wrap items-center justify-center gap-4 md:gap-6">
+        {[
+          {
+            text: "25,000+ live roles",
+            tilt: "-rotate-2",
+            look: "bg-amber-300 text-amber-950",
+          },
+          {
+            text: "300+ Greenhouse boards",
+            tilt: "rotate-1",
+            look: "bg-white text-stone-800",
+          },
+          {
+            text: "24 hrs before LinkedIn",
+            tilt: "-rotate-1",
+            look: "bg-grape-700 text-grape-50",
+          },
+        ].map((s) => (
+          <span
+            key={s.text}
+            className={`shadow-hard-sm wiggle-hover rounded-xl border-2 border-stone-800/90 px-4 py-2 text-sm font-extrabold ${s.tilt} ${s.look}`}
+          >
+            {s.text}
+          </span>
+        ))}
+      </section>
+
       {/* the night shift, hour by hour */}
-      <section className="py-16 md:py-20">
+      <section className="relative py-16 md:py-20">
+        <Star
+          size={28}
+          className="absolute right-[12%] top-12 hidden text-amber-400 md:block"
+        />
         <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
           The night shift
         </h2>
@@ -223,7 +255,7 @@ export default function Home() {
                 delay={i * 120}
                 className="relative border-l-2 border-dashed border-amber-300 pl-5 md:border-l-0 md:pl-0"
               >
-                <span className="relative z-10 inline-block rounded-full border-2 border-stone-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-stone-600">
+                <span className="relative z-10 inline-block rounded-full border-2 border-grape-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-grape-700">
                   {step.time}
                 </span>
                 <h3 className="mt-3 text-lg font-extrabold text-stone-800">
@@ -247,7 +279,7 @@ export default function Home() {
           One email. Only new roles, only your kind of roles.
         </p>
         <Reveal className="mx-auto mt-10 max-w-lg">
-          <div className="-rotate-1 rounded-2xl border-2 border-b-8 border-stone-200 bg-white shadow-sm">
+          <div className="shadow-hard -rotate-1 rounded-2xl border-2 border-stone-800/90 bg-white">
           <div className="flex items-center gap-3 border-b-2 border-stone-100 px-5 py-4">
             <OwlMascot size={36} />
             <div className="min-w-0 flex-1">
@@ -279,7 +311,13 @@ export default function Home() {
                     {job.meta}
                   </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900">
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
+                    job.tag === "new tonight"
+                      ? "bg-grape-700 text-grape-50"
+                      : "bg-amber-100 text-amber-900"
+                  }`}
+                >
                   {job.tag}
                 </span>
               </li>
@@ -300,8 +338,11 @@ export default function Home() {
         </p>
       </section>
 
+      {/* sensible questions, owl answers */}
+      <Faq />
+
       {/* bottom CTA */}
-      <section className="mb-16 rounded-3xl border-2 border-stone-200 border-b-4 bg-white px-6 py-12 text-center">
+      <section className="shadow-hard mb-16 rounded-3xl border-2 border-stone-800/90 bg-white px-6 py-12 text-center">
         <div className="flex justify-center">
           <OwlMascot size={72} />
         </div>
@@ -322,6 +363,10 @@ export default function Home() {
       </section>
 
       <footer className="border-t-2 border-stone-200/70 py-8 text-center text-xs font-bold text-stone-400">
+        <span className="mb-2 inline-block text-amber-400">
+          <Squiggle size={40} />
+        </span>
+        <br />
         RoleOwl · fresh India tech roles, every morning · roleowl.org
       </footer>
     </div>
