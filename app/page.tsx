@@ -64,7 +64,7 @@ const NIGHT_SHIFT = [
   {
     time: "3:00 AM",
     title: "The sweep begins",
-    body: "RoleOwl works through 300+ company job boards, pulling every new India opening it can find.",
+    body: "RoleOwl works through 300+ Greenhouse boards — where companies post before anywhere else. LinkedIn crawls the same boards up to 24 hours later.",
   },
   {
     time: "8:00 AM",
@@ -151,9 +151,9 @@ export default function Home() {
               className="rise mt-4 text-lg font-semibold text-[#CDC8EE]"
               style={{ animationDelay: "0.08s" }}
             >
-              RoleOwl scans hundreds of company job boards overnight and
-              delivers India tech roles matched to your profile — every
-              morning, in one email.
+              RoleOwl reads Greenhouse job boards directly — where companies
+              post before anywhere else. LinkedIn finds the same roles up to
+              24 hours later. You don&apos;t have that kind of time.
             </p>
             <div
               className="rise mt-8 flex justify-center gap-3 md:justify-start"
@@ -187,7 +187,7 @@ export default function Home() {
               className="rise mt-6 text-sm font-bold text-[#A9A3D6]"
               style={{ animationDelay: "0.24s" }}
             >
-              25,000+ live roles in the nest right now.
+              25,000+ live Greenhouse roles · up to 24 hrs before LinkedIn
             </p>
           </div>
 
@@ -306,11 +306,12 @@ export default function Home() {
           <OwlMascot size={72} />
         </div>
         <h2 className="mt-4 text-2xl font-black text-stone-800">
-          Stop scrolling job boards.
+          Apply before LinkedIn shows it.
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm font-semibold text-stone-500">
-          Set your preferences once and let the owl do the night shift. Free,
-          and you can unsubscribe with one click.
+          RoleOwl reads Greenhouse boards directly — where companies post
+          first. Set your preferences once and you&apos;ll apply a full day
+          before the LinkedIn queue even forms.
         </p>
         <Link
           href={authenticated ? "/jobs" : "/register"}
