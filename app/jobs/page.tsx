@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import RequireAuth from "@/components/RequireAuth";
 import JobCard from "@/components/JobCard";
+import JobViewToggle, { useJobView } from "@/components/JobViewToggle";
 import OwlMascot from "@/components/OwlMascot";
+import { Squiggle } from "@/components/Doodles";
 import { Alert, Button, Input, Spinner } from "@/components/ui";
 import { apiFetch, ApiRequestError } from "@/lib/api";
 import type { Job, Page } from "@/lib/types";
@@ -23,6 +25,7 @@ function JobsContent() {
   const [tab, setTab] = useState<Tab>("matched");
   const [page, setPage] = useState(0);
   const [result, setResult] = useState<LoadResult | null>(null);
+  const [view, setView] = useJobView();
 
   // Browse filters (applied on submit, not on each keystroke)
   const [titleFilter, setTitleFilter] = useState("");
@@ -80,22 +83,25 @@ function JobsContent() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold text-stone-800">Jobs</h1>
-        <div className="flex rounded-full border-2 border-stone-200 bg-white p-1">
-          {(["matched", "all"] as Tab[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => switchTab(t)}
-              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
-                tab === t
-                  ? "bg-amber-400 text-amber-950"
-                  : "text-stone-500 hover:text-stone-800"
-              }`}
-            >
-              {t === "matched" ? "For you" : "Browse all"}
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-full border-2 border-stone-200 bg-white p-1">
+            {(["matched", "all"] as Tab[]).map((t) => (
+              <button
+                key={t}
+                onClick={() => switchTab(t)}
+                className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
+                  tab === t
+                    ? "bg-amber-400 text-amber-950"
+                    : "text-stone-500 hover:text-stone-800"
+                }`}
+              >
+                {t === "matched" ? "For you" : "Browse all"}
+              </button>
+            ))}
+          </div>
+          <JobViewToggle mode={view} onChange={setView} />
         </div>
       </div>
 
@@ -156,8 +162,11 @@ function JobsContent() {
             <p className="mx-auto mt-4 max-w-sm text-sm font-semibold text-stone-500">
               {tab === "matched"
                 ? "The owl found nothing new for you — it hunts every night, so check back tomorrow or broaden your preferences."
-                : "No jobs found for these filters."}
+                : "Even the owl came back empty-taloned for those filters. Loosen the search a little?"}
             </p>
+            <span className="mt-3 inline-block text-amber-400">
+              <Squiggle size={44} />
+            </span>
           </div>
         ) : (
           <>
@@ -166,14 +175,20 @@ function JobsContent() {
               {data.totalElements === 1 ? "" : "s"}
               {tab === "matched" ? " matching your profile" : ""}
             </p>
-            <div className="space-y-3">
+            <div
+              className={
+                view === "card"
+                  ? "grid grid-cols-1 gap-4 md:grid-cols-2"
+                  : "space-y-3"
+              }
+            >
               {data.content.map((job, i) => (
                 <div
                   key={job.id}
-                  className="rise"
+                  className="rise h-full"
                   style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                 >
-                  <JobCard job={job} />
+                  <JobCard job={job} mode={view} />
                 </div>
               ))}
             </div>
