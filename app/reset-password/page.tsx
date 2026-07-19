@@ -54,7 +54,9 @@ function ResetPasswordForm() {
   if (done) {
     return (
       <div className="space-y-4 text-center">
-        <Alert kind="success">Your password has been updated.</Alert>
+        <Alert kind="success">
+          New password locked in — the owl never saw a thing.
+        </Alert>
         <Link
           href="/login"
           className="inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"

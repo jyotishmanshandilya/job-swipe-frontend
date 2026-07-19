@@ -105,13 +105,15 @@ export async function apiFetch<T>(
 ): Promise<T> {
   let res = await rawFetch(path, options);
 
-  if (res.status === 401 && getToken() && !path.startsWith("/api/auth/")) {
+  // 401 = token expired/missing; some backend configs return 403 for the same
+  // condition — handle both identically: try a silent refresh then redirect.
+  if ((res.status === 401 || res.status === 403) && getToken() && !path.startsWith("/api/auth/")) {
     if (await tryRefresh()) {
       res = await rawFetch(path, options);
     } else if (typeof window !== "undefined") {
       clearTokens();
       window.location.href = "/login?expired=1";
-      throw new ApiRequestError(401, "Session expired");
+      throw new ApiRequestError(res.status, "Session expired");
     }
   }
 

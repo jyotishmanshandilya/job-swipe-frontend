@@ -181,7 +181,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border-2 border-stone-200 border-b-4 bg-white p-6">
+    <section className="shadow-hard rounded-2xl border-2 border-stone-800/90 bg-white p-6">
       <h2 className="mb-4 text-lg font-extrabold text-stone-800">{title}</h2>
       {children}
     </section>

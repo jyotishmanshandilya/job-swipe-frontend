@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth";
 import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
+import JobTicker from "@/components/JobTicker";
+import Faq from "@/components/Faq";
+import { Star, Squiggle } from "@/components/Doodles";
 
 /** Rises into place the first time it scrolls into view. */
 function Reveal({
@@ -64,7 +67,7 @@ const NIGHT_SHIFT = [
   {
     time: "3:00 AM",
     title: "The sweep begins",
-    body: "RoleOwl works through 300+ company job boards, pulling every new India opening it can find.",
+    body: "RoleOwl works through 300+ Greenhouse boards — where companies post before anywhere else. LinkedIn crawls the same boards up to 24 hours later.",
   },
   {
     time: "8:00 AM",
@@ -95,7 +98,7 @@ export default function Home() {
   const { authenticated } = useAuth();
 
   return (
-    <div className="mx-auto max-w-5xl px-4">
+    <div className="grain mx-auto max-w-5xl px-4">
       {/* night-shift hero: the one dark moment on a cream page */}
       <section className="relative mt-6 overflow-hidden rounded-[2rem] border-2 border-b-8 border-[#211C3D] bg-gradient-to-b from-[#262143] to-[#3B3364] md:mt-10">
         {/* sky */}
@@ -141,7 +144,7 @@ export default function Home() {
         <div className="relative flex flex-col items-center gap-8 px-6 pb-0 pt-16 md:flex-row md:items-end md:justify-between md:gap-12 md:px-14 md:pt-16">
           <div className="max-w-xl pb-10 text-center md:pb-16 md:text-left">
             <h1
-              className="rise text-4xl font-black leading-tight tracking-tight text-[#FFF8ED] md:text-6xl"
+              className="rise text-4xl font-extrabold leading-tight tracking-tight text-[#FFF8ED] md:text-6xl"
               style={{ animationDelay: "0s" }}
             >
               The owl hunts{" "}
@@ -151,9 +154,9 @@ export default function Home() {
               className="rise mt-4 text-lg font-semibold text-[#CDC8EE]"
               style={{ animationDelay: "0.08s" }}
             >
-              RoleOwl scans hundreds of company job boards overnight and
-              delivers India tech roles matched to your profile — every
-              morning, in one email.
+              RoleOwl reads Greenhouse job boards directly — where companies
+              post before anywhere else. LinkedIn finds the same roles up to
+              24 hours later. You don&apos;t have that kind of time.
             </p>
             <div
               className="rise mt-8 flex justify-center gap-3 md:justify-start"
@@ -183,12 +186,6 @@ export default function Home() {
                 </>
               )}
             </div>
-            <p
-              className="rise mt-6 text-sm font-bold text-[#A9A3D6]"
-              style={{ animationDelay: "0.24s" }}
-            >
-              25,000+ live roles in the nest right now.
-            </p>
           </div>
 
           {/* the owl on watch, perched in the dawn glow */}
@@ -202,9 +199,44 @@ export default function Home() {
         </div>
       </section>
 
+      {/* last night's haul, scrolling past */}
+      <JobTicker />
+
+      {/* the numbers, as stickers slapped on the page */}
+      <section className="mt-10 flex flex-wrap items-center justify-center gap-4 md:gap-6">
+        {[
+          {
+            text: "25,000+ live roles",
+            tilt: "-rotate-2",
+            look: "bg-amber-300 text-amber-950",
+          },
+          {
+            text: "300+ Greenhouse boards",
+            tilt: "rotate-1",
+            look: "bg-white text-stone-800",
+          },
+          {
+            text: "24 hrs before LinkedIn",
+            tilt: "-rotate-1",
+            look: "bg-grape-700 text-grape-50",
+          },
+        ].map((s) => (
+          <span
+            key={s.text}
+            className={`shadow-hard-sm wiggle-hover rounded-xl border-2 border-stone-800/90 px-4 py-2 text-sm font-extrabold ${s.tilt} ${s.look}`}
+          >
+            {s.text}
+          </span>
+        ))}
+      </section>
+
       {/* the night shift, hour by hour */}
-      <section className="py-16 md:py-20">
-        <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
+      <section className="relative py-16 md:py-20">
+        <Star
+          size={28}
+          className="absolute right-[12%] top-12 hidden text-amber-400 md:block"
+        />
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
           The night shift
         </h2>
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
@@ -223,7 +255,7 @@ export default function Home() {
                 delay={i * 120}
                 className="relative border-l-2 border-dashed border-amber-300 pl-5 md:border-l-0 md:pl-0"
               >
-                <span className="relative z-10 inline-block rounded-full border-2 border-stone-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-stone-600">
+                <span className="relative z-10 inline-block rounded-full border-2 border-grape-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-grape-700">
                   {step.time}
                 </span>
                 <h3 className="mt-3 text-lg font-extrabold text-stone-800">
@@ -240,14 +272,14 @@ export default function Home() {
 
       {/* the deliverable itself: the 8 AM digest */}
       <section className="pb-16 md:pb-20">
-        <h2 className="text-center text-3xl font-black tracking-tight text-stone-800">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
           What 8 AM looks like
         </h2>
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
           One email. Only new roles, only your kind of roles.
         </p>
         <Reveal className="mx-auto mt-10 max-w-lg">
-          <div className="-rotate-1 rounded-2xl border-2 border-b-8 border-stone-200 bg-white shadow-sm">
+          <div className="shadow-hard -rotate-1 rounded-2xl border-2 border-stone-800/90 bg-white">
           <div className="flex items-center gap-3 border-b-2 border-stone-100 px-5 py-4">
             <OwlMascot size={36} />
             <div className="min-w-0 flex-1">
@@ -279,7 +311,13 @@ export default function Home() {
                     {job.meta}
                   </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-900">
+                <span
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${
+                    job.tag === "new tonight"
+                      ? "bg-grape-700 text-grape-50"
+                      : "bg-amber-100 text-amber-900"
+                  }`}
+                >
                   {job.tag}
                 </span>
               </li>
@@ -300,17 +338,21 @@ export default function Home() {
         </p>
       </section>
 
+      {/* sensible questions, owl answers */}
+      <Faq />
+
       {/* bottom CTA */}
-      <section className="mb-16 rounded-3xl border-2 border-stone-200 border-b-4 bg-white px-6 py-12 text-center">
+      <section className="shadow-hard mb-16 rounded-3xl border-2 border-stone-800/90 bg-white px-6 py-12 text-center">
         <div className="flex justify-center">
           <OwlMascot size={72} />
         </div>
-        <h2 className="mt-4 text-2xl font-black text-stone-800">
-          Stop scrolling job boards.
+        <h2 className="mt-4 text-2xl font-extrabold text-stone-800">
+          Apply before LinkedIn shows it.
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm font-semibold text-stone-500">
-          Set your preferences once and let the owl do the night shift. Free,
-          and you can unsubscribe with one click.
+          RoleOwl reads Greenhouse boards directly — where companies post
+          first. Set your preferences once and you&apos;ll apply a full day
+          before the LinkedIn queue even forms.
         </p>
         <Link
           href={authenticated ? "/jobs" : "/register"}
@@ -321,6 +363,10 @@ export default function Home() {
       </section>
 
       <footer className="border-t-2 border-stone-200/70 py-8 text-center text-xs font-bold text-stone-400">
+        <span className="mb-2 inline-block text-amber-400">
+          <Squiggle size={40} />
+        </span>
+        <br />
         RoleOwl · fresh India tech roles, every morning · roleowl.org
       </footer>
     </div>
