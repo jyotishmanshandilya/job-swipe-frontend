@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import JobCard from "@/components/JobCard";
 import JobViewToggle, { useJobView } from "@/components/JobViewToggle";
 import OwlMascot from "@/components/OwlMascot";
 import { Squiggle } from "@/components/Doodles";
 import { Alert, Button, Input, Spinner } from "@/components/ui";
-import { apiFetch, ApiRequestError } from "@/lib/api";
+import { apiFetch, ApiRequestError, unreportJob } from "@/lib/api";
 import type { Job, Page } from "@/lib/types";
 
 type Tab = "matched" | "all";
@@ -22,17 +23,42 @@ interface LoadResult {
 }
 
 function JobsContent() {
-  const [tab, setTab] = useState<Tab>("matched");
-  const [page, setPage] = useState(0);
+  // Tab/page/filters live in the URL so leaving and coming back (or sharing
+  // the link) restores the same view. State stays the source of truth while
+  // on the page; the URL is synced via replace() below.
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [tab, setTab] = useState<Tab>(
+    searchParams.get("tab") === "all" ? "all" : "matched",
+  );
+  const [page, setPage] = useState(
+    Math.max(0, Number(searchParams.get("page")) || 0),
+  );
   const [result, setResult] = useState<LoadResult | null>(null);
   const [view, setView] = useJobView();
 
   // Browse filters (applied on submit, not on each keystroke)
-  const [titleFilter, setTitleFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [applied, setApplied] = useState({ title: "", location: "" });
+  const [titleFilter, setTitleFilter] = useState(searchParams.get("title") ?? "");
+  const [locationFilter, setLocationFilter] = useState(
+    searchParams.get("location") ?? "",
+  );
+  const [applied, setApplied] = useState({
+    title: searchParams.get("title") ?? "",
+    location: searchParams.get("location") ?? "",
+  });
 
   const queryKey = `${tab}|${page}|${applied.title}|${applied.location}`;
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (tab === "all") params.set("tab", "all");
+    if (page > 0) params.set("page", String(page));
+    if (applied.title) params.set("title", applied.title);
+    if (applied.location) params.set("location", applied.location);
+    const qs = params.toString();
+    router.replace(qs ? `/jobs?${qs}` : "/jobs", { scroll: false });
+  }, [tab, page, applied, router]);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,6 +105,73 @@ function JobsContent() {
   const switchTab = (t: Tab) => {
     setTab(t);
     setPage(0);
+  };
+
+  // Undo window after a report: the removed card is kept (with its position)
+  // for a few seconds so a mistaken report can be reverted in one click. The
+  // toast is tagged with the query it belongs to, so switching tab/page/filter
+  // hides it without any state juggling.
+  const [undo, setUndo] = useState<{ job: Job; index: number; key: string } | null>(null);
+  const [undoBusy, setUndoBusy] = useState(false);
+  const undoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+    };
+  }, []);
+
+  const dismissUndo = () => {
+    if (undoTimer.current) clearTimeout(undoTimer.current);
+    undoTimer.current = null;
+    setUndo(null);
+  };
+
+  // The backend already excludes reported jobs from the next fetch; dropping
+  // the card locally just avoids a full refetch.
+  const handleReported = (jobId: string) => {
+    setResult((prev) => {
+      if (!prev?.data) return prev;
+      const index = prev.data.content.findIndex((j) => j.id === jobId);
+      if (index === -1) return prev;
+      if (undoTimer.current) clearTimeout(undoTimer.current);
+      setUndo({ job: prev.data.content[index], index, key: queryKey });
+      undoTimer.current = setTimeout(() => setUndo(null), 8000);
+      return {
+        ...prev,
+        data: {
+          ...prev.data,
+          content: prev.data.content.filter((j) => j.id !== jobId),
+          totalElements: Math.max(0, prev.data.totalElements - 1),
+        },
+      };
+    });
+  };
+
+  const performUndo = async () => {
+    if (!undo || undoBusy) return;
+    setUndoBusy(true);
+    try {
+      await unreportJob(undo.job.id);
+      setResult((prev) => {
+        if (!prev?.data) return prev;
+        const content = [...prev.data.content];
+        content.splice(Math.min(undo.index, content.length), 0, undo.job);
+        return {
+          ...prev,
+          data: {
+            ...prev.data,
+            content,
+            totalElements: prev.data.totalElements + 1,
+          },
+        };
+      });
+      dismissUndo();
+    } catch {
+      // Leave the toast up so the user can retry.
+    } finally {
+      setUndoBusy(false);
+    }
   };
 
   return (
@@ -188,7 +281,11 @@ function JobsContent() {
                   className="rise h-full"
                   style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                 >
-                  <JobCard job={job} mode={view} />
+                  <JobCard
+                    job={job}
+                    mode={view}
+                    onReported={tab === "matched" ? handleReported : undefined}
+                  />
                 </div>
               ))}
             </div>
@@ -216,6 +313,33 @@ function JobsContent() {
           </>
         )}
       </div>
+
+      {undo && undo.key === queryKey && (
+        <div className="rise fixed bottom-6 left-1/2 z-40 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-stone-800/90 bg-stone-800 px-4 py-3 shadow-lg">
+          <p className="min-w-0 flex-1 truncate text-sm font-bold text-[#FFF8ED]">
+            Reported{" "}
+            <span className="font-extrabold text-amber-300">
+              {undo.job.jobTitle}
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={performUndo}
+            disabled={undoBusy}
+            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 disabled:bg-amber-200"
+          >
+            {undoBusy ? "Undoing…" : "Undo"}
+          </button>
+          <button
+            type="button"
+            aria-label="Dismiss"
+            onClick={dismissUndo}
+            className="shrink-0 cursor-pointer text-lg font-bold text-stone-400 hover:text-white"
+          >
+            ×
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -223,7 +347,10 @@ function JobsContent() {
 export default function JobsPage() {
   return (
     <RequireAuth>
-      <JobsContent />
+      {/* useSearchParams needs Suspense or the production build fails. */}
+      <Suspense fallback={<Spinner />}>
+        <JobsContent />
+      </Suspense>
     </RequireAuth>
   );
 }

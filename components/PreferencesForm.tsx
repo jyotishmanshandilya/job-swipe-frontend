@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { apiFetch, ApiRequestError } from "@/lib/api";
+import { FEATURE_SKILLS } from "@/lib/flags";
 import type { Preferences, PreferencesRequest } from "@/lib/types";
 import { Alert, Button, Input, Label, TagInput, Toggle } from "./ui";
 
@@ -22,6 +23,19 @@ const LOCATION_SUGGESTIONS = [
   "Noida",
   "Gurgaon",
   "Remote India",
+];
+
+const SKILL_SUGGESTIONS = [
+  "Java",
+  "Spring Boot",
+  "Python",
+  "React",
+  "TypeScript",
+  "Node.js",
+  "AWS",
+  "Kubernetes",
+  "SQL",
+  "Kafka",
 ];
 
 export default function PreferencesForm({
@@ -45,6 +59,12 @@ export default function PreferencesForm({
   };
   const [locations, setLocations] = useState<string[]>(
     initial?.preferredLocations ?? [],
+  );
+  // Seeded from the stored value so it round-trips untouched when the input is
+  // hidden (flag off) — the backend upsert overwrites this column on every
+  // save, so omitting it would null the user's skills.
+  const [skills, setSkills] = useState<string[]>(
+    initial?.preferredSkills ?? [],
   );
   const [remoteOk, setRemoteOk] = useState(initial?.remoteOk ?? false);
   const [relocate, setRelocate] = useState(
@@ -70,6 +90,9 @@ export default function PreferencesForm({
         // Employment type isn't collected anymore (jobs carry no such data);
         // preserve whatever was stored so older rows aren't clobbered.
         employmentType: initial?.employmentType ?? [],
+        // Always sent (seeded from the stored value); the input is only shown
+        // when FEATURE_SKILLS is on.
+        preferredSkills: skills,
         remoteOk,
         willingToRelocate: relocate,
         yearsOfExperience: yoe,
@@ -109,6 +132,16 @@ export default function PreferencesForm({
         suggestions={LOCATION_SUGGESTIONS}
       />
 
+      {FEATURE_SKILLS && (
+        <TagInput
+          label="Skills"
+          values={skills}
+          onChange={setSkills}
+          placeholder="e.g. Java, Kafka — press Enter to add"
+          suggestions={SKILL_SUGGESTIONS}
+        />
+      )}
+
       <div>
         <Label htmlFor="yoe">Years of experience</Label>
         <Input
@@ -123,27 +156,41 @@ export default function PreferencesForm({
       </div>
 
       <div>
-        <Label>Also show roles asking for more experience</Label>
-        <div className="flex overflow-hidden rounded-2xl border-2 border-stone-200">
+        <Label htmlFor="stretch">Experience matching strictness</Label>
+        <p className="mb-2 text-xs font-semibold text-stone-400">
+          How far above your own experience a role&apos;s requirement can be
+          and still show up in your matches.
+        </p>
+        <input
+          id="stretch"
+          type="range"
+          min={0}
+          max={3}
+          step={1}
+          value={stretch}
+          onChange={(e) => setStretch(Number(e.target.value))}
+          className="w-full cursor-pointer accent-amber-500"
+        />
+        <div className="mt-1 flex justify-between">
           {[0, 1, 2, 3].map((n) => (
             <button
               key={n}
               type="button"
               onClick={() => setStretch(n)}
-              className={`flex-1 px-3 py-2 text-sm font-bold transition-colors ${
+              className={`cursor-pointer text-xs font-bold transition-colors ${
                 stretch === n
-                  ? "bg-amber-400 text-amber-950"
-                  : "bg-white text-stone-500 hover:bg-stone-50"
-              } ${n > 0 ? "border-l-2 border-stone-200" : ""}`}
+                  ? "text-amber-700"
+                  : "text-stone-400 hover:text-stone-600"
+              }`}
             >
-              {n === 0 ? "Strict" : `+${n} yrs`}
+              {n === 0 ? "Strict" : `+${n} yr${n > 1 ? "s" : ""}`}
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-xs text-stone-500">
+        <p className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
           {stretch === 0
-            ? "Only roles at or below your experience level"
-            : `Includes roles asking up to ${stretch} year${stretch > 1 ? "s" : ""} more than you have`}
+            ? `Strict: only roles asking for ${yoe} yrs of experience or less.`
+            : `Flexible: roles asking for up to ${yoe + stretch} yrs (your ${yoe} + ${stretch}) will also match.`}
         </p>
       </div>
 

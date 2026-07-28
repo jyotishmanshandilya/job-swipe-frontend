@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import OwlMascot from "./OwlMascot";
+import { Button, Modal } from "./ui";
 import { Squiggle } from "./Doodles";
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -29,6 +31,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 export default function Navbar() {
   const { authenticated, logout } = useAuth();
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
   return (
     <nav className="sticky top-0 z-10 border-b-2 border-stone-200/70 bg-[#FFF8ED]/90 backdrop-blur">
@@ -45,11 +48,39 @@ export default function Navbar() {
               <NavLink href="/jobs">Jobs</NavLink>
               <NavLink href="/settings">Settings</NavLink>
               <button
-                onClick={logout}
+                onClick={() => setConfirmLogout(true)}
                 className="cursor-pointer rounded-full px-3 py-1.5 text-sm font-bold text-stone-600 hover:bg-stone-100 hover:text-stone-900"
               >
                 Log out
               </button>
+              <Modal
+                open={confirmLogout}
+                onClose={() => setConfirmLogout(false)}
+                title="Log out?"
+              >
+                <p className="text-sm font-semibold text-stone-500">
+                  The owl keeps hunting either way — your matches will be here
+                  when you get back.
+                </p>
+                <div className="mt-4 flex justify-end gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setConfirmLogout(false)}
+                  >
+                    Stay logged in
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setConfirmLogout(false);
+                      logout();
+                    }}
+                  >
+                    Log out
+                  </Button>
+                </div>
+              </Modal>
             </>
           ) : (
             <>

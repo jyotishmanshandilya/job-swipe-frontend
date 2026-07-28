@@ -1,4 +1,11 @@
-import type { ApiError, AuthResponse } from "./types";
+import type {
+  ApiError,
+  AuthResponse,
+  JobReport,
+  JobStats,
+  MyJobReport,
+  ReportReason,
+} from "./types";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4196";
@@ -139,4 +146,47 @@ export async function apiFetch<T>(
     // Some endpoints return plain-text messages.
     return text as unknown as T;
   }
+}
+
+/**
+ * Flag a job (idempotent per user+job). The backend removes it from this
+ * user's matched feed on the next fetch.
+ */
+export function reportJob(
+  jobId: string,
+  body: { reason: ReportReason; details?: string },
+): Promise<JobReport> {
+  return apiFetch<JobReport>(`/api/jobs/${jobId}/report`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+/** The current user's reports, newest first, with job context. */
+export function getMyReports(): Promise<MyJobReport[]> {
+  return apiFetch<MyJobReport[]>("/api/jobs/reports/mine");
+}
+
+/** Withdraws a report (undo) — the job returns to the matched feed. Idempotent. */
+export function unreportJob(jobId: string): Promise<void> {
+  return apiFetch<void>(`/api/jobs/${jobId}/report`, { method: "DELETE" });
+}
+
+/** Permanently deletes the account (password re-confirmation required). */
+export function deleteAccount(password: string): Promise<void> {
+  return apiFetch<void>("/api/profile", {
+    method: "DELETE",
+    body: JSON.stringify({ password }),
+  });
+}
+
+/**
+ * Public landing-page counts. Deliberately a bare fetch (no token, no
+ * 401-refresh handling): a stale token must never bounce a landing-page
+ * visitor to /login.
+ */
+export async function getJobStats(): Promise<JobStats> {
+  const res = await fetch(`${API_URL}/api/jobs/stats`);
+  if (!res.ok) throw new ApiRequestError(res.status, `Request failed (${res.status})`);
+  return (await res.json()) as JobStats;
 }
