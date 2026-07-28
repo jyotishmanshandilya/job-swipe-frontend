@@ -1,6 +1,6 @@
 "use client";
 
-import { InputHTMLAttributes, ButtonHTMLAttributes } from "react";
+import { InputHTMLAttributes, ButtonHTMLAttributes, useEffect } from "react";
 import OwlMascot from "./OwlMascot";
 
 export function Label({
@@ -225,6 +225,51 @@ export function Toggle({
           }`}
         />
       </button>
+    </div>
+  );
+}
+
+/**
+ * Centered dialog over a dimmed backdrop. Closes on Escape or backdrop click;
+ * put the confirm/cancel buttons in `children`.
+ */
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    >
+      <div
+        className="absolute inset-0 bg-stone-900/50 backdrop-blur-[2px]"
+        onClick={onClose}
+      />
+      <div className="rise shadow-hard relative w-full max-w-sm rounded-2xl border-2 border-stone-800/90 bg-white p-6">
+        <h2 className="text-lg font-extrabold text-stone-800">{title}</h2>
+        <div className="mt-3">{children}</div>
+      </div>
     </div>
   );
 }

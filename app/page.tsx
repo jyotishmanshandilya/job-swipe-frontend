@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { getJobStats } from "@/lib/api";
+import type { JobStats } from "@/lib/types";
 import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
 import JobTicker from "@/components/JobTicker";
@@ -94,8 +97,29 @@ const DIGEST_JOBS = [
   },
 ];
 
+/**
+ * "N+" claim from an exact count: floored to the step so the number is always
+ * true (25,431 jobs → "25,000+"). Falls back to the exact count below one step.
+ */
+function plusLabel(count: number, step: number): string {
+  if (count < step) return count.toLocaleString();
+  return `${(Math.floor(count / step) * step).toLocaleString()}+`;
+}
+
 export default function Home() {
   const { authenticated } = useAuth();
+
+  // Live DB counts for the sticker stats; until they arrive (or if the
+  // backend is unreachable) the last known real numbers stand in.
+  const [stats, setStats] = useState<JobStats | null>(null);
+  useEffect(() => {
+    getJobStats()
+      .then(setStats)
+      .catch(() => {});
+  }, []);
+
+  const jobsStat = stats ? plusLabel(stats.totalJobs, 1000) : "25,000+";
+  const boardsStat = stats ? plusLabel(stats.totalBoards, 100) : "300+";
 
   return (
     <div className="grain mx-auto max-w-5xl px-4">
@@ -206,12 +230,12 @@ export default function Home() {
       <section className="mt-10 flex flex-wrap items-center justify-center gap-4 md:gap-6">
         {[
           {
-            text: "25,000+ live roles",
+            text: `${jobsStat} live roles`,
             tilt: "-rotate-2",
             look: "bg-amber-300 text-amber-950",
           },
           {
-            text: "300+ Greenhouse boards",
+            text: `${boardsStat} Greenhouse boards`,
             tilt: "rotate-1",
             look: "bg-white text-stone-800",
           },

@@ -72,6 +72,9 @@ function ResetPasswordForm() {
       {error && <Alert kind="error">{error}</Alert>}
       <div>
         <Label htmlFor="password">New password</Label>
+        <p className="mb-1.5 text-xs font-semibold text-stone-400">
+          At least 8 characters — pick something different from before.
+        </p>
         <Input
           id="password"
           type="password"

@@ -1,4 +1,5 @@
 import type { Job } from "@/lib/types";
+import ReportJobButton from "./ReportJobButton";
 
 export type JobCardMode = "card" | "list";
 
@@ -107,9 +108,12 @@ function Avatar({ job }: { job: Job }) {
 export default function JobCard({
   job,
   mode = "card",
+  onReported,
 }: {
   job: Job;
   mode?: JobCardMode;
+  /** When set (matched feed), shows the report affordance. */
+  onReported?: (jobId: string) => void;
 }) {
   const seen = timeAgo(job.firstSeenAt);
   const isNew = seen === "today" || seen === "yesterday";
@@ -138,6 +142,11 @@ export default function JobCard({
         <span className="hidden shrink-0 sm:inline-flex">
           <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
         </span>
+        {onReported && (
+          <span className="hidden shrink-0 sm:inline-flex">
+            <ReportJobButton job={job} onReported={onReported} />
+          </span>
+        )}
         <ApplyLink url={job.applicationUrl} compact />
       </div>
     );
@@ -170,14 +179,17 @@ export default function JobCard({
         <Chip icon="briefcase">{yoeLabel(job)}</Chip>
       </div>
       <div className="mt-4 flex flex-1 items-end justify-between gap-3">
-        <p className="inline-flex items-center gap-1 text-xs font-semibold text-stone-400">
-          {seen && (
-            <>
-              <ChipIcon kind="clock" />
-              Spotted {seen}
-            </>
-          )}
-        </p>
+        <div className="flex items-center gap-3">
+          <p className="inline-flex items-center gap-1 text-xs font-semibold text-stone-400">
+            {seen && (
+              <>
+                <ChipIcon kind="clock" />
+                Spotted {seen}
+              </>
+            )}
+          </p>
+          {onReported && <ReportJobButton job={job} onReported={onReported} />}
+        </div>
         <ApplyLink url={job.applicationUrl} />
       </div>
     </div>

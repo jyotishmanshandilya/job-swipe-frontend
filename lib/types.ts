@@ -21,6 +21,8 @@ export interface Preferences {
   preferredJobTitles: string[] | null;
   preferredLocations: string[] | null;
   employmentType: string[] | null;
+  /** Feeds the AI hybrid-search profile embedding (see NEXT_PUBLIC_ENABLE_SKILLS). */
+  preferredSkills: string[] | null;
   remoteOk: boolean;
   willingToRelocate: boolean;
   yearsOfExperience: number;
@@ -33,6 +35,7 @@ export interface PreferencesRequest {
   preferredJobTitles: string[];
   preferredLocations: string[];
   employmentType: string[];
+  preferredSkills: string[];
   remoteOk: boolean;
   willingToRelocate: boolean;
   yearsOfExperience: number;
@@ -48,8 +51,12 @@ export interface Job {
   applicationUrl: string;
   workplaceType: string | null;
   yearsOfExperience: number | null;
-  /** EXTRACTED = found in the posting content; TITLE_INFERRED = guessed from seniority words. */
-  yoeSource: "EXTRACTED" | "TITLE_INFERRED" | null;
+  /**
+   * EXTRACTED = regex found it in the posting content; LLM_EXTRACTED = the LLM
+   * read it when the regex missed; TITLE_INFERRED = guessed from seniority
+   * words. Trust order: EXTRACTED > LLM_EXTRACTED > TITLE_INFERRED.
+   */
+  yoeSource: "EXTRACTED" | "LLM_EXTRACTED" | "TITLE_INFERRED" | null;
   postedDate: string | null;
   firstSeenAt: string | null;
 }
@@ -60,6 +67,42 @@ export interface Page<T> {
   totalPages: number;
   number: number; // current page index
   size: number;
+}
+
+export type ReportReason =
+  | "MISSING_EXPERIENCE"
+  | "WRONG_EXPERIENCE"
+  | "WRONG_LOCATION"
+  | "EXPIRED"
+  | "SPAM"
+  | "OTHER";
+
+export interface JobReport {
+  id: string;
+  userId: string;
+  companyJobsId: string;
+  reason: ReportReason;
+  details: string | null;
+  createdAt: string;
+}
+
+/** Own report + job context (`GET /api/jobs/reports/mine`). Job fields are null if the job was deleted. */
+export interface MyJobReport {
+  id: string;
+  companyJobsId: string;
+  reason: ReportReason;
+  details: string | null;
+  createdAt: string;
+  jobTitle: string | null;
+  companyName: string | null;
+  location: string | null;
+  applicationUrl: string | null;
+}
+
+/** Public landing-page counts (`GET /api/jobs/stats`, no auth). */
+export interface JobStats {
+  totalJobs: number;
+  totalBoards: number;
 }
 
 export interface ApiError {

@@ -84,6 +84,10 @@ export default function RegisterPage() {
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
+          <p className="mb-1.5 text-xs font-semibold text-stone-400">
+            At least 8 characters — a mix of words the owl can&apos;t guess
+            works best.
+          </p>
           <Input
             id="password"
             type="password"
