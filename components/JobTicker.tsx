@@ -9,13 +9,13 @@
 
 const TICKER_ROLES = [
   { title: "Backend Engineer", where: "Mosaic Pay · Bengaluru" },
-  { title: "SDE II", where: "Cartwheel · Remote, India" },
-  { title: "Frontend Engineer", where: "Juniper Health · Pune" },
-  { title: "Data Engineer", where: "Lumen Labs · Hyderabad" },
-  { title: "DevOps Engineer", where: "Nimbus · Gurugram" },
-  { title: "Product Engineer", where: "Paperkite · Bengaluru" },
-  { title: "ML Engineer", where: "Verdant AI · Remote, India" },
-  { title: "QA Engineer", where: "Hatchling · Chennai" },
+  { title: "SDE II", where: "Cartwheel · Remote, worldwide" },
+  { title: "Frontend Engineer", where: "Juniper Health · London" },
+  { title: "Data Engineer", where: "Lumen Labs · Berlin" },
+  { title: "DevOps Engineer", where: "Nimbus · Singapore" },
+  { title: "Product Engineer", where: "Paperkite · Amsterdam" },
+  { title: "ML Engineer", where: "Verdant AI · Remote, US" },
+  { title: "QA Engineer", where: "Hatchling · Pune" },
 ];
 
 export default function JobTicker() {

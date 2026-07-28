@@ -8,8 +8,9 @@ import type { JobStats } from "@/lib/types";
 import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
 import JobTicker from "@/components/JobTicker";
+import Sources from "@/components/Sources";
 import Faq from "@/components/Faq";
-import { Star, Squiggle } from "@/components/Doodles";
+import { Squiggle } from "@/components/Doodles";
 
 /** Rises into place the first time it scrolls into view. */
 function Reveal({
@@ -61,24 +62,6 @@ const SPARKLES: { top: string; left: string; delay: string }[] = [
   { top: "40%", left: "46%", delay: "2.4s" },
 ];
 
-const NIGHT_SHIFT = [
-  {
-    time: "11:12 PM",
-    title: "Tell the owl once",
-    body: "Pick the roles, cities, and experience level you care about. Two minutes before bed, changeable anytime.",
-  },
-  {
-    time: "3:00 AM",
-    title: "The sweep begins",
-    body: "RoleOwl works through 300+ Greenhouse boards — where companies post before anywhere else. LinkedIn crawls the same boards up to 24 hours later.",
-  },
-  {
-    time: "8:00 AM",
-    title: "Wake up to matches",
-    body: "Roles that fit your profile are waiting in your inbox. No feeds to scroll, no spam.",
-  },
-];
-
 const DIGEST_JOBS = [
   {
     title: "Senior Backend Engineer",
@@ -87,12 +70,12 @@ const DIGEST_JOBS = [
   },
   {
     title: "Frontend Engineer II",
-    meta: "Juniper Health · Pune · hybrid",
+    meta: "Juniper Health · London · hybrid",
     tag: "2–4 yrs",
   },
   {
     title: "Platform Engineer",
-    meta: "Cartwheel · remote, India",
+    meta: "Cartwheel · remote, worldwide",
     tag: "new tonight",
   },
 ];
@@ -178,9 +161,10 @@ export default function Home() {
               className="rise mt-4 text-lg font-semibold text-[#CDC8EE]"
               style={{ animationDelay: "0.08s" }}
             >
-              RoleOwl reads Greenhouse job boards directly — where companies
-              post before anywhere else. LinkedIn finds the same roles up to
-              24 hours later. You don&apos;t have that kind of time.
+              RoleOwl reads company hiring systems directly — Greenhouse,
+              Lever, and friends — where roles appear first. LinkedIn picks
+              them up as much as 24 hours later. You don&apos;t have that kind
+              of time.
             </p>
             <div
               className="rise mt-8 flex justify-center gap-3 md:justify-start"
@@ -226,81 +210,18 @@ export default function Home() {
       {/* last night's haul, scrolling past */}
       <JobTicker />
 
-      {/* the numbers, as stickers slapped on the page */}
-      <section className="mt-10 flex flex-wrap items-center justify-center gap-4 md:gap-6">
-        {[
-          {
-            text: `${jobsStat} live roles`,
-            tilt: "-rotate-2",
-            look: "bg-amber-300 text-amber-950",
-          },
-          {
-            text: `${boardsStat} Greenhouse boards`,
-            tilt: "rotate-1",
-            look: "bg-white text-stone-800",
-          },
-          {
-            text: "24 hrs before LinkedIn",
-            tilt: "-rotate-1",
-            look: "bg-grape-700 text-grape-50",
-          },
-        ].map((s) => (
-          <span
-            key={s.text}
-            className={`shadow-hard-sm wiggle-hover rounded-xl border-2 border-stone-800/90 px-4 py-2 text-sm font-extrabold ${s.tilt} ${s.look}`}
-          >
-            {s.text}
-          </span>
-        ))}
-      </section>
+      {/* provenance: the trust centerpiece */}
+      <Reveal>
+        <Sources jobsStat={jobsStat} boardsStat={boardsStat} />
+      </Reveal>
 
-      {/* the night shift, hour by hour */}
-      <section className="relative py-16 md:py-20">
-        <Star
-          size={28}
-          className="absolute right-[12%] top-12 hidden text-amber-400 md:block"
-        />
-        <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
-          The night shift
-        </h2>
-        <p className="mt-2 text-center text-sm font-semibold text-stone-500">
-          What happens between good-night and good-morning.
-        </p>
-        <div className="relative mt-10">
-          {/* flight path connecting the hours */}
-          <div
-            className="absolute left-0 right-0 top-[15px] hidden border-t-2 border-dashed border-amber-300 md:block"
-            aria-hidden="true"
-          />
-          <div className="grid gap-8 md:grid-cols-3">
-            {NIGHT_SHIFT.map((step, i) => (
-              <Reveal
-                key={step.time}
-                delay={i * 120}
-                className="relative border-l-2 border-dashed border-amber-300 pl-5 md:border-l-0 md:pl-0"
-              >
-                <span className="relative z-10 inline-block rounded-full border-2 border-grape-300 bg-[#FFF8ED] px-3 py-1 font-mono text-xs font-bold tracking-wide text-grape-700">
-                  {step.time}
-                </span>
-                <h3 className="mt-3 text-lg font-extrabold text-stone-800">
-                  {step.title}
-                </h3>
-                <p className="mt-1.5 text-sm font-semibold leading-relaxed text-stone-500">
-                  {step.body}
-                </p>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* the deliverable itself: the 8 AM digest */}
+      {/* the deliverable itself: the morning digest */}
       <section className="pb-16 md:pb-20">
         <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
-          What 8 AM looks like
+          What lands in your inbox
         </h2>
         <p className="mt-2 text-center text-sm font-semibold text-stone-500">
-          One email. Only new roles, only your kind of roles.
+          One email each morning. Only new roles, only your kind of roles.
         </p>
         <Reveal className="mx-auto mt-10 max-w-lg">
           <div className="shadow-hard -rotate-1 rounded-2xl border-2 border-stone-800/90 bg-white">
@@ -374,7 +295,7 @@ export default function Home() {
           Apply before LinkedIn shows it.
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm font-semibold text-stone-500">
-          RoleOwl reads Greenhouse boards directly — where companies post
+          RoleOwl reads company career systems directly — where roles appear
           first. Set your preferences once and you&apos;ll apply a full day
           before the LinkedIn queue even forms.
         </p>
@@ -386,12 +307,60 @@ export default function Home() {
         </Link>
       </section>
 
-      <footer className="border-t-2 border-stone-200/70 py-8 text-center text-xs font-bold text-stone-400">
-        <span className="mb-2 inline-block text-amber-400">
-          <Squiggle size={40} />
-        </span>
-        <br />
-        RoleOwl · fresh India tech roles, every morning · roleowl.org
+      <footer className="border-t-2 border-stone-200/70 py-10">
+        <div className="grid gap-8 sm:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <OwlMascot size={26} />
+              <span className="font-display text-lg font-extrabold text-stone-800">
+                Role<span className="text-amber-600">Owl</span>
+              </span>
+            </div>
+            <p className="mt-2 max-w-[26ch] text-xs font-semibold leading-relaxed text-stone-500">
+              Fresh tech roles read straight from company hiring systems,
+              delivered every morning.
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-stone-400">
+              Product
+            </p>
+            <ul className="mt-2 space-y-1.5 text-sm font-bold text-stone-600">
+              <li>
+                <Link href="/register" className="hover:text-amber-700">
+                  Create an account
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-amber-700">
+                  Log in
+                </Link>
+              </li>
+              <li>
+                <a href="#faq" className="hover:text-amber-700">
+                  Questions &amp; answers
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-widest text-stone-400">
+              Your data
+            </p>
+            <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-relaxed text-stone-500">
+              <li>Free — no card, no trial clock.</li>
+              <li>We store your email and preferences, nothing else.</li>
+              <li>Delete your account anytime in Settings — everything goes with it.</li>
+              <li>Unsubscribe from the digest in one click, right in the email.</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 flex items-center justify-between border-t-2 border-dashed border-stone-200 pt-5 text-xs font-bold text-stone-400">
+          <span>© 2026 RoleOwl · roleowl.org</span>
+          <span className="text-amber-400">
+            <Squiggle size={36} />
+          </span>
+        </div>
       </footer>
     </div>
   );
