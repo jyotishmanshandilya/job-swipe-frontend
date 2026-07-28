@@ -1,6 +1,7 @@
 "use client";
 
 import { InputHTMLAttributes, ButtonHTMLAttributes, useEffect } from "react";
+import { createPortal } from "react-dom";
 import OwlMascot from "./OwlMascot";
 
 export function Label({
@@ -232,6 +233,10 @@ export function Toggle({
 /**
  * Centered dialog over a dimmed backdrop. Closes on Escape or backdrop click;
  * put the confirm/cancel buttons in `children`.
+ *
+ * Rendered through a portal to <body>: ancestors with transform or
+ * backdrop-filter (the sticky navbar, hover-lifted job cards) hijack
+ * position:fixed and would clip or drag the dialog around otherwise.
  */
 export function Modal({
   open,
@@ -250,12 +255,18 @@ export function Modal({
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    // Freeze the page behind the dialog so tall dialogs scroll themselves.
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
   }, [open, onClose]);
 
   if (!open) return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -266,11 +277,12 @@ export function Modal({
         className="absolute inset-0 bg-stone-900/50 backdrop-blur-[2px]"
         onClick={onClose}
       />
-      <div className="rise shadow-hard relative w-full max-w-sm rounded-2xl border-2 border-stone-800/90 bg-white p-6">
+      <div className="rise shadow-hard relative max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-2xl border-2 border-stone-800/90 bg-white p-6">
         <h2 className="text-lg font-extrabold text-stone-800">{title}</h2>
         <div className="mt-3">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
