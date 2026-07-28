@@ -6,19 +6,23 @@
 const FAQS = [
   {
     q: "Will you spam me?",
-    a: "One email, 8 AM, and only when the owl actually found something new. No streaks, no nudges, no “we miss you.” Owls don't grovel.",
+    a: "One email each morning, and only when the owl actually found something new. No streaks, no nudges, no “we miss you.” Owls don't grovel.",
   },
   {
     q: "Where do the jobs come from?",
-    a: "Straight from 300+ company Greenhouse boards — the place roles appear first. LinkedIn picks the same postings up as much as 24 hours later.",
+    a: "Read directly from the hiring systems companies run their careers pages on — Greenhouse, Lever, Recruitee, and Personio. Every apply link opens the company's own careers site, and LinkedIn picks the same postings up as much as 24 hours later.",
   },
   {
     q: "Is it really free?",
     a: "Yes. The owl works for the thrill of the hunt (and because job hunting is miserable enough without a paywall).",
   },
   {
+    q: "What happens to my data?",
+    a: "We store your email and job preferences — nothing else. No resume uploads, no selling your profile to recruiters. Delete your account in Settings and every trace goes with it.",
+  },
+  {
     q: "What if the matches are off?",
-    a: "Tweak your titles, cities, and experience range in Settings anytime — the very next morning's digest uses the new preferences.",
+    a: "Tweak your titles, cities, and experience range in Settings anytime — the very next morning's digest uses the new preferences. You can also report any job that shouldn't be there; it vanishes from your feed on the spot.",
   },
   {
     q: "How do I make it stop?",
@@ -28,7 +32,7 @@ const FAQS = [
 
 export default function Faq() {
   return (
-    <section className="pb-16 md:pb-20">
+    <section id="faq" className="scroll-mt-20 pb-16 md:pb-20">
       <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-800">
         Sensible questions, owl answers
       </h2>
