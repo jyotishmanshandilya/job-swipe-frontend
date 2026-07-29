@@ -5,30 +5,32 @@
  * Live counts arrive from /api/jobs/stats via the page.
  */
 
+import Image from "next/image";
+
 const SOURCES = [
   {
     name: "Greenhouse",
     domain: "boards.greenhouse.io",
     tilt: "-rotate-2",
-    tile: "bg-teal-100 text-teal-800",
+    logo: "/logos/greenhouse.png",
   },
   {
     name: "Lever",
     domain: "jobs.lever.co",
     tilt: "rotate-1",
-    tile: "bg-amber-100 text-amber-800",
+    logo: "/logos/lever.png",
   },
   {
     name: "Recruitee",
     domain: "recruitee.com",
     tilt: "-rotate-1",
-    tile: "bg-grape-100 text-grape-700",
+    logo: "/logos/recruitee.png",
   },
   {
     name: "Personio",
     domain: "jobs.personio.de",
     tilt: "rotate-2",
-    tile: "bg-rose-100 text-rose-700",
+    logo: "/logos/personio.png",
   },
 ];
 
@@ -78,10 +80,14 @@ export default function Sources({
             className={`shadow-hard-sm wiggle-hover w-full max-w-[180px] rounded-xl border-2 border-stone-800/90 bg-white p-3 ${s.tilt}`}
           >
             <div className="flex items-center gap-2.5">
-              <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base font-extrabold ${s.tile}`}
-              >
-                {s.name.charAt(0)}
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-stone-200 bg-white">
+                <Image
+                  src={s.logo}
+                  alt={`${s.name} logo`}
+                  width={36}
+                  height={36}
+                  className="h-full w-full object-cover"
+                />
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-extrabold text-stone-800">
