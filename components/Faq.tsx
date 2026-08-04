@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     q: "Where do the jobs come from?",
-    a: "Read directly from the hiring systems companies run their careers pages on — Greenhouse, Lever, Recruitee, and Personio. Every apply link opens the company's own careers site, and LinkedIn picks the same postings up as much as 24 hours later.",
+    a: "Read directly from the hiring systems companies run their careers pages on — Greenhouse, Lever, Recruitee, and Personio. Every apply link opens the company's own careers site, and the big job boards pick the same postings up as much as a day later — so you're seeing them at the source, first.",
   },
   {
     q: "Is it really free?",

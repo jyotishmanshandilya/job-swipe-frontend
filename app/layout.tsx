@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.roleowl.org"),
   title: "RoleOwl — the owl hunts while you sleep",
   description:
-    "RoleOwl reads company hiring systems directly and emails you fresh India tech roles matched to your profile, every morning at 8 AM.",
+    "RoleOwl reads company hiring systems directly and emails you fresh tech roles matched to your profile every morning — before the big job boards have them.",
 };
 
 export default function RootLayout({

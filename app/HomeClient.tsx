@@ -158,9 +158,9 @@ export default function HomeClient({
               style={{ animationDelay: "0.08s" }}
             >
               RoleOwl reads company hiring systems directly — Greenhouse,
-              Lever, and friends — where roles appear first. LinkedIn picks
-              them up as much as 24 hours later. You don&apos;t have that kind
-              of time.
+              Lever, and more — where roles appear first, often a full day
+              before they reach the big job boards. You don&apos;t have that
+              kind of time.
             </p>
             <div
               className="rise mt-8 flex justify-center gap-3 md:justify-start"
@@ -288,12 +288,12 @@ export default function HomeClient({
           <OwlMascot size={72} />
         </div>
         <h2 className="mt-4 text-2xl font-extrabold text-stone-800">
-          Apply before LinkedIn shows it.
+          See it before the crowd does.
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm font-semibold text-stone-500">
           RoleOwl reads company career systems directly — where roles appear
-          first. Set your preferences once and you&apos;ll apply a full day
-          before the LinkedIn queue even forms.
+          first. Set your preferences once and you&apos;ll be reading new roles
+          a full day before the queue on the big boards even forms.
         </p>
         <Link
           href={authenticated ? "/jobs" : "/register"}
