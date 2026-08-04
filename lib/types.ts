@@ -109,6 +109,14 @@ export interface MyJobReport {
 export interface JobStats {
   totalJobs: number;
   totalBoards: number;
+  /**
+   * Freshness/trust fields — optional because an older backend (or the static
+   * fallback) may omit them; the landing only renders them when present.
+   */
+  totalCompanies?: number;
+  addedLast24h?: number;
+  /** Most-listed company names, as lowercase slugs (see lib/companies.ts). */
+  topCompanies?: string[];
 }
 
 export interface ApiError {

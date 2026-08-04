@@ -10,6 +10,7 @@ import { useScrollReveal } from "@/lib/useScrollReveal";
 import OwlMascot from "@/components/OwlMascot";
 import JobTicker from "@/components/JobTicker";
 import Sources from "@/components/Sources";
+import CompanyStrip from "@/components/CompanyStrip";
 import Faq from "@/components/Faq";
 import { Squiggle } from "@/components/Doodles";
 
@@ -210,6 +211,13 @@ export default function HomeClient({
       <Reveal>
         <Sources jobsStat={jobsStat} boardsStat={boardsStat} />
       </Reveal>
+
+      {/* recognizable companies currently hiring (from stats.topCompanies) */}
+      {stats?.topCompanies && stats.topCompanies.length > 0 && (
+        <Reveal>
+          <CompanyStrip companies={stats.topCompanies} />
+        </Reveal>
+      )}
 
       {/* the deliverable itself: the morning digest */}
       <section className="pb-16 md:pb-20">
