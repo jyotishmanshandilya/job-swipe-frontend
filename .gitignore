@@ -43,3 +43,4 @@ next-env.d.ts
 
 # local agent handover notes, not for the repo
 BACKEND_HANDOVER.md
+BACKEND_HANDOFF.md
