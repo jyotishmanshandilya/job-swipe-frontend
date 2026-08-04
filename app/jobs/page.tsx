@@ -9,7 +9,8 @@ import JobViewToggle, { useJobView } from "@/components/JobViewToggle";
 import OwlMascot from "@/components/OwlMascot";
 import { Squiggle } from "@/components/Doodles";
 import { Alert, Button, Input, Spinner } from "@/components/ui";
-import { apiFetch, ApiRequestError, unreportJob } from "@/lib/api";
+import { apiFetch, ApiRequestError, getMyViews, unreportJob } from "@/lib/api";
+import { hydrateViewedJobs } from "@/lib/viewedJobs";
 import type { Job, Page } from "@/lib/types";
 
 type Tab = "matched" | "all";
@@ -49,6 +50,21 @@ function JobsContent() {
   });
 
   const queryKey = `${tab}|${page}|${applied.title}|${applied.location}`;
+
+  // Hydrate the local "viewed" set from the server once on mount, so a fresh
+  // device shows previously-viewed badges. Best-effort: a failure just leaves
+  // the local set untouched.
+  useEffect(() => {
+    let cancelled = false;
+    getMyViews()
+      .then((res) => {
+        if (!cancelled) hydrateViewedJobs(res.jobIds);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams();

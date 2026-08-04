@@ -1,6 +1,7 @@
 "use client";
 
 import type { Job } from "@/lib/types";
+import { markJobViewedRemote } from "@/lib/api";
 import { markJobViewed, useViewedJobs } from "@/lib/viewedJobs";
 import ReportJobButton from "./ReportJobButton";
 
@@ -172,7 +173,12 @@ export default function JobCard({
   // Server-truth `viewed` (once the backend surfaces it) OR-ed with the local
   // record, so a just-clicked card shows the badge instantly.
   const viewed = useViewedJobs().has(job.id) || Boolean(job.viewed);
-  const onView = () => markJobViewed(job.id);
+  // Local-first for an instant badge; the remote ping is best-effort and
+  // durable (persists the view server-side so it syncs to other devices).
+  const onView = () => {
+    markJobViewed(job.id);
+    markJobViewedRemote(job.id);
+  };
 
   if (mode === "list") {
     // Dense row: title · company · one key chip + View. Truncation is fine here;

@@ -172,6 +172,30 @@ export function unreportJob(jobId: string): Promise<void> {
   return apiFetch<void>(`/api/jobs/${jobId}/report`, { method: "DELETE" });
 }
 
+/**
+ * Best-effort record that the user opened this posting, so the "Viewed" badge
+ * follows them across devices. Fire-and-forget: it swallows every error and,
+ * unlike {@link apiFetch}, never refreshes or redirects on 401 — a background
+ * view-ping must never bounce someone mid-click. Local state stays the instant
+ * layer (see lib/viewedJobs.ts).
+ */
+export function markJobViewedRemote(jobId: string): void {
+  const token = getToken();
+  if (!token) return;
+  void fetch(`${API_URL}/api/jobs/${jobId}/view`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+  }).catch(() => {});
+}
+
+/**
+ * Job ids the current user has viewed on any device — hydrates the local set on
+ * the jobs page so a fresh device shows prior views immediately.
+ */
+export function getMyViews(): Promise<{ jobIds: string[] }> {
+  return apiFetch<{ jobIds: string[] }>("/api/jobs/views/mine");
+}
+
 /** Permanently deletes the account (password re-confirmation required). */
 export function deleteAccount(password: string): Promise<void> {
   return apiFetch<void>("/api/profile", {

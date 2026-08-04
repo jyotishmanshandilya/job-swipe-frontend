@@ -56,6 +56,31 @@ export function markJobViewed(id: string) {
   listeners.forEach((cb) => cb());
 }
 
+/**
+ * Merge server-known viewed IDs into the local set (called once on mount from
+ * the jobs page, from GET /api/jobs/views/mine). Additive — never drops a
+ * local-only view — and notifies mounted cards only when something changed, so
+ * a no-op hydrate causes no re-render.
+ */
+export function hydrateViewedJobs(ids: string[]) {
+  if (ids.length === 0) return;
+  const set = read();
+  let changed = false;
+  for (const id of ids) {
+    if (!set.has(id)) {
+      set.add(id);
+      changed = true;
+    }
+  }
+  if (!changed) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...set]));
+  } catch {
+    // storage unavailable — in-memory listeners still refresh for this session.
+  }
+  listeners.forEach((cb) => cb());
+}
+
 /** The set of locally-viewed job IDs, reactive across all cards. */
 export function useViewedJobs(): Set<string> {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
