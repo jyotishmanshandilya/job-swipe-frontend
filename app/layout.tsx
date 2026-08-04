@@ -17,9 +17,10 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.roleowl.org"),
   title: "RoleOwl — the owl hunts while you sleep",
   description:
-    "RoleOwl scans 300+ company job boards overnight and emails you fresh India tech roles matched to your profile, every morning at 8 AM.",
+    "RoleOwl reads company hiring systems directly and emails you fresh India tech roles matched to your profile, every morning at 8 AM.",
 };
 
 export default function RootLayout({

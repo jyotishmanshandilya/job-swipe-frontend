@@ -59,6 +59,12 @@ export interface Job {
   yoeSource: "EXTRACTED" | "LLM_EXTRACTED" | "TITLE_INFERRED" | null;
   postedDate: string | null;
   firstSeenAt: string | null;
+  /**
+   * Whether the current user has already opened this posting. Optional: only
+   * present once the backend view-tracking lands (see BACKEND_HANDOFF.md); until
+   * then the frontend derives it from localStorage. OR-ed together in JobCard.
+   */
+  viewed?: boolean;
 }
 
 export interface Page<T> {

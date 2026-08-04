@@ -1,4 +1,7 @@
+"use client";
+
 import type { Job } from "@/lib/types";
+import { markJobViewed, useViewedJobs } from "@/lib/viewedJobs";
 import ReportJobButton from "./ReportJobButton";
 
 export type JobCardMode = "card" | "list";
@@ -82,18 +85,66 @@ function Chip({
   );
 }
 
-function ApplyLink({ url, compact = false }: { url: string; compact?: boolean }) {
+/** Opens the posting in a new tab and records the view. Softens to an outline
+ *  once viewed so the feed reads as "already opened" at a glance. */
+function ViewLink({
+  url,
+  onView,
+  viewed,
+  compact = false,
+}: {
+  url: string;
+  onView: () => void;
+  viewed: boolean;
+  compact?: boolean;
+}) {
   return (
     <a
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className={`shrink-0 rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 ${
-        compact ? "px-3 py-1" : "px-4 py-1.5"
-      }`}
+      onClick={onView}
+      className={`shrink-0 rounded-2xl border-2 border-b-4 text-sm font-extrabold transition-all active:translate-y-[2px] active:border-b-2 ${
+        viewed
+          ? "border-stone-300 bg-white text-stone-600 hover:bg-stone-50"
+          : "border-amber-600 bg-amber-400 text-amber-950 hover:bg-amber-300"
+      } ${compact ? "px-3 py-1" : "px-4 py-1.5"}`}
     >
-      Apply
+      View
     </a>
+  );
+}
+
+/** Small check-in-circle used by the "Viewed" badge. */
+function ViewedBadge({ compact = false }: { compact?: boolean }) {
+  const check = (
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+  if (compact) {
+    return (
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-stone-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-stone-500">
+        {check}
+        Viewed
+      </span>
+    );
+  }
+  return (
+    <span className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg border-2 border-stone-800/90 bg-stone-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-stone-600">
+      {check}
+      Viewed
+    </span>
   );
 }
 
@@ -118,8 +169,13 @@ export default function JobCard({
   const seen = timeAgo(job.firstSeenAt);
   const isNew = seen === "today" || seen === "yesterday";
 
+  // Server-truth `viewed` (once the backend surfaces it) OR-ed with the local
+  // record, so a just-clicked card shows the badge instantly.
+  const viewed = useViewedJobs().has(job.id) || Boolean(job.viewed);
+  const onView = () => markJobViewed(job.id);
+
   if (mode === "list") {
-    // Dense row: title · company · one key chip + Apply. Truncation is fine here;
+    // Dense row: title · company · one key chip + View. Truncation is fine here;
     // the full detail lives in card mode.
     return (
       <div className="flex items-center gap-3 rounded-xl border-2 border-stone-200 bg-white px-3.5 py-2.5 transition-colors hover:border-amber-300">
@@ -134,10 +190,14 @@ export default function JobCard({
             )}
           </p>
         </div>
-        {isNew && (
-          <span className="hidden shrink-0 rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-700 sm:inline">
-            New
-          </span>
+        {viewed ? (
+          <ViewedBadge compact />
+        ) : (
+          isNew && (
+            <span className="hidden shrink-0 rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-700 sm:inline">
+              New
+            </span>
+          )
         )}
         <span className="hidden shrink-0 sm:inline-flex">
           <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
@@ -147,13 +207,19 @@ export default function JobCard({
             <ReportJobButton job={job} onReported={onReported} />
           </span>
         )}
-        <ApplyLink url={job.applicationUrl} compact />
+        <ViewLink
+          url={job.applicationUrl}
+          onView={onView}
+          viewed={viewed}
+          compact
+        />
       </div>
     );
   }
 
   return (
     <div className="shadow-hard-sm relative flex h-full flex-col rounded-2xl border-2 border-stone-800/90 bg-white p-4 transition-transform hover:-translate-y-0.5">
+      {viewed && <ViewedBadge />}
       {isNew && (
         <span className="absolute -top-2.5 right-4 rotate-2 rounded-lg border-2 border-stone-800/90 bg-teal-300 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-950">
           new tonight
@@ -190,7 +256,7 @@ export default function JobCard({
           </p>
           {onReported && <ReportJobButton job={job} onReported={onReported} />}
         </div>
-        <ApplyLink url={job.applicationUrl} />
+        <ViewLink url={job.applicationUrl} onView={onView} viewed={viewed} />
       </div>
     </div>
   );
