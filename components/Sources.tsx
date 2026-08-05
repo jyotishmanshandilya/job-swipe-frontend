@@ -109,7 +109,7 @@ export default function Sources({
         <p className="flex items-start gap-2 text-sm font-semibold text-stone-600">
           <Tick />
           Every apply link opens the company&apos;s own careers site — no
-          reposts, no middlemen.
+          reposts, no recruiters, no middlemen.
         </p>
         <p className="flex items-start gap-2 text-sm font-semibold text-stone-600">
           <Tick />
