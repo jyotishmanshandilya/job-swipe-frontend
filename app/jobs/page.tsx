@@ -256,7 +256,7 @@ function JobsContent() {
             </p>
             <Link
               href="/onboarding"
-              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
+              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
             >
               Set preferences
             </Link>
@@ -342,7 +342,7 @@ function JobsContent() {
             type="button"
             onClick={performUndo}
             disabled={undoBusy}
-            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 disabled:bg-amber-200"
+            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs disabled:bg-amber-200"
           >
             {undoBusy ? "Undoing…" : "Undo"}
           </button>

@@ -59,7 +59,7 @@ function ResetPasswordForm() {
         </Alert>
         <Link
           href="/login"
-          className="inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
+          className="inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
         >
           Log in with your new password
         </Link>
