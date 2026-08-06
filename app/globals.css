@@ -119,6 +119,12 @@ h6 {
   box-shadow: 3px 3px 0 0 rgb(41 37 36 / 0.9);
 }
 
+/* Pressed-in variant: pairs with a 2px active translate so buttons feel
+   like they sink toward the surface (e.g. shadow-hard-sm active:shadow-hard-xs). */
+@utility shadow-hard-xs {
+  box-shadow: 1px 1px 0 0 rgb(41 37 36 / 0.9);
+}
+
 /* Fixed film-grain overlay — a tiny inline-SVG noise tile at low opacity. */
 .grain::after {
   content: "";

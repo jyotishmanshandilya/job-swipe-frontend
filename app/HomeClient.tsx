@@ -170,7 +170,7 @@ export default function HomeClient({
               {authenticated ? (
                 <Link
                   href="/jobs"
-                  className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2"
+                  className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2 shadow-hard-sm active:shadow-hard-xs"
                 >
                   Go to my jobs →
                 </Link>
@@ -178,13 +178,13 @@ export default function HomeClient({
                 <>
                   <Link
                     href="/register"
-                    className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2"
+                    className="rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/60 active:translate-y-[2px] active:border-b-2 shadow-hard-sm active:shadow-hard-xs"
                   >
                     Start free
                   </Link>
                   <Link
                     href="/login"
-                    className="rounded-2xl border-2 border-b-4 border-[#4B4478] bg-[#3E3768] px-6 py-3 text-base font-extrabold text-[#EDEAFF] transition-all hover:bg-[#474071] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 active:translate-y-[2px] active:border-b-2"
+                    className="rounded-2xl border-2 border-b-4 border-[#4B4478] bg-[#3E3768] px-6 py-3 text-base font-extrabold text-[#EDEAFF] transition-all hover:bg-[#474071] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-300/40 active:translate-y-[2px] active:border-b-2 shadow-hard-sm active:shadow-hard-xs"
                   >
                     Log in
                   </Link>
@@ -305,7 +305,7 @@ export default function HomeClient({
         </p>
         <Link
           href={authenticated ? "/jobs" : "/register"}
-          className="mt-6 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/40 active:translate-y-[2px] active:border-b-2"
+          className="mt-6 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-6 py-3 text-base font-extrabold text-amber-950 transition-all hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-amber-500/40 active:translate-y-[2px] active:border-b-2 shadow-hard-sm active:shadow-hard-xs"
         >
           {authenticated ? "Go to my jobs →" : "Create my account"}
         </Link>

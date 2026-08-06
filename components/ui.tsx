@@ -62,8 +62,9 @@ export function Button({
     <button
       {...props}
       className={`cursor-pointer rounded-2xl border-2 border-b-4 px-4 py-2 text-sm font-extrabold
-        transition-all active:border-b-2 active:translate-y-[2px] disabled:cursor-not-allowed
-        disabled:active:translate-y-0 disabled:active:border-b-4 ${styles} ${props.className ?? ""}`}
+        shadow-hard-sm transition-all active:border-b-2 active:translate-y-[2px] active:shadow-hard-xs
+        disabled:cursor-not-allowed disabled:active:translate-y-0 disabled:active:border-b-4
+        disabled:active:shadow-hard-sm ${styles} ${props.className ?? ""}`}
     />
   );
 }

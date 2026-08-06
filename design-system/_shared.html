@@ -1,0 +1,42 @@
+<!-- Shared head fragment reused by every card. Not a card itself (no @dsCard marker).
+     Copy the <head> block into each preview so it renders standalone in Claude Design. -->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Nunito:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Nunito', 'system-ui', 'sans-serif'],
+            display: ['"Bricolage Grotesque"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            cream: '#FFF8ED',
+            ink: '#292524',
+            grape: {
+              50: '#f3f2f8', 100: '#e6e4f1', 200: '#cdc9e3', 300: '#a79fce',
+              400: '#7d72b3', 500: '#5d5197', 600: '#4a3f7b', 700: '#3b3364',
+              800: '#2f294f', 900: '#241f3c',
+            },
+          },
+          boxShadow: {
+            hard: '4px 4px 0 0 rgb(41 37 36 / 0.9)',
+            'hard-sm': '3px 3px 0 0 rgb(41 37 36 / 0.9)',
+            'hard-xs': '1px 1px 0 0 rgb(41 37 36 / 0.9)',
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Nunito', system-ui, sans-serif; background: #FFF8ED; color: #292524; }
+    h1,h2,h3,h4,h5,h6 { font-family: '"Bricolage Grotesque"', 'Nunito', sans-serif; }
+  </style>
+</head>

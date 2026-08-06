@@ -1,0 +1,59 @@
+<!-- @dsCard group="Components" name="Forms" subtitle="Inputs, tag-input chips, toggle, alerts — the calm in-app surfaces" -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Nunito', system-ui, sans-serif; background: #FFF8ED; color: #292524; }
+    h1 { font-family: 'Bricolage Grotesque', sans-serif; }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-2xl font-extrabold tracking-tight">Forms</h1>
+  <p class="mt-1 text-sm font-semibold text-stone-500">In-app surfaces stay quiet and legible — used under stress.</p>
+
+  <div class="mt-6 grid gap-6 sm:grid-cols-2">
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-stone-400">Text input</p>
+      <label class="mt-2 block text-sm font-bold text-stone-700">Email</label>
+      <input class="mt-1 w-full rounded-xl border-2 border-stone-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-amber-400" placeholder="you@work.com" value="jobs@roleowl.org" />
+      <label class="mt-3 block text-sm font-bold text-stone-700">Focused</label>
+      <input class="mt-1 w-full rounded-xl border-2 border-amber-400 bg-white px-3 py-2 text-sm font-semibold outline-none ring-4 ring-amber-300/50" value="Product Designer" />
+      <label class="mt-3 block text-sm font-bold text-rose-600">Error</label>
+      <input class="mt-1 w-full rounded-xl border-2 border-rose-400 bg-white px-3 py-2 text-sm font-semibold outline-none" value="not-an-email" />
+      <p class="mt-1 text-xs font-bold text-rose-600">Enter a valid email.</p>
+    </div>
+
+    <div>
+      <p class="text-xs font-extrabold uppercase tracking-widest text-stone-400">Tag input</p>
+      <div class="mt-2 flex flex-wrap gap-2 rounded-xl border-2 border-stone-300 bg-white p-2">
+        <span class="inline-flex items-center gap-1 rounded-xl border-2 border-stone-800/90 bg-amber-200 px-3 py-1 text-sm font-extrabold text-amber-950" style="box-shadow:3px 3px 0 0 rgb(41 37 36 / .9)">Frontend <span class="text-stone-500">×</span></span>
+        <span class="inline-flex items-center gap-1 rounded-xl border-2 border-stone-800/90 bg-amber-200 px-3 py-1 text-sm font-extrabold text-amber-950" style="box-shadow:3px 3px 0 0 rgb(41 37 36 / .9)">Remote <span class="text-stone-500">×</span></span>
+        <input class="flex-1 min-w-24 bg-transparent px-1 py-1 text-sm font-semibold outline-none" placeholder="Add a role…" />
+      </div>
+      <p class="mt-1 text-xs font-semibold text-stone-400">Chips pop in on add. Suggestions mirror the backend's configured roles/locations.</p>
+
+      <p class="mt-4 text-xs font-extrabold uppercase tracking-widest text-stone-400">Toggle</p>
+      <div class="mt-2 flex items-center gap-3">
+        <span class="inline-flex h-7 w-12 items-center rounded-full bg-amber-400 p-1"><span class="h-5 w-5 translate-x-5 rounded-full bg-white shadow transition-transform"></span></span>
+        <span class="text-sm font-bold text-stone-700">Daily email digest · on</span>
+      </div>
+      <div class="mt-2 flex items-center gap-3">
+        <span class="inline-flex h-7 w-12 items-center rounded-full bg-stone-300 p-1"><span class="h-5 w-5 rounded-full bg-white shadow"></span></span>
+        <span class="text-sm font-bold text-stone-400">off</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-7 text-xs font-extrabold uppercase tracking-widest text-stone-400">Alerts</p>
+  <div class="mt-3 grid gap-3 sm:grid-cols-3">
+    <div class="rounded-xl border-2 border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">✓ Preferences saved.</div>
+    <div class="rounded-xl border-2 border-amber-300 bg-amber-50 px-3 py-2 text-sm font-bold text-amber-800">Heads up — set preferences to unlock matches.</div>
+    <div class="rounded-xl border-2 border-rose-300 bg-rose-50 px-3 py-2 text-sm font-bold text-rose-700">Something went wrong. Try again.</div>
+  </div>
+</body>
+</html>

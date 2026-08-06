@@ -65,6 +65,18 @@ export interface Job {
    * then the frontend derives it from localStorage. OR-ed together in JobCard.
    */
   viewed?: boolean;
+  /**
+   * Per-user state from the backend (FRONTEND_HANDOFF.md). All optional so older
+   * responses still typecheck; the local flag stores (lib/jobFlags.ts) override
+   * these for optimistic toggling.
+   */
+  saved?: boolean;
+  applied?: boolean;
+  /**
+   * Lifecycle. Always ACTIVE on the feeds; may be CLOSED in the Saved/Applied
+   * lists — badge those rows as "no longer accepting applications".
+   */
+  status?: "ACTIVE" | "CLOSED";
 }
 
 export interface Page<T> {

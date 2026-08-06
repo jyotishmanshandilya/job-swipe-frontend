@@ -46,6 +46,7 @@ export default function Navbar() {
           {authenticated ? (
             <>
               <NavLink href="/jobs">Jobs</NavLink>
+              <NavLink href="/saved">My jobs</NavLink>
               <NavLink href="/settings">Settings</NavLink>
               <button
                 onClick={() => setConfirmLogout(true)}
@@ -87,7 +88,7 @@ export default function Navbar() {
               <NavLink href="/login">Log in</NavLink>
               <Link
                 href="/register"
-                className="ml-2 rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-1.5 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
+                className="ml-2 rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-1.5 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
               >
                 Sign up
               </Link>

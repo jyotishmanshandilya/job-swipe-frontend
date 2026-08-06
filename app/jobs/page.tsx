@@ -15,6 +15,99 @@ import type { Job, Page } from "@/lib/types";
 
 type Tab = "matched" | "all";
 
+/** Ephemeral Browse filters (URL-backed, never persisted to preferences). */
+interface Filters {
+  title: string;
+  location: string;
+  company: string;
+  workplaceType: string[]; // remote / hybrid / onsite (multi)
+  yoeMin: string; // kept as string so an empty input means "no constraint"
+  yoeMax: string;
+  since: "" | "24h" | "7d" | "30d";
+}
+/** The subset staged in inputs until the user hits Search. */
+type StagedFilters = Pick<
+  Filters,
+  "title" | "location" | "company" | "yoeMin" | "yoeMax"
+>;
+
+const EMPTY_FILTERS: Filters = {
+  title: "",
+  location: "",
+  company: "",
+  workplaceType: [],
+  yoeMin: "",
+  yoeMax: "",
+  since: "",
+};
+
+const WORKPLACE_OPTIONS = [
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "onsite", label: "On-site" },
+];
+const SINCE_OPTIONS = [
+  { value: "24h", label: "24h" },
+  { value: "7d", label: "7d" },
+  { value: "30d", label: "30d" },
+];
+
+function filtersFromParams(params: URLSearchParams): Filters {
+  const since = params.get("since") ?? "";
+  return {
+    title: params.get("title") ?? "",
+    location: params.get("location") ?? "",
+    company: params.get("company") ?? "",
+    workplaceType: params.getAll("workplaceType"),
+    yoeMin: params.get("yoeMin") ?? "",
+    yoeMax: params.get("yoeMax") ?? "",
+    since: (["24h", "7d", "30d"].includes(since) ? since : "") as Filters["since"],
+  };
+}
+
+/** Serializes filters back into the shareable URL (recency stays a preset). */
+function writeFiltersToParams(f: Filters, params: URLSearchParams) {
+  if (f.title) params.set("title", f.title);
+  if (f.location) params.set("location", f.location);
+  if (f.company) params.set("company", f.company);
+  for (const w of f.workplaceType) params.append("workplaceType", w);
+  if (f.yoeMin) params.set("yoeMin", f.yoeMin);
+  if (f.yoeMax) params.set("yoeMax", f.yoeMax);
+  if (f.since) params.set("since", f.since);
+}
+
+const SINCE_MS: Record<string, number> = {
+  "24h": 86_400_000,
+  "7d": 7 * 86_400_000,
+  "30d": 30 * 86_400_000,
+};
+
+/** Builds the GET /api/jobs request path, expanding `since` to firstSeenAfter. */
+function buildBrowsePath(page: number, f: Filters): string {
+  const params = new URLSearchParams({ page: String(page), size: "20" });
+  if (f.title) params.set("title", f.title);
+  if (f.location) params.set("location", f.location);
+  if (f.company) params.set("company", f.company);
+  for (const w of f.workplaceType) params.append("workplaceType", w);
+  if (f.yoeMin) params.set("yoeMin", f.yoeMin);
+  if (f.yoeMax) params.set("yoeMax", f.yoeMax);
+  const ms = SINCE_MS[f.since];
+  if (ms) params.set("firstSeenAfter", new Date(Date.now() - ms).toISOString());
+  return `/api/jobs?${params}`;
+}
+
+function isAnyFilterActive(f: Filters): boolean {
+  return Boolean(
+    f.title ||
+      f.location ||
+      f.company ||
+      f.workplaceType.length ||
+      f.yoeMin ||
+      f.yoeMax ||
+      f.since,
+  );
+}
+
 /** Outcome of one fetch, tagged with the query it answered. */
 interface LoadResult {
   key: string;
@@ -39,17 +132,47 @@ function JobsContent() {
   const [result, setResult] = useState<LoadResult | null>(null);
   const [view, setView] = useJobView();
 
-  // Browse filters (applied on submit, not on each keystroke)
-  const [titleFilter, setTitleFilter] = useState(searchParams.get("title") ?? "");
-  const [locationFilter, setLocationFilter] = useState(
-    searchParams.get("location") ?? "",
-  );
-  const [applied, setApplied] = useState({
-    title: searchParams.get("title") ?? "",
-    location: searchParams.get("location") ?? "",
+  // Browse filters. Text/number fields commit on submit; workplace + recency
+  // toggles commit immediately. All ephemeral — they live in the URL only, never
+  // in saved preferences (the whole point is refining without disturbing "For
+  // you"). `applied` is the committed truth used for fetch + URL; `staged` holds
+  // the text/number inputs until Search.
+  const [applied, setApplied] = useState<Filters>(() => filtersFromParams(searchParams));
+  const [staged, setStaged] = useState<StagedFilters>(() => {
+    const f = filtersFromParams(searchParams);
+    return {
+      title: f.title,
+      location: f.location,
+      company: f.company,
+      yoeMin: f.yoeMin,
+      yoeMax: f.yoeMax,
+    };
   });
 
-  const queryKey = `${tab}|${page}|${applied.title}|${applied.location}`;
+  const filterKey = JSON.stringify(applied);
+  const queryKey = tab === "matched" ? `matched|${page}` : `all|${page}|${filterKey}`;
+
+  const commitStaged = () => {
+    setPage(0);
+    setApplied((prev) => ({ ...prev, ...staged }));
+  };
+  // Immediate-apply helper for the toggle controls.
+  const patchApplied = (patch: Partial<Filters>) => {
+    setPage(0);
+    setApplied((prev) => ({ ...prev, ...patch }));
+  };
+  const toggleWorkplace = (w: string) =>
+    patchApplied({
+      workplaceType: applied.workplaceType.includes(w)
+        ? applied.workplaceType.filter((x) => x !== w)
+        : [...applied.workplaceType, w],
+    });
+  const clearFilters = () => {
+    setPage(0);
+    setApplied(EMPTY_FILTERS);
+    setStaged({ title: "", location: "", company: "", yoeMin: "", yoeMax: "" });
+  };
+  const hasActiveFilters = isAnyFilterActive(applied);
 
   // Hydrate the local "viewed" set from the server once on mount, so a fresh
   // device shows previously-viewed badges. Best-effort: a failure just leaves
@@ -68,10 +191,11 @@ function JobsContent() {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    if (tab === "all") params.set("tab", "all");
+    if (tab === "all") {
+      params.set("tab", "all");
+      writeFiltersToParams(applied, params);
+    }
     if (page > 0) params.set("page", String(page));
-    if (applied.title) params.set("title", applied.title);
-    if (applied.location) params.set("location", applied.location);
     const qs = params.toString();
     router.replace(qs ? `/jobs?${qs}` : "/jobs", { scroll: false });
   }, [tab, page, applied, router]);
@@ -86,15 +210,10 @@ function JobsContent() {
         noPreferences: false,
       };
       try {
-        let path: string;
-        if (tab === "matched") {
-          path = `/api/jobs/matched?page=${page}&size=20`;
-        } else {
-          const params = new URLSearchParams({ page: String(page), size: "20" });
-          if (applied.title) params.set("title", applied.title);
-          if (applied.location) params.set("location", applied.location);
-          path = `/api/jobs?${params}`;
-        }
+        const path =
+          tab === "matched"
+            ? `/api/jobs/matched?page=${page}&size=20`
+            : buildBrowsePath(page, applied);
         next.data = await apiFetch<Page<Job>>(path);
       } catch (err) {
         if (err instanceof ApiRequestError && err.status === 404 && tab === "matched") {
@@ -215,28 +334,122 @@ function JobsContent() {
       </div>
 
       {tab === "all" && (
-        <form
-          className="mt-4 flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setPage(0);
-            setApplied({ title: titleFilter, location: locationFilter });
-          }}
-        >
-          <Input
-            placeholder="Title contains…"
-            value={titleFilter}
-            onChange={(e) => setTitleFilter(e.target.value)}
-          />
-          <Input
-            placeholder="Location contains…"
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
-          />
-          <Button type="submit" variant="secondary">
-            Search
-          </Button>
-        </form>
+        <div className="mt-4 rounded-2xl border-2 border-stone-200 bg-white p-3">
+          <form
+            className="flex flex-col gap-2 sm:flex-row"
+            onSubmit={(e) => {
+              e.preventDefault();
+              commitStaged();
+            }}
+          >
+            <Input
+              placeholder="Title contains…"
+              value={staged.title}
+              onChange={(e) => setStaged({ ...staged, title: e.target.value })}
+            />
+            <Input
+              placeholder="Company contains…"
+              value={staged.company}
+              onChange={(e) => setStaged({ ...staged, company: e.target.value })}
+            />
+            <Input
+              placeholder="Location contains…"
+              value={staged.location}
+              onChange={(e) => setStaged({ ...staged, location: e.target.value })}
+            />
+            <Button type="submit" variant="secondary" className="shrink-0">
+              Search
+            </Button>
+          </form>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* Workplace type — multi-select, applies immediately */}
+            <div className="flex items-center gap-1.5">
+              {WORKPLACE_OPTIONS.map((w) => {
+                const on = applied.workplaceType.includes(w.value);
+                return (
+                  <button
+                    key={w.value}
+                    type="button"
+                    onClick={() => toggleWorkplace(w.value)}
+                    aria-pressed={on}
+                    className={`cursor-pointer rounded-full border-2 px-3 py-1 text-xs font-extrabold transition-colors ${
+                      on
+                        ? "border-amber-500 bg-amber-100 text-amber-800"
+                        : "border-stone-200 bg-white text-stone-500 hover:border-stone-300"
+                    }`}
+                  >
+                    {w.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Years of experience — commits on Search with the text fields */}
+            <form
+              className="flex items-center gap-1.5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                commitStaged();
+              }}
+            >
+              <span className="text-xs font-bold text-stone-500">YoE</span>
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder="min"
+                value={staged.yoeMin}
+                onChange={(e) => setStaged({ ...staged, yoeMin: e.target.value })}
+                className="w-16 rounded-lg border-2 border-stone-200 bg-white px-2 py-1 text-xs font-bold outline-none focus:border-amber-400"
+              />
+              <span className="text-xs font-bold text-stone-400">–</span>
+              <input
+                type="number"
+                min={0}
+                inputMode="numeric"
+                placeholder="max"
+                value={staged.yoeMax}
+                onChange={(e) => setStaged({ ...staged, yoeMax: e.target.value })}
+                className="w-16 rounded-lg border-2 border-stone-200 bg-white px-2 py-1 text-xs font-bold outline-none focus:border-amber-400"
+              />
+            </form>
+
+            {/* Recency — single-select presets, applies immediately */}
+            <div className="flex items-center gap-1.5">
+              {SINCE_OPTIONS.map((s) => {
+                const on = applied.since === s.value;
+                return (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() =>
+                      patchApplied({ since: on ? "" : (s.value as Filters["since"]) })
+                    }
+                    aria-pressed={on}
+                    className={`cursor-pointer rounded-full border-2 px-3 py-1 text-xs font-extrabold transition-colors ${
+                      on
+                        ? "border-teal-500 bg-teal-100 text-teal-800"
+                        : "border-stone-200 bg-white text-stone-500 hover:border-stone-300"
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="cursor-pointer text-xs font-extrabold text-stone-400 underline decoration-dotted underline-offset-2 hover:text-stone-600"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        </div>
       )}
 
       <div className="mt-6">
@@ -256,7 +469,7 @@ function JobsContent() {
             </p>
             <Link
               href="/onboarding"
-              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2"
+              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
             >
               Set preferences
             </Link>
@@ -342,7 +555,7 @@ function JobsContent() {
             type="button"
             onClick={performUndo}
             disabled={undoBusy}
-            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 disabled:bg-amber-200"
+            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs disabled:bg-amber-200"
           >
             {undoBusy ? "Undoing…" : "Undo"}
           </button>

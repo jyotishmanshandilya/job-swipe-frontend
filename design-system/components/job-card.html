@@ -1,0 +1,64 @@
+<!-- @dsCard group="Components" name="Job card" subtitle="Feed unit — wrapping meta chips, 'new tonight' + 'Viewed' stickers, YoE provenance" -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Nunito', system-ui, sans-serif; background: #FFF8ED; color: #292524; }
+    h1 { font-family: 'Bricolage Grotesque', sans-serif; }
+    .hard { box-shadow: 4px 4px 0 0 rgb(41 37 36 / .9); }
+    .chip { border: 2px solid #e7e5e4; border-radius: .6rem; padding: .15rem .55rem; font-size: .78rem; font-weight: 700; color: #57534e; background:#fafaf9; }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-2xl font-extrabold tracking-tight">Job card</h1>
+  <p class="mt-1 text-sm font-semibold text-stone-500">Mobile-first. Metadata wraps into chips — never truncate. The View button is the only tap action.</p>
+
+  <div class="mt-6 grid gap-5 sm:grid-cols-2">
+    <!-- Default / new -->
+    <div class="hard rounded-3xl border-2 border-stone-800/90 bg-white p-5">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-grape-100 text-sm font-extrabold" style="background:#e6e4f1;color:#3b3364">L</div>
+          <div>
+            <p class="text-sm font-extrabold leading-tight">Senior Frontend Engineer</p>
+            <p class="text-xs font-bold text-stone-500">Linear · Greenhouse</p>
+          </div>
+        </div>
+        <span class="shrink-0 rotate-2 rounded-lg border-2 border-stone-800/90 bg-amber-300 px-2 py-0.5 text-[11px] font-extrabold text-amber-950" style="box-shadow:3px 3px 0 0 rgb(41 37 36 / .9)">new tonight ✦</span>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        <span class="chip">🌍 Remote · EU</span>
+        <span class="chip">Full-time</span>
+        <span class="chip" style="background:#f3f2f8;color:#4a3f7b;border-color:#cdc9e3">3–5 yrs · from JD</span>
+      </div>
+      <button class="mt-4 w-full rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 py-2 text-sm font-extrabold text-amber-950" style="box-shadow:3px 3px 0 0 rgb(41 37 36 / .9)">View role →</button>
+    </div>
+
+    <!-- Viewed -->
+    <div class="hard rounded-3xl border-2 border-stone-800/90 bg-white p-5 opacity-90">
+      <div class="flex items-start justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <div class="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-extrabold" style="background:#e6e4f1;color:#3b3364">R</div>
+          <div>
+            <p class="text-sm font-extrabold leading-tight text-stone-600">Product Designer</p>
+            <p class="text-xs font-bold text-stone-400">Ramp · Lever</p>
+          </div>
+        </div>
+        <span class="inline-flex shrink-0 items-center gap-1 rounded-lg bg-emerald-100 px-2 py-0.5 text-[11px] font-extrabold text-emerald-700">✓ Viewed</span>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        <span class="chip">🌍 New York · Hybrid</span>
+        <span class="chip">Full-time</span>
+      </div>
+      <button class="mt-4 w-full rounded-2xl border-2 border-stone-300 bg-white py-2 text-sm font-extrabold text-stone-600">View again →</button>
+    </div>
+  </div>
+
+  <p class="mt-4 text-xs font-semibold text-stone-400">List mode: same content, single column, tighter vertical rhythm (space-y-3), chips inline.</p>
+</body>
+</html>
