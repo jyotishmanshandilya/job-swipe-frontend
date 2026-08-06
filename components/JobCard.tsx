@@ -1,7 +1,14 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import type { Job } from "@/lib/types";
-import { markJobViewedRemote } from "@/lib/api";
+import {
+  markApplied,
+  markJobViewedRemote,
+  saveJob,
+  unsaveJob,
+} from "@/lib/api";
+import { appliedFlags, savedFlags } from "@/lib/jobFlags";
 import { markJobViewed, useViewedJobs } from "@/lib/viewedJobs";
 import ReportJobButton from "./ReportJobButton";
 
@@ -149,6 +156,88 @@ function ViewedBadge({ compact = false }: { compact?: boolean }) {
   );
 }
 
+/** Bookmark toggle. Filled amber when saved; outline otherwise. */
+function SaveButton({
+  saved,
+  onToggle,
+  compact = false,
+}: {
+  saved: boolean;
+  onToggle: () => void;
+  compact?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={saved}
+      aria-label={saved ? "Remove bookmark" : "Save job"}
+      title={saved ? "Saved" : "Save"}
+      className={`inline-flex shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all active:translate-y-[2px] active:border-b-2 ${
+        saved
+          ? "border-amber-600 bg-amber-100 text-amber-700 hover:bg-amber-200"
+          : "border-stone-300 bg-white text-stone-500 hover:bg-stone-50"
+      } ${compact ? "px-2.5 py-1" : "px-3 py-1.5"}`}
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill={saved ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1z" />
+      </svg>
+    </button>
+  );
+}
+
+/** Small "Applied" badge, green to read as a positive endpoint. */
+function AppliedBadge({ compact = false }: { compact?: boolean }) {
+  const check = (
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  );
+  if (compact) {
+    return (
+      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-700">
+        {check}
+        Applied
+      </span>
+    );
+  }
+  return (
+    <span className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg border-2 border-emerald-700/80 bg-emerald-200 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-800">
+      {check}
+      Applied
+    </span>
+  );
+}
+
+/** Lifecycle badge for CLOSED postings in the Saved/Applied lists. */
+function ClosedBadge() {
+  return (
+    <span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-stone-300 bg-stone-100 px-2 py-0.5 text-[11px] font-bold text-stone-500">
+      No longer accepting applications
+    </span>
+  );
+}
+
 function Avatar({ job }: { job: Job }) {
   return (
     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-lg font-extrabold uppercase text-amber-800">
@@ -169,64 +258,149 @@ export default function JobCard({
 }) {
   const seen = timeAgo(job.firstSeenAt);
   const isNew = seen === "today" || seen === "yesterday";
+  const isClosed = job.status === "CLOSED";
 
   // Server-truth `viewed` (once the backend surfaces it) OR-ed with the local
   // record, so a just-clicked card shows the badge instantly.
   const viewed = useViewedJobs().has(job.id) || Boolean(job.viewed);
-  // Local-first for an instant badge; the remote ping is best-effort and
-  // durable (persists the view server-side so it syncs to other devices).
+
+  // Save / Applied: the local override map wins over the DTO so an optimistic
+  // toggle reads back instantly; falls through to the server truth otherwise.
+  const savedOverride = savedFlags.useFlags().get(job.id);
+  const saved = savedOverride ?? Boolean(job.saved);
+  const appliedOverride = appliedFlags.useFlags().get(job.id);
+  const applied = appliedOverride ?? Boolean(job.applied);
+
+  const toggleSaved = () => {
+    const next = !saved;
+    savedFlags.set(job.id, next); // optimistic
+    (next ? saveJob(job.id) : unsaveJob(job.id)).catch(() =>
+      savedFlags.set(job.id, !next), // revert on failure
+    );
+  };
+
+  const confirmApplied = () => {
+    appliedFlags.set(job.id, true); // optimistic
+    markApplied(job.id).catch(() => {}); // best-effort; keep the optimistic mark
+    setApplyPrompt(false);
+  };
+
+  // "Did you apply?" prompt: after View opens the posting in a new tab, our tab
+  // goes hidden; when it becomes visible again we ask once (unless already
+  // applied). A ref carries the "pending" flag so the visibility listener,
+  // registered once, reads the latest intent without re-subscribing.
+  const [applyPrompt, setApplyPrompt] = useState(false);
+  const pendingApply = useRef(false);
+  const appliedRef = useRef(applied);
+  useEffect(() => {
+    appliedRef.current = applied;
+  }, [applied]);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (
+        document.visibilityState === "visible" &&
+        pendingApply.current &&
+        !appliedRef.current
+      ) {
+        pendingApply.current = false;
+        setApplyPrompt(true);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, []);
+
+  // Local-first for an instant Viewed badge; the remote ping is best-effort and
+  // durable. Arm the apply prompt only when not already applied (don't re-nag).
   const onView = () => {
     markJobViewed(job.id);
     markJobViewedRemote(job.id);
+    if (!appliedRef.current) pendingApply.current = true;
   };
+
+  // Inline confirm bar shared by both layouts.
+  const applyPromptBar = applyPrompt ? (
+    <div className="mt-3 flex items-center gap-2 rounded-xl border-2 border-emerald-200 bg-emerald-50 px-3 py-2">
+      <p className="min-w-0 flex-1 truncate text-sm font-bold text-emerald-900">
+        Did you apply?
+      </p>
+      <button
+        type="button"
+        onClick={confirmApplied}
+        className="shrink-0 rounded-lg border-2 border-b-4 border-emerald-700 bg-emerald-500 px-3 py-0.5 text-sm font-extrabold text-white transition-all active:translate-y-[2px] active:border-b-2 hover:bg-emerald-400"
+      >
+        Yes
+      </button>
+      <button
+        type="button"
+        onClick={() => setApplyPrompt(false)}
+        aria-label="Dismiss"
+        className="shrink-0 text-lg font-bold text-emerald-700/60 hover:text-emerald-900"
+      >
+        ×
+      </button>
+    </div>
+  ) : null;
 
   if (mode === "list") {
     // Dense row: title · company · one key chip + View. Truncation is fine here;
     // the full detail lives in card mode.
     return (
-      <div className="flex items-center gap-3 rounded-xl border-2 border-stone-200 bg-white px-3.5 py-2.5 transition-colors hover:border-amber-300">
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm">
-            <span className="font-extrabold text-stone-800">{job.jobTitle}</span>
-            {job.companyName && (
-              <span className="font-semibold capitalize text-stone-500">
-                {" "}
-                · {job.companyName}
+      <div>
+        <div className="flex items-center gap-3 rounded-xl border-2 border-stone-200 bg-white px-3.5 py-2.5 transition-colors hover:border-amber-300">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm">
+              <span className="font-extrabold text-stone-800">{job.jobTitle}</span>
+              {job.companyName && (
+                <span className="font-semibold capitalize text-stone-500">
+                  {" "}
+                  · {job.companyName}
+                </span>
+              )}
+            </p>
+            {isClosed && (
+              <span className="mt-0.5 block text-[11px] font-bold text-stone-400">
+                No longer accepting applications
               </span>
             )}
-          </p>
-        </div>
-        {viewed ? (
-          <ViewedBadge compact />
-        ) : (
-          isNew && (
-            <span className="hidden shrink-0 rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-700 sm:inline">
-              New
-            </span>
-          )
-        )}
-        <span className="hidden shrink-0 sm:inline-flex">
-          <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
-        </span>
-        {onReported && (
+          </div>
+          {applied ? (
+            <AppliedBadge compact />
+          ) : viewed ? (
+            <ViewedBadge compact />
+          ) : (
+            isNew && (
+              <span className="hidden shrink-0 rounded-full bg-teal-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-700 sm:inline">
+                New
+              </span>
+            )
+          )}
           <span className="hidden shrink-0 sm:inline-flex">
-            <ReportJobButton job={job} onReported={onReported} />
+            <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
           </span>
-        )}
-        <ViewLink
-          url={job.applicationUrl}
-          onView={onView}
-          viewed={viewed}
-          compact
-        />
+          {onReported && (
+            <span className="hidden shrink-0 sm:inline-flex">
+              <ReportJobButton job={job} onReported={onReported} />
+            </span>
+          )}
+          <SaveButton saved={saved} onToggle={toggleSaved} compact />
+          <ViewLink
+            url={job.applicationUrl}
+            onView={onView}
+            viewed={viewed}
+            compact
+          />
+        </div>
+        {applyPromptBar}
       </div>
     );
   }
 
   return (
     <div className="shadow-hard-sm relative flex h-full flex-col rounded-2xl border-2 border-stone-800/90 bg-white p-4 transition-transform hover:-translate-y-0.5">
-      {viewed && <ViewedBadge />}
-      {isNew && (
+      {applied ? <AppliedBadge /> : viewed && <ViewedBadge />}
+      {isNew && !applied && (
         <span className="absolute -top-2.5 right-4 rotate-2 rounded-lg border-2 border-stone-800/90 bg-teal-300 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-950">
           new tonight
         </span>
@@ -249,6 +423,7 @@ export default function JobCard({
         <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
         {job.workplaceType && <Chip icon="home">{job.workplaceType}</Chip>}
         <Chip icon="briefcase">{yoeLabel(job)}</Chip>
+        {isClosed && <ClosedBadge />}
       </div>
       <div className="mt-4 flex flex-1 items-end justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -262,8 +437,12 @@ export default function JobCard({
           </p>
           {onReported && <ReportJobButton job={job} onReported={onReported} />}
         </div>
-        <ViewLink url={job.applicationUrl} onView={onView} viewed={viewed} />
+        <div className="flex shrink-0 items-center gap-2">
+          <SaveButton saved={saved} onToggle={toggleSaved} />
+          <ViewLink url={job.applicationUrl} onView={onView} viewed={viewed} />
+        </div>
       </div>
+      {applyPromptBar}
     </div>
   );
 }

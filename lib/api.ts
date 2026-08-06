@@ -1,9 +1,11 @@
 import type {
   ApiError,
   AuthResponse,
+  Job,
   JobReport,
   JobStats,
   MyJobReport,
+  Page,
   ReportReason,
 } from "./types";
 
@@ -194,6 +196,47 @@ export function markJobViewedRemote(jobId: string): void {
  */
 export function getMyViews(): Promise<{ jobIds: string[] }> {
   return apiFetch<{ jobIds: string[] }>("/api/jobs/views/mine");
+}
+
+/**
+ * Toggle Save / Applied on a job. Best-effort like {@link markJobViewedRemote}:
+ * a bare authed fetch with no 401-refresh/redirect, because these fire from a
+ * card tap and must never bounce the user mid-interaction. Unlike the view ping
+ * they return the promise so the caller can revert its optimistic state on
+ * failure (it swallows nothing — rejection is meaningful, just non-fatal).
+ */
+function jobAction(
+  jobId: string,
+  segment: "save" | "applied",
+  method: "POST" | "DELETE",
+): Promise<void> {
+  const token = getToken();
+  if (!token) return Promise.reject(new Error("Not authenticated"));
+  return fetch(`${API_URL}/api/jobs/${jobId}/${segment}`, {
+    method,
+    headers: { Authorization: `Bearer ${token}` },
+  }).then((res) => {
+    if (!res.ok) throw new ApiRequestError(res.status, `Request failed (${res.status})`);
+  });
+}
+
+/** Bookmark a job (idempotent). */
+export const saveJob = (jobId: string) => jobAction(jobId, "save", "POST");
+/** Remove a bookmark (idempotent). */
+export const unsaveJob = (jobId: string) => jobAction(jobId, "save", "DELETE");
+/** Mark a job applied (idempotent). */
+export const markApplied = (jobId: string) => jobAction(jobId, "applied", "POST");
+/** Un-mark a job applied (idempotent). */
+export const unmarkApplied = (jobId: string) => jobAction(jobId, "applied", "DELETE");
+
+/** Bookmarked jobs, newest-saved first; includes CLOSED postings. */
+export function getSavedJobs(page = 0, size = 20): Promise<Page<Job>> {
+  return apiFetch<Page<Job>>(`/api/jobs/saved?page=${page}&size=${size}`);
+}
+
+/** Applied-to jobs, newest-applied first; includes CLOSED postings. */
+export function getAppliedJobs(page = 0, size = 20): Promise<Page<Job>> {
+  return apiFetch<Page<Job>>(`/api/jobs/applied?page=${page}&size=${size}`);
 }
 
 /** Permanently deletes the account (password re-confirmation required). */

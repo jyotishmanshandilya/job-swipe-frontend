@@ -46,6 +46,7 @@ export default function Navbar() {
           {authenticated ? (
             <>
               <NavLink href="/jobs">Jobs</NavLink>
+              <NavLink href="/saved">My jobs</NavLink>
               <NavLink href="/settings">Settings</NavLink>
               <button
                 onClick={() => setConfirmLogout(true)}
