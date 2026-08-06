@@ -1,0 +1,55 @@
+<!-- @dsCard group="Components" name="Buttons" subtitle="Pressable: border-b-4 collapse + hard shadow that presses in — primary / secondary / grape / danger" -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Nunito', system-ui, sans-serif; background: #FFF8ED; color: #292524; }
+    .grape-600{background:#4a3f7b}.grape-500{background:#5d5197}.grape-800{border-color:#2f294f}
+    /* Pressable button: chunky bottom border collapses and the hard shadow tightens on press. */
+    .btn {
+      border-width: 2px; border-bottom-width: 4px; border-radius: 1rem;
+      padding: .5rem 1rem; font-weight: 800; font-size: .875rem; cursor: pointer;
+      box-shadow: 3px 3px 0 0 rgb(41 37 36 / .9);
+      transition: all .12s ease;
+    }
+    .btn:active { border-bottom-width: 2px; transform: translateY(2px); box-shadow: 1px 1px 0 0 rgb(41 37 36 / .9); }
+    .btn:disabled { cursor: not-allowed; opacity: .6; }
+  </style>
+</head>
+<body class="p-8">
+  <h1 class="text-2xl font-extrabold tracking-tight" style="font-family:'Bricolage Grotesque',sans-serif">Buttons</h1>
+  <p class="mt-1 text-sm font-semibold text-stone-500">Press one — the bottom border collapses, it nudges down 2px, and the shadow tightens to 1px. It feels physical.</p>
+
+  <p class="mt-6 text-xs font-extrabold uppercase tracking-widest text-stone-400">Variants</p>
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706">Start free</button>
+    <button class="btn bg-white text-stone-700" style="border-color:#d6d3d1">Browse all</button>
+    <button class="btn grape-600 text-white grape-800">Get the digest</button>
+    <button class="btn bg-rose-500 text-white" style="border-color:#be123c">Report job</button>
+  </div>
+
+  <p class="mt-7 text-xs font-extrabold uppercase tracking-widest text-stone-400">States</p>
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706">Default</button>
+    <button class="btn bg-amber-300 text-amber-950" style="border-color:#d97706">Hover</button>
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706;border-bottom-width:2px;transform:translateY(2px);box-shadow:1px 1px 0 0 rgb(41 37 36 / .9)">Pressed</button>
+    <button class="btn bg-amber-200 text-amber-700" style="border-color:#fcd34d" disabled>Disabled</button>
+  </div>
+
+  <p class="mt-7 text-xs font-extrabold uppercase tracking-widest text-stone-400">Sizes</p>
+  <div class="mt-3 flex flex-wrap items-center gap-3">
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706;padding:.25rem .75rem;font-size:.8rem">Small</button>
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706">Medium</button>
+    <button class="btn bg-amber-400 text-amber-950" style="border-color:#d97706;padding:.75rem 1.5rem;font-size:1rem">Large</button>
+  </div>
+
+  <p class="mt-6 rounded-xl bg-stone-100 p-3 text-xs font-semibold text-stone-500">
+    Tailwind: <code>rounded-2xl border-2 border-b-4 shadow-hard-sm active:border-b-2 active:translate-y-[2px] active:shadow-hard-xs</code>
+  </p>
+</body>
+</html>
