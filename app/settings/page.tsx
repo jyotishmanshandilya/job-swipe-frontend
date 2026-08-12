@@ -74,15 +74,11 @@ function ProfileSection() {
   return (
     <form onSubmit={submit} className="space-y-4">
       {status && <Alert kind={status.kind}>{status.msg}</Alert>}
+      <div>
+        <Label>Email</Label>
+        <Input value={profile.email} disabled />
+      </div>
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label>Username</Label>
-          <Input value={profile.username} disabled />
-        </div>
-        <div>
-          <Label>Email</Label>
-          <Input value={profile.email} disabled />
-        </div>
         <div>
           <Label htmlFor="firstName">First name</Label>
           <Input id="firstName" value={form.firstName} onChange={set("firstName")} />

@@ -5,7 +5,6 @@ export interface AuthResponse {
 }
 
 export interface Profile {
-  username: string;
   email: string;
   firstName: string | null;
   lastName: string | null;

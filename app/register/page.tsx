@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { ApiRequestError } from "@/lib/api";
 import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
 
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    username: "",
     email: "",
     password: "",
   });
@@ -46,6 +46,25 @@ export default function RegisterPage() {
     }
   };
 
+  // Google both registers and signs in — the backend auto-provisions the account.
+  const handleGoogle = useCallback(
+    async (idToken: string) => {
+      setError(null);
+      setBusy(true);
+      try {
+        await loginWithGoogle(idToken);
+        router.push("/onboarding");
+      } catch (err) {
+        setError(
+          err instanceof ApiRequestError ? err.message : "Google sign-in failed",
+        );
+      } finally {
+        setBusy(false);
+      }
+    },
+    [loginWithGoogle, router],
+  );
+
   const fieldError = (name: string) =>
     fieldErrors[name] && (
       <p className="mt-1 text-xs font-bold text-rose-600">{fieldErrors[name]}</p>
@@ -68,11 +87,6 @@ export default function RegisterPage() {
             <Label htmlFor="lastName">Last name</Label>
             <Input id="lastName" value={form.lastName} onChange={set("lastName")} />
           </div>
-        </div>
-        <div>
-          <Label htmlFor="username">Username</Label>
-          <Input id="username" value={form.username} onChange={set("username")} required />
-          {fieldError("username")}
         </div>
         <div>
           <Label htmlFor="email">Email</Label>
@@ -104,6 +118,14 @@ export default function RegisterPage() {
           {busy ? "Creating account…" : "Sign up free"}
         </Button>
       </form>
+
+      <div className="my-5 flex items-center gap-3 text-sm font-bold text-amber-800/60">
+        <span className="h-px flex-1 bg-amber-900/15" />
+        or
+        <span className="h-px flex-1 bg-amber-900/15" />
+      </div>
+
+      <GoogleSignInButton onCredential={handleGoogle} onError={setError} />
 
       <p className="mt-4 text-center text-sm font-semibold text-stone-500">
         Already have an account?{" "}

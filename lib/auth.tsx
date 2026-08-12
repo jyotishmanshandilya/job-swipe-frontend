@@ -21,14 +21,14 @@ import type { AuthResponse } from "./types";
 interface AuthState {
   /** null = still checking localStorage */
   authenticated: boolean | null;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   register: (data: {
-    username: string;
     email: string;
     password: string;
     firstName: string;
     lastName: string;
   }) => Promise<void>;
+  loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -45,17 +45,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
   const router = useRouter();
 
-  const login = useCallback(async (username: string, password: string) => {
+  const login = useCallback(async (email: string, password: string) => {
     const res = await apiFetch<AuthResponse>("/api/auth/authenticate", {
       method: "POST",
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
     setTokens(res.token, res.refreshToken);
   }, []);
 
   const register = useCallback(
     async (data: {
-      username: string;
       email: string;
       password: string;
       firstName: string;
@@ -69,6 +68,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
     [],
   );
+
+  const loginWithGoogle = useCallback(async (idToken: string) => {
+    const res = await apiFetch<AuthResponse>("/api/auth/google", {
+      method: "POST",
+      body: JSON.stringify({ idToken }),
+    });
+    setTokens(res.token, res.refreshToken);
+  }, []);
 
   const logout = useCallback(() => {
     // Best-effort server-side revocation; local logout regardless.
@@ -85,7 +92,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [router]);
 
   return (
-    <AuthContext.Provider value={{ authenticated, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ authenticated, login, register, loginWithGoogle, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
