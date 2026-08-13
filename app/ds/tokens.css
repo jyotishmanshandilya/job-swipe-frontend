@@ -215,47 +215,85 @@
   .rds .r-grid-4 {
     grid-template-columns: repeat(2, 1fr) !important;
   }
-  /* Logo wall: 3×4 on mobile (not 2×6) with shorter cards so it fits one panel. */
+  /* Logo wall: 4×2 on mobile — only the eight r-logo-hide-mobile-free names show. */
   .rds .r-logos {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 10px !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 8px !important;
   }
   .rds .r-logos > div {
-    height: 88px !important;
-    padding: 14px 12px !important;
+    height: 62px !important;
+    padding: 10px 8px !important;
+  }
+  .rds .r-logo-hide-mobile {
+    display: none !important;
   }
   .rds .r-grid-3,
   .rds .r-grid-2,
   .rds .r-faq {
     grid-template-columns: 1fr !important;
   }
-  /* The 2×6 scale grid uses explicit column/row placement; on mobile drop the
-     grid entirely so children stack in DOM order (placement props ignored). */
+  /* The 2×6 scale grid uses explicit column/row placement for desktop. On mobile
+     re-lay it as a 2-col grid: the two stat cards sit side-by-side (equal size),
+     the owl gets its own centered row, and the fields card spans full width. */
   .rds .r-scale-grid {
-    display: flex !important;
-    flex-direction: column !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  .rds .r-scale-stat {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+  .rds .r-scale-fields {
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
   }
   /* Keep the sticky-stack on mobile too: each section is a full-height panel and
      its inner card fills it (content is compacted above so it fits one screen). */
   .rds .r-stack {
     height: 100dvh !important;
-    padding: 78px 14px 14px !important;
+    padding: 76px 16px 16px !important;
   }
   .rds .r-stack-inner {
     height: calc(100dvh - 92px) !important;
     min-height: 0 !important;
-    padding: 22px 16px !important;
+    padding: 24px 18px !important;
   }
   .rds .r-hero-inner {
     height: calc(100dvh - 92px) !important;
-    padding: 26px 22px !important;
+    padding: 28px 20px !important;
   }
-  /* Decorative owl is dropped on mobile to keep the scale panel within one screen. */
+  /* Owl sits in its own centered row between the stat cards and the fields card. */
   .rds .r-scale-owl {
-    display: none !important;
+    grid-column: 1 / -1 !important;
+    grid-row: auto !important;
   }
+  .rds .r-scale-owl > * {
+    transform: scale(0.82);
+  }
+  /* Hero on mobile: the busy stacked-card composition is swapped for a single
+     centered owl below the (now centered) copy — a clean text-over-owl stack. */
   .rds .r-hero-cards {
     display: none !important;
+  }
+  .rds .r-hero-owl-mobile {
+    display: flex !important;
+  }
+  .rds .r-hero-text {
+    text-align: center !important;
+  }
+  .rds .r-hero-text p {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .rds .r-hero-cta {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+  }
+  .rds .r-hero-grid {
+    justify-items: center !important;
+    align-content: center !important;
+    gap: 22px !important;
   }
   .rds .r-flowline {
     display: none !important;

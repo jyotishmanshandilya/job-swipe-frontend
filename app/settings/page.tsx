@@ -304,17 +304,15 @@ function ReportedJobsSection() {
 function DangerZoneSection() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState("");
   const [confirmText, setConfirmText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  // Second, deliberate check on top of the password: the user must type DELETE.
+  // The sole gate: the user must deliberately type DELETE.
   const confirmed = confirmText.trim().toUpperCase() === "DELETE";
 
   const close = () => {
     setOpen(false);
-    setPassword("");
     setConfirmText("");
     setError(null);
   };
@@ -328,15 +326,13 @@ function DangerZoneSection() {
     }
     setBusy(true);
     try {
-      await deleteAccount(password);
+      await deleteAccount();
       // Account is gone — tokens are dead; leave immediately.
       clearTokens();
       router.push("/");
     } catch (err) {
       setError(
-        err instanceof ApiRequestError
-          ? (err.fieldErrors?.password ?? err.message)
-          : "Failed to delete account",
+        err instanceof ApiRequestError ? err.message : "Failed to delete account",
       );
       setBusy(false);
     }
@@ -360,22 +356,10 @@ function DangerZoneSection() {
       <Modal open={open} onClose={close} title="Delete your account?">
         <p className="text-sm font-semibold text-stone-500">
           The owl will forget you completely — profile, preferences, and
-          matches are all deleted permanently. Enter your password to confirm.
+          matches are all deleted permanently. This cannot be undone.
         </p>
         <form onSubmit={confirm} className="mt-4 space-y-3">
           {error && <Alert kind="error">{error}</Alert>}
-          <div>
-            <Label htmlFor="delete-password">Password</Label>
-            <Input
-              id="delete-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-              autoFocus
-              required
-            />
-          </div>
           <div>
             <Label htmlFor="delete-confirm">
               Type <span className="font-extrabold text-rose-700">DELETE</span> to confirm
@@ -386,13 +370,14 @@ function DangerZoneSection() {
               onChange={(e) => setConfirmText(e.target.value)}
               placeholder="DELETE"
               autoComplete="off"
+              autoFocus
             />
           </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={close}>
               Cancel
             </Button>
-            <Button type="submit" variant="danger" disabled={busy || !password || !confirmed}>
+            <Button type="submit" variant="danger" disabled={busy || !confirmed}>
               {busy ? "Deleting…" : "Delete forever"}
             </Button>
           </div>
