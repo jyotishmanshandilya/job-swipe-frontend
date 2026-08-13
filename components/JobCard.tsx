@@ -112,11 +112,14 @@ function ViewLink({
       target="_blank"
       rel="noopener noreferrer"
       onClick={onView}
-      className={`shrink-0 rounded-2xl border-2 border-b-4 text-sm font-extrabold transition-all active:translate-y-[2px] active:border-b-2 ${
-        viewed
-          ? "border-stone-300 bg-white text-stone-600 hover:bg-stone-50"
-          : "border-amber-600 bg-amber-400 text-amber-950 hover:bg-amber-300"
-      } ${compact ? "px-3 py-1" : "px-4 py-1.5"}`}
+      className={`shrink-0 text-sm font-extrabold ${compact ? "px-3 py-1" : "px-4 py-1.5"}`}
+      style={{
+        borderRadius: "var(--radius-2xl)",
+        boxShadow: "var(--shadow-soft-sm)",
+        ...(viewed
+          ? { background: "var(--surface-card)", color: "var(--stone-600)", border: "1.5px solid var(--border-default)" }
+          : { background: "var(--brand-primary)", color: "var(--brand-primary-text)" }),
+      }}
     >
       View
     </a>
@@ -149,7 +152,10 @@ function ViewedBadge({ compact = false }: { compact?: boolean }) {
     );
   }
   return (
-    <span className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg border-2 border-stone-800/90 bg-stone-100 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-stone-600">
+    <span
+      className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide"
+      style={{ background: "var(--stone-100)", color: "var(--stone-600)", boxShadow: "var(--shadow-soft-xs)" }}
+    >
       {check}
       Viewed
     </span>
@@ -173,11 +179,15 @@ function SaveButton({
       aria-pressed={saved}
       aria-label={saved ? "Remove bookmark" : "Save job"}
       title={saved ? "Saved" : "Save"}
-      className={`inline-flex shrink-0 items-center justify-center rounded-2xl border-2 border-b-4 transition-all active:translate-y-[2px] active:border-b-2 ${
-        saved
-          ? "border-amber-600 bg-amber-100 text-amber-700 hover:bg-amber-200"
-          : "border-stone-300 bg-white text-stone-500 hover:bg-stone-50"
-      } ${compact ? "px-2.5 py-1" : "px-3 py-1.5"}`}
+      className={`inline-flex shrink-0 items-center justify-center ${compact ? "px-2.5 py-1" : "px-3 py-1.5"}`}
+      style={{
+        borderRadius: "var(--radius-2xl)",
+        boxShadow: "var(--shadow-soft-sm)",
+        cursor: "pointer",
+        ...(saved
+          ? { background: "var(--amber-200)", color: "var(--amber-950)", border: "1.5px solid var(--amber-400)" }
+          : { background: "var(--surface-card)", color: "var(--stone-500)", border: "1.5px solid var(--border-default)" }),
+      }}
     >
       <svg
         width="16"
@@ -222,7 +232,10 @@ function AppliedBadge({ compact = false }: { compact?: boolean }) {
     );
   }
   return (
-    <span className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg border-2 border-emerald-700/80 bg-emerald-200 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-emerald-800">
+    <span
+      className="absolute -top-2.5 left-4 inline-flex -rotate-2 items-center gap-1 rounded-lg px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide"
+      style={{ background: "var(--emerald-100)", color: "var(--emerald-800)", boxShadow: "var(--shadow-soft-xs)" }}
+    >
       {check}
       Applied
     </span>
@@ -328,7 +341,8 @@ export default function JobCard({
       <button
         type="button"
         onClick={confirmApplied}
-        className="shrink-0 rounded-lg border-2 border-b-4 border-emerald-700 bg-emerald-500 px-3 py-0.5 text-sm font-extrabold text-white transition-all active:translate-y-[2px] active:border-b-2 hover:bg-emerald-400"
+        className="shrink-0 rounded-lg px-3 py-0.5 text-sm font-extrabold text-white"
+        style={{ background: "var(--emerald-700)", boxShadow: "var(--shadow-soft-xs)", cursor: "pointer" }}
       >
         Yes
       </button>
@@ -348,7 +362,10 @@ export default function JobCard({
     // the full detail lives in card mode.
     return (
       <div>
-        <div className="flex items-center gap-3 rounded-xl border-2 border-stone-200 bg-white px-3.5 py-2.5 transition-colors hover:border-amber-300">
+        <div
+          className="flex items-center gap-3 rounded-xl px-3.5 py-2.5"
+          style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-sm)" }}
+        >
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm">
               <span className="font-extrabold text-stone-800">{job.jobTitle}</span>
@@ -398,10 +415,16 @@ export default function JobCard({
   }
 
   return (
-    <div className="shadow-hard-sm relative flex h-full flex-col rounded-2xl border-2 border-stone-800/90 bg-white p-4 transition-transform hover:-translate-y-0.5">
+    <div
+      className="relative flex h-full flex-col rounded-3xl p-4 transition-transform hover:-translate-y-0.5"
+      style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-sm)" }}
+    >
       {applied ? <AppliedBadge /> : viewed && <ViewedBadge />}
       {isNew && !applied && (
-        <span className="absolute -top-2.5 right-4 rotate-2 rounded-lg border-2 border-stone-800/90 bg-teal-300 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-teal-950">
+        <span
+          className="absolute -top-2.5 right-4 rotate-2 rounded-lg px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide"
+          style={{ background: "var(--amber-300)", color: "var(--amber-950)", boxShadow: "var(--shadow-soft-xs)" }}
+        >
           new tonight
         </span>
       )}

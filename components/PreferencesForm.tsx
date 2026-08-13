@@ -4,7 +4,7 @@ import { useState } from "react";
 import { apiFetch, ApiRequestError } from "@/lib/api";
 import { FEATURE_SKILLS } from "@/lib/flags";
 import type { Preferences, PreferencesRequest } from "@/lib/types";
-import { Alert, Button, Input, Label, TagInput, Toggle } from "./ui";
+import { Alert, Button, Input, Label, TagInput, Toggle } from "./ds";
 
 const TITLE_SUGGESTIONS = [
   "software engineer",
@@ -169,7 +169,8 @@ export default function PreferencesForm({
           step={1}
           value={stretch}
           onChange={(e) => setStretch(Number(e.target.value))}
-          className="w-full cursor-pointer accent-amber-500"
+          className="w-full cursor-pointer"
+          style={{ accentColor: "var(--amber-500)" }}
         />
         <div className="mt-1 flex justify-between">
           {[0, 1, 2, 3].map((n) => (
@@ -177,17 +178,17 @@ export default function PreferencesForm({
               key={n}
               type="button"
               onClick={() => setStretch(n)}
-              className={`cursor-pointer text-xs font-bold transition-colors ${
-                stretch === n
-                  ? "text-amber-700"
-                  : "text-stone-400 hover:text-stone-600"
-              }`}
+              className="cursor-pointer text-xs font-bold"
+              style={{ color: stretch === n ? "var(--amber-600)" : "var(--text-faint)" }}
             >
               {n === 0 ? "Strict" : `+${n} yr${n > 1 ? "s" : ""}`}
             </button>
           ))}
         </div>
-        <p className="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+        <p
+          className="mt-2 px-3 py-2 text-xs font-semibold"
+          style={{ borderRadius: "var(--radius-xl)", background: "var(--semantic-warning-bg)", color: "var(--semantic-warning-text)" }}
+        >
           {stretch === 0
             ? `Strict: only roles asking for ${yoe} yrs of experience or less.`
             : `Flexible: roles asking for up to ${yoe + stretch} yrs (your ${yoe} + ${stretch}) will also match.`}
@@ -209,7 +210,7 @@ export default function PreferencesForm({
         />
       </div>
 
-      <Button type="submit" disabled={saving} className="w-full">
+      <Button type="submit" disabled={saving} fullWidth>
         {saving ? "Saving…" : submitLabel}
       </Button>
     </form>

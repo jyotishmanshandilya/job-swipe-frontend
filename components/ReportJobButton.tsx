@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Alert, Button, Modal } from "./ui";
+import { Alert, Button, Modal } from "./ds";
 import { ApiRequestError, reportJob } from "@/lib/api";
 import type { Job, ReportReason } from "@/lib/types";
 

@@ -45,18 +45,18 @@ export default function JobViewToggle({
       aria-label={`${label} view`}
       aria-pressed={mode === m}
       onClick={() => onChange(m)}
-      className={`cursor-pointer rounded-full px-2.5 py-1.5 transition-colors ${
-        mode === m
-          ? "bg-amber-100 text-amber-900"
-          : "text-stone-400 hover:text-stone-700"
-      }`}
+      className="cursor-pointer rounded-full px-2.5 py-1.5"
+      style={mode === m ? { background: "var(--amber-200)", color: "var(--amber-950)" } : { color: "var(--stone-400)" }}
     >
       {icon}
     </button>
   );
 
   return (
-    <div className="flex items-center gap-0.5 rounded-full border-2 border-stone-200 bg-white p-0.5">
+    <div
+      className="flex items-center gap-0.5 rounded-full p-0.5"
+      style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-xs)" }}
+    >
       {btn(
         "card",
         "Card",
