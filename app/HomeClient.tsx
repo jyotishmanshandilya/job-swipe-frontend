@@ -227,15 +227,15 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 2 — trust grid */}
           <section id="sources" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 2, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 960, width: "100%", textAlign: "center" }}>
                 <p style={overline}>Their open roles, tracked here</p>
                 <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Find jobs from companies like these</h2>
-                <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+                <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
                   {FEATURED.map((c) => (
-                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 115, boxSizing: "border-box", padding: "22px 28px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
+                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 94, boxSizing: "border-box", padding: "16px 24px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "50%", maxHeight: 36, objectFit: "contain" }} />
+                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "62%", maxHeight: 46, objectFit: "contain" }} />
                     </div>
                   ))}
                 </div>
@@ -246,7 +246,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 3 — scale stats */}
           <section id="stats" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 3, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 980, width: "100%" }}>
                 <p style={{ ...overline, textAlign: "center" }}>The scale of the hunt</p>
                 <h2 style={{ ...h2Style, fontSize: 36, textAlign: "center", marginBottom: 28 }}>Tracked directly from the source</h2>
