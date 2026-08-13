@@ -116,6 +116,13 @@ export interface MyJobReport {
   applicationUrl: string | null;
 }
 
+/** One role for the landing marquee (`GET /api/jobs/latest`, public, no auth). */
+export interface LatestRole {
+  jobTitle: string;
+  companyName: string | null;
+  location: string | null;
+}
+
 export interface ApiError {
   timestamp: string;
   status: number;

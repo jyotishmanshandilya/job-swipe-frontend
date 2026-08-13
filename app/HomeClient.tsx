@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
+import { getLatestRoles } from "@/lib/api";
 import { Button, OwlMascot } from "@/components/ds";
 
 /*
@@ -89,9 +90,9 @@ const FEATURED = [
 ];
 
 /**
- * Sample roles for the landing marquee. Static by design — a curated list is
- * provided by product (no backend). Sources (ATS names) are intentionally
- * omitted; we surface role + company + city only.
+ * Fallback roles for the landing marquee, shown until (or if) GET /api/jobs/latest
+ * responds — see getLatestRoles + BACKEND_HANDOVER.md. Sources (ATS names) are
+ * intentionally omitted; we surface role + company + city only.
  */
 const MARQUEE = [
   { role: "Senior Frontend Engineer", company: "Series B startup", loc: "Remote" },
@@ -136,7 +137,18 @@ export default function HomeClient() {
 
   const primaryHref = authenticated ? "/jobs" : "/register";
   const primaryLabel = authenticated ? "Go to my jobs" : "Start free";
-  const marqueeDoubled = [...MARQUEE, ...MARQUEE];
+  // Live "latest roles" for the marquee, falling back to the static list until
+  // GET /api/jobs/latest responds (or forever, if it's not deployed / errors).
+  const [roles, setRoles] = useState(MARQUEE);
+  useEffect(() => {
+    getLatestRoles(8)
+      .then((rows) => {
+        if (rows.length)
+          setRoles(rows.map((r) => ({ role: r.jobTitle, company: r.companyName ?? "", loc: r.location ?? "" })));
+      })
+      .catch(() => {}); // keep the static fallback
+  }, []);
+  const marqueeDoubled = [...roles, ...roles];
 
   return (
     <div className="rds" style={{ position: "relative", minHeight: "100vh" }}>
@@ -282,8 +294,8 @@ export default function HomeClient() {
             <div style={{ display: "flex", gap: 16, width: "max-content", animation: "rmarquee 26s linear infinite" }}>
               {marqueeDoubled.map((m, i) => (
                 <div key={i} style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 10, ...card, borderRadius: "var(--radius-2xl)", padding: "12px 18px" }}>
-                  <span style={{ height: 30, width: 30, borderRadius: "50%", background: "var(--stone-200)", color: "var(--stone-600)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{m.company.charAt(0)}</span>
-                  <div><p style={{ margin: 0, fontSize: 13, fontWeight: 800, lineHeight: 1.2 }}>{m.role}</p><p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "var(--text-faint)" }}>{m.company} · {m.loc}</p></div>
+                  <span style={{ height: 30, width: 30, borderRadius: "50%", background: "var(--stone-200)", color: "var(--stone-600)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 12, flexShrink: 0 }}>{(m.company || m.role).charAt(0)}</span>
+                  <div><p style={{ margin: 0, fontSize: 13, fontWeight: 800, lineHeight: 1.2 }}>{m.role}</p><p style={{ margin: 0, fontSize: 11, fontWeight: 700, color: "var(--text-faint)" }}>{[m.company, m.loc].filter(Boolean).join(" · ")}</p></div>
                 </div>
               ))}
             </div>

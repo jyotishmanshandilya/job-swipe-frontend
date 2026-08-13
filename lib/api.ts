@@ -3,6 +3,7 @@ import type {
   AuthResponse,
   Job,
   JobReport,
+  LatestRole,
   MyJobReport,
   Page,
   ReportReason,
@@ -244,4 +245,15 @@ export function deleteAccount(password: string): Promise<void> {
     method: "DELETE",
     body: JSON.stringify({ password }),
   });
+}
+
+/**
+ * Latest active roles for the public landing marquee. Bare fetch (no token, no
+ * 401-refresh): a stale token must never bounce a landing visitor. Callers fall
+ * back to a static list on any failure — see BACKEND_HANDOVER.md for the endpoint.
+ */
+export async function getLatestRoles(limit = 8): Promise<LatestRole[]> {
+  const res = await fetch(`${API_URL}/api/jobs/latest?limit=${limit}`);
+  if (!res.ok) throw new ApiRequestError(res.status, `Request failed (${res.status})`);
+  return (await res.json()) as LatestRole[];
 }
