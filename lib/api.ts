@@ -3,7 +3,6 @@ import type {
   AuthResponse,
   Job,
   JobReport,
-  JobStats,
   MyJobReport,
   Page,
   ReportReason,
@@ -245,15 +244,4 @@ export function deleteAccount(password: string): Promise<void> {
     method: "DELETE",
     body: JSON.stringify({ password }),
   });
-}
-
-/**
- * Public landing-page counts. Deliberately a bare fetch (no token, no
- * 401-refresh handling): a stale token must never bounce a landing-page
- * visitor to /login.
- */
-export async function getJobStats(): Promise<JobStats> {
-  const res = await fetch(`${API_URL}/api/jobs/stats`);
-  if (!res.ok) throw new ApiRequestError(res.status, `Request failed (${res.status})`);
-  return (await res.json()) as JobStats;
 }

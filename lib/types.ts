@@ -116,22 +116,6 @@ export interface MyJobReport {
   applicationUrl: string | null;
 }
 
-/** Public landing-page counts (`GET /api/jobs/stats`, no auth). */
-export interface JobStats {
-  totalJobs: number;
-  /**
-   * Still returned by the backend but no longer rendered by the landing — the
-   * stats section uses `totalJobs` only (companies/fields are static now). These
-   * are candidates to drop backend-side; see BACKEND_HANDOVER.md.
-   */
-  totalBoards?: number;
-  totalCompanies?: number;
-  addedLast24h?: number;
-  /** Most-listed company names as lowercase slugs. Unused since the featured
-   *  companies became a curated static list. */
-  topCompanies?: string[];
-}
-
 export interface ApiError {
   timestamp: string;
   status: number;
