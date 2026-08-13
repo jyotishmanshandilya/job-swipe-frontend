@@ -28,7 +28,7 @@ interface Filters {
 /** The subset staged in inputs until the user hits Search. */
 type StagedFilters = Pick<
   Filters,
-  "title" | "location" | "company" | "yoeMin" | "yoeMax"
+  "title" | "location" | "company" | "yoeMax"
 >;
 
 const EMPTY_FILTERS: Filters = {
@@ -144,7 +144,6 @@ function JobsContent() {
       title: f.title,
       location: f.location,
       company: f.company,
-      yoeMin: f.yoeMin,
       yoeMax: f.yoeMax,
     };
   });
@@ -170,7 +169,7 @@ function JobsContent() {
   const clearFilters = () => {
     setPage(0);
     setApplied(EMPTY_FILTERS);
-    setStaged({ title: "", location: "", company: "", yoeMin: "", yoeMax: "" });
+    setStaged({ title: "", location: "", company: "", yoeMax: "" });
   };
   const hasActiveFilters = isAnyFilterActive(applied);
 
@@ -341,21 +340,21 @@ function JobsContent() {
           >
             <div className="flex-1">
               <Input
-                placeholder="Title contains…"
+                placeholder="Title"
                 value={staged.title}
                 onChange={(e) => setStaged({ ...staged, title: e.target.value })}
               />
             </div>
             <div className="flex-1">
               <Input
-                placeholder="Company contains…"
+                placeholder="Company"
                 value={staged.company}
                 onChange={(e) => setStaged({ ...staged, company: e.target.value })}
               />
             </div>
             <div className="flex-1">
               <Input
-                placeholder="Location contains…"
+                placeholder="Location"
                 value={staged.location}
                 onChange={(e) => setStaged({ ...staged, location: e.target.value })}
               />
@@ -387,7 +386,7 @@ function JobsContent() {
               })}
             </div>
 
-            {/* Years of experience — commits on Search with the text fields */}
+            {/* Experience — max years only, commits on Search with the text fields */}
             <form
               className="flex items-center gap-1.5"
               onSubmit={(e) => {
@@ -395,26 +394,15 @@ function JobsContent() {
                 commitStaged();
               }}
             >
-              <span className="text-xs font-bold text-stone-500">YoE</span>
+              <span className="text-xs font-bold text-stone-500">Experience</span>
               <input
                 type="number"
                 min={0}
                 inputMode="numeric"
-                placeholder="min"
-                value={staged.yoeMin}
-                onChange={(e) => setStaged({ ...staged, yoeMin: e.target.value })}
-                className="w-16 rounded-lg px-2 py-1 text-xs font-bold outline-none"
-                style={{ border: "1.5px solid var(--border-default)", background: "var(--surface-card)" }}
-              />
-              <span className="text-xs font-bold text-stone-400">–</span>
-              <input
-                type="number"
-                min={0}
-                inputMode="numeric"
-                placeholder="max"
+                placeholder="max years"
                 value={staged.yoeMax}
                 onChange={(e) => setStaged({ ...staged, yoeMax: e.target.value })}
-                className="w-16 rounded-lg px-2 py-1 text-xs font-bold outline-none"
+                className="w-24 rounded-lg px-2 py-1 text-xs font-bold outline-none"
                 style={{ border: "1.5px solid var(--border-default)", background: "var(--surface-card)" }}
               />
             </form>
@@ -511,8 +499,8 @@ function JobsContent() {
             <div
               className={
                 view === "card"
-                  ? "grid grid-cols-1 gap-4 md:grid-cols-2"
-                  : "space-y-3"
+                  ? "grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6"
+                  : "space-y-4 md:space-y-5"
               }
             >
               {data.content.map((job, i) => (

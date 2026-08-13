@@ -18,9 +18,14 @@ export interface TagInputProps {
  * ui.tsx TagInput so it drops into PreferencesForm unchanged.
  */
 export function TagInput({ label, values, onChange, placeholder = "Add a role…", suggestions = [] }: TagInputProps) {
+  const [draft, setDraft] = React.useState("");
   const add = (raw: string) => {
     const v = raw.trim();
     if (v && !values.includes(v)) onChange([...values, v]);
+  };
+  const commitDraft = () => {
+    add(draft);
+    setDraft("");
   };
   return (
     <div>
@@ -69,16 +74,30 @@ export function TagInput({ label, values, onChange, placeholder = "Add a role…
           </span>
         ))}
         <input
-          placeholder={placeholder}
+          value={draft}
+          // Once there's at least one chip the field is clearly "add more", so
+          // drop the example placeholder to avoid it reading as an empty state.
+          placeholder={values.length > 0 ? "" : placeholder}
+          onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               e.preventDefault();
-              add(e.currentTarget.value);
-              e.currentTarget.value = "";
+              commitDraft();
             }
           }}
           style={{ flex: 1, minWidth: 96, background: "transparent", border: "none", outline: "none", fontSize: 14, fontWeight: 600, fontFamily: "var(--font-body)", color: "var(--text-primary)" }}
         />
+        {/* Inline add — some mobile keyboards lack a usable Enter/Go key. */}
+        {draft.trim() && (
+          <button
+            type="button"
+            aria-label="Add"
+            onClick={commitDraft}
+            style={{ flexShrink: 0, cursor: "pointer", borderRadius: "var(--radius-full)", border: "none", background: "var(--amber-500)", color: "var(--amber-950)", padding: "4px 14px", fontSize: 13, fontWeight: 800, fontFamily: "var(--font-body)", boxShadow: "var(--shadow-soft-xs)" }}
+          >
+            Add
+          </button>
+        )}
       </div>
       {suggestions.length > 0 && (
         <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>

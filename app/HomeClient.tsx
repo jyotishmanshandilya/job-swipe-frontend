@@ -90,6 +90,12 @@ const FEATURED = [
 ];
 
 /**
+ * On mobile the logo wall collapses to a tidy 4×2 of the eight most recognisable
+ * names; the remaining four are hidden (see .r-logo-hide-mobile in tokens.css).
+ */
+const MOBILE_HIDDEN_LOGOS = new Set(["paytm", "coupang", "hellofresh", "toast"]);
+
+/**
  * Fallback roles for the landing marquee, shown until (or if) GET /api/jobs/latest
  * responds — see getLatestRoles + BACKEND_HANDOVER.md. Sources (ATS names) are
  * intentionally omitted; we surface role + company + city only.
@@ -179,8 +185,8 @@ export default function HomeClient() {
               <span style={{ position: "absolute", left: "6%", top: "16%", color: "var(--night-star)", animation: "rtwinkle 3s ease-in-out infinite" }}>✦</span>
               <span style={{ position: "absolute", left: "34%", top: "10%", color: "var(--amber-200)", fontSize: 9, animation: "rtwinkle 3s ease-in-out infinite .7s" }}>✦</span>
               <span style={{ position: "absolute", right: "8%", top: "14%", color: "var(--night-star)", fontSize: 10, animation: "rtwinkle 3s ease-in-out infinite .4s" }}>✦</span>
-              <div style={{ position: "relative", textAlign: "left" }}>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, margin: "0 0 14px", borderRadius: "var(--radius-full)", border: "1px solid var(--glass-border)", background: "rgb(255 255 255 / .1)", backdropFilter: "blur(var(--blur-md))", padding: "6px 14px 6px 8px", animation: "rfadeup .7s var(--ease-standard) both" }}>
+              <div className="r-hero-text" style={{ position: "relative", textAlign: "left" }}>
+                <div className="r-hero-badge" style={{ display: "inline-flex", alignItems: "center", gap: 8, margin: "0 0 14px", borderRadius: "var(--radius-full)", border: "1px solid var(--glass-border)", background: "rgb(255 255 255 / .1)", backdropFilter: "blur(var(--blur-md))", padding: "6px 14px 6px 8px", animation: "rfadeup .7s var(--ease-standard) both" }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--emerald-300)", boxShadow: "0 0 8px var(--emerald-300)" }} />
                   <span style={{ fontSize: 13, fontWeight: 800, color: "var(--night-text)" }}>{jobsStat} live roles right now</span>
                 </div>
@@ -190,7 +196,7 @@ export default function HomeClient() {
                 <p style={{ margin: "18px 0 0", fontSize: 17, fontWeight: 600, color: "var(--night-lilac)", maxWidth: 420, animation: "rfadeup .7s var(--ease-standard) .16s both" }}>
                   RoleOwl reads company hiring systems directly, so new roles reach you before the job boards catch up.
                 </p>
-                <div style={{ display: "flex", gap: 14, marginTop: 24, alignItems: "center", animation: "rfadeup .7s var(--ease-standard) .24s both" }}>
+                <div className="r-hero-cta" style={{ display: "flex", gap: 14, marginTop: 24, alignItems: "center", animation: "rfadeup .7s var(--ease-standard) .24s both" }}>
                   <Link href={primaryHref} style={{ textDecoration: "none" }}><Button size="lg">{primaryLabel}</Button></Link>
                   <Link href={authenticated ? "/jobs" : "/login"} style={{ fontSize: 13, fontWeight: 800, color: "var(--night-lilac)", cursor: "pointer", borderBottom: "2px solid var(--night-btn-border)", paddingBottom: 2, textDecoration: "none" }}>
                     {authenticated ? "My jobs" : "Log in"} →
@@ -224,6 +230,13 @@ export default function HomeClient() {
                   </div>
                 </div>
               </div>
+
+              {/* Mobile-only owl — the stacked cards above are too busy for a phone,
+                  so on small screens the hero is a simple text-over-owl 2×1 stack. */}
+              <div className="r-hero-owl-mobile" style={{ display: "none", flexDirection: "column", alignItems: "center", gap: 10 }}>
+                <OwlMascot variant="happy" size={132} style={{ filter: "drop-shadow(0 12px 20px rgb(0 0 0 / .4))", animation: "rbob 4.5s ease-in-out infinite" }} />
+                <div style={{ borderRadius: "var(--radius-full)", background: "var(--night-text)", padding: "4px 12px", fontSize: 12, fontWeight: 800, color: "var(--grape-800)", boxShadow: "var(--shadow-soft-sm)", transform: "rotate(-4deg)", whiteSpace: "nowrap" }}>on the hunt</div>
+              </div>
             </div>
           </section>
 
@@ -235,7 +248,7 @@ export default function HomeClient() {
                 <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Find jobs from companies like these</h2>
                 <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, maxWidth: 780, margin: "0 auto" }}>
                   {FEATURED.map((c) => (
-                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 75, boxSizing: "border-box", padding: "13px 20px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
+                    <div key={c.slug} className={MOBILE_HIDDEN_LOGOS.has(c.slug) ? "r-logo-hide-mobile" : undefined} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 75, boxSizing: "border-box", padding: "13px 20px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "62%", maxHeight: 37, objectFit: "contain" }} />
                     </div>
@@ -257,7 +270,7 @@ export default function HomeClient() {
                     departments (r2 c1–4). Collapses to a stack on mobile. */}
                 <div className="r-scale-grid" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 20, alignItems: "start" }}>
                   {([["1 / 3", jobsStat, "jobs surfaced"], ["3 / 5", companiesStat, "companies tracked"]] as const).map(([col, big, small]) => (
-                    <div key={small} style={{ gridColumn: col, gridRow: 1, ...card, padding: "17px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                    <div key={small} className="r-scale-stat" style={{ gridColumn: col, gridRow: 1, ...card, padding: "17px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
                       <p style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 23, letterSpacing: "var(--tracking-tight)", background: "linear-gradient(135deg,var(--grape-700),var(--grape-500))", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{big}</p>
                       <p style={{ margin: "5px 0 0", fontSize: 12, fontWeight: 700, color: "var(--text-muted)" }}>{small}</p>
                     </div>
@@ -270,7 +283,7 @@ export default function HomeClient() {
                   </div>
 
                   {/* fields — row 2, cols 1–4 */}
-                  <div style={{ gridColumn: "1 / 5", gridRow: 2, ...card, padding: "22px 24px" }}>
+                  <div className="r-scale-fields" style={{ gridColumn: "1 / 5", gridRow: 2, ...card, padding: "22px 24px" }}>
                     <p style={{ margin: 0, fontSize: 13, fontWeight: 800, letterSpacing: "var(--tracking-widest)", textTransform: "uppercase", color: "var(--grape-600)" }}>{FIELDS.length} fields covered</p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
                       {FIELDS.map((f) => (

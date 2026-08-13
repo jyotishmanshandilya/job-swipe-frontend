@@ -239,11 +239,10 @@ export function getAppliedJobs(page = 0, size = 20): Promise<Page<Job>> {
   return apiFetch<Page<Job>>(`/api/jobs/applied?page=${page}&size=${size}`);
 }
 
-/** Permanently deletes the account (password re-confirmation required). */
-export function deleteAccount(password: string): Promise<void> {
+/** Permanently deletes the account (guarded client-side by typing DELETE). */
+export function deleteAccount(): Promise<void> {
   return apiFetch<void>("/api/profile", {
     method: "DELETE",
-    body: JSON.stringify({ password }),
   });
 }
 
