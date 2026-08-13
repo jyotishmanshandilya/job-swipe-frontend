@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { ApiRequestError } from "@/lib/api";
-import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ds";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 export default function RegisterPage() {
@@ -18,6 +18,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
@@ -29,6 +30,10 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     setFieldErrors({});
+    if (form.password !== confirmPassword) {
+      setError("Passwords don't match — re-enter them to be sure.");
+      return;
+    }
     setBusy(true);
     try {
       await register(form);
@@ -113,23 +118,41 @@ export default function RegisterPage() {
           />
           {fieldError("password")}
         </div>
+        <div>
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            autoComplete="new-password"
+            required
+            minLength={8}
+            state={confirmPassword && confirmPassword !== form.password ? "error" : "default"}
+            helpText={
+              confirmPassword && confirmPassword !== form.password
+                ? "Passwords don't match yet."
+                : undefined
+            }
+          />
+        </div>
 
-        <Button type="submit" disabled={busy} className="w-full">
+        <Button type="submit" disabled={busy} fullWidth>
           {busy ? "Creating account…" : "Sign up free"}
         </Button>
       </form>
 
-      <div className="my-5 flex items-center gap-3 text-sm font-bold text-amber-800/60">
-        <span className="h-px flex-1 bg-amber-900/15" />
+      <div style={{ margin: "20px 0", display: "flex", alignItems: "center", gap: 12, fontSize: 14, fontWeight: 700, color: "var(--text-faint)" }}>
+        <span style={{ height: 1, flex: 1, background: "var(--stone-200)" }} />
         or
-        <span className="h-px flex-1 bg-amber-900/15" />
+        <span style={{ height: 1, flex: 1, background: "var(--stone-200)" }} />
       </div>
 
       <GoogleSignInButton onCredential={handleGoogle} onError={setError} />
 
-      <p className="mt-4 text-center text-sm font-semibold text-stone-500">
+      <p style={{ marginTop: 16, textAlign: "center", fontSize: 14, fontWeight: 600, color: "var(--text-muted)" }}>
         Already have an account?{" "}
-        <Link href="/login" className="font-bold text-amber-700 hover:underline">
+        <Link href="/login" style={{ fontWeight: 700, color: "var(--amber-600)" }}>
           Log in
         </Link>
       </p>
