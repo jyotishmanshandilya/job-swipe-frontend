@@ -92,6 +92,20 @@ const FEATURED = [
 ];
 
 /**
+ * Additional recognizable companies shown as a small-text "…and many more"
+ * strip under the logo wall. Illustrative curation of brands that hire on the
+ * career platforms RoleOwl reads — trim/extend as the tracked set is verified.
+ */
+const MORE_COMPANIES = [
+  "Reddit", "Discord", "Notion", "Figma", "Airbnb", "DoorDash", "Instacart",
+  "Robinhood", "Coinbase", "Twilio", "Snowflake", "Datadog", "Plaid", "Ramp",
+  "Brex", "Gusto", "Rippling", "Vercel", "Retool", "Airtable", "Asana",
+  "Dropbox", "Affirm", "Chime", "Grammarly", "Miro", "Canva", "Zapier",
+  "GitLab", "HashiCorp", "MongoDB", "Elastic", "Nubank", "Klarna", "Wise",
+  "Deel", "Cohere", "Scale AI", "Verkada", "Samsara",
+];
+
+/**
  * Sample roles for the landing marquee. Static by design — a curated list is
  * provided by product (no backend). Sources (ATS names) are intentionally
  * omitted; we surface role + company + city only.
@@ -172,7 +186,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
         <div style={{ position: "relative" }}>
           {/* 1 — night hero */}
           <section className="r-stack" style={{ position: "sticky", top: 0, zIndex: 1, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-hero-inner r-hero-grid" style={{ position: "relative", width: "100%", maxWidth: 1080, height: "70vh", overflow: "hidden", borderRadius: 20, background: "linear-gradient(150deg,var(--night-bg-start),var(--night-bg-end))", display: "grid", gridTemplateColumns: "1.2fr 0.8fr", alignItems: "center", padding: "0 56px" }}>
+            <div className="r-hero-inner r-hero-grid" style={{ position: "relative", width: "100%", maxWidth: 1080, height: "70vh", overflow: "hidden", borderRadius: 20, background: "linear-gradient(150deg,var(--night-bg-start),var(--night-bg-end))", display: "grid", gridTemplateColumns: "1.2fr 0.8fr", alignItems: "center", padding: "0 84px" }}>
               <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgb(255 255 255 / .5) 1px,transparent 1.5px)", backgroundSize: "26px 26px", opacity: 0.18 }} />
               <span style={{ position: "absolute", left: "6%", top: "16%", color: "var(--night-star)", animation: "rtwinkle 3s ease-in-out infinite" }}>✦</span>
               <span style={{ position: "absolute", left: "34%", top: "10%", color: "var(--amber-200)", fontSize: 9, animation: "rtwinkle 3s ease-in-out infinite .7s" }}>✦</span>
@@ -227,25 +241,29 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 2 — trust grid */}
           <section id="sources" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 2, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 56px" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 84px" }}>
               <div style={{ maxWidth: 960, width: "100%", textAlign: "center" }}>
                 <p style={overline}>Their open roles, tracked here</p>
                 <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Jobs from companies like these are listed on RoleOwl</h2>
                 <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
                   {FEATURED.map((c) => (
-                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 92, boxSizing: "border-box", padding: "20px 28px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
+                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 128, boxSizing: "border-box", padding: "24px 28px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "50%", maxHeight: 38, objectFit: "contain" }} />
                     </div>
                   ))}
                 </div>
+                <p style={{ margin: "20px auto 0", maxWidth: 840, fontSize: 12.5, fontWeight: 600, lineHeight: 1.9, color: "var(--text-faint)" }}>
+                  <span style={{ fontWeight: 800, color: "var(--text-muted)" }}>…and thousands more, including </span>
+                  {MORE_COMPANIES.join(" · ")}
+                </p>
               </div>
             </div>
           </section>
 
           {/* 3 — scale stats */}
           <section id="stats" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 3, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 56px" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 84px" }}>
               <div style={{ maxWidth: 980, width: "100%" }}>
                 <p style={{ ...overline, textAlign: "center" }}>The scale of the hunt</p>
                 <h2 style={{ ...h2Style, fontSize: 36, textAlign: "center", marginBottom: 28 }}>Tracked directly from the source</h2>
@@ -254,7 +272,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
                     departments (r2 c1–4). Collapses to a stack on mobile. */}
                 <div className="r-scale-grid" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 20, alignItems: "start" }}>
                   {([["1 / 3", jobsStat, "jobs surfaced"], ["3 / 5", companiesStat, "companies tracked"]] as const).map(([col, big, small]) => (
-                    <div key={small} style={{ gridColumn: col, gridRow: 1, ...card, background: "var(--surface-canvas)", padding: "22px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                    <div key={small} style={{ gridColumn: col, gridRow: 1, ...card, padding: "22px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
                       <p style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 28, letterSpacing: "var(--tracking-tight)", background: "linear-gradient(135deg,var(--grape-700),var(--grape-500))", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{big}</p>
                       <p style={{ margin: "6px 0 0", fontSize: 13, fontWeight: 700, color: "var(--text-muted)" }}>{small}</p>
                     </div>
@@ -267,7 +285,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
                   </div>
 
                   {/* fields — row 2, cols 1–4 */}
-                  <div style={{ gridColumn: "1 / 5", gridRow: 2, ...card, background: "var(--surface-canvas)", padding: "22px 24px" }}>
+                  <div style={{ gridColumn: "1 / 5", gridRow: 2, ...card, padding: "22px 24px" }}>
                     <p style={{ margin: 0, fontSize: 13, fontWeight: 800, letterSpacing: "var(--tracking-widest)", textTransform: "uppercase", color: "var(--grape-600)" }}>{FIELDS.length} fields covered</p>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
                       {FIELDS.map((f) => (
