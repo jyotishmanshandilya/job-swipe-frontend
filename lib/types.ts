@@ -119,14 +119,16 @@ export interface MyJobReport {
 /** Public landing-page counts (`GET /api/jobs/stats`, no auth). */
 export interface JobStats {
   totalJobs: number;
-  totalBoards: number;
   /**
-   * Freshness/trust fields — optional because an older backend (or the static
-   * fallback) may omit them; the landing only renders them when present.
+   * Still returned by the backend but no longer rendered by the landing — the
+   * stats section uses `totalJobs` only (companies/fields are static now). These
+   * are candidates to drop backend-side; see BACKEND_HANDOVER.md.
    */
+  totalBoards?: number;
   totalCompanies?: number;
   addedLast24h?: number;
-  /** Most-listed company names, as lowercase slugs (see lib/companies.ts). */
+  /** Most-listed company names as lowercase slugs. Unused since the featured
+   *  companies became a curated static list. */
   topCompanies?: string[];
 }
 
