@@ -212,9 +212,17 @@
   .rds .r-grid-6 {
     grid-template-columns: repeat(3, 1fr) !important;
   }
-  .rds .r-grid-4,
-  .rds .r-logos {
+  .rds .r-grid-4 {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Logo wall: 3×4 on mobile (not 2×6) with shorter cards so it fits one panel. */
+  .rds .r-logos {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+  }
+  .rds .r-logos > div {
+    height: 88px !important;
+    padding: 14px 12px !important;
   }
   .rds .r-grid-3,
   .rds .r-grid-2,
@@ -227,19 +235,24 @@
     display: flex !important;
     flex-direction: column !important;
   }
+  /* Keep the sticky-stack on mobile too: each section is a full-height panel and
+     its inner card fills it (content is compacted above so it fits one screen). */
   .rds .r-stack {
-    position: static !important;
-    height: auto !important;
-    padding: 92px 16px 24px !important;
+    height: 100dvh !important;
+    padding: 78px 14px 14px !important;
   }
   .rds .r-stack-inner {
-    height: auto !important;
+    height: calc(100dvh - 92px) !important;
     min-height: 0 !important;
-    padding: 28px 20px !important;
+    padding: 22px 16px !important;
   }
   .rds .r-hero-inner {
-    height: auto !important;
-    padding: 32px 24px !important;
+    height: calc(100dvh - 92px) !important;
+    padding: 26px 22px !important;
+  }
+  /* Decorative owl is dropped on mobile to keep the scale panel within one screen. */
+  .rds .r-scale-owl {
+    display: none !important;
   }
   .rds .r-hero-cards {
     display: none !important;

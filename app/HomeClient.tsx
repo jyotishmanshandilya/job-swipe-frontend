@@ -92,20 +92,6 @@ const FEATURED = [
 ];
 
 /**
- * Additional recognizable companies shown as a small-text "…and many more"
- * strip under the logo wall. Illustrative curation of brands that hire on the
- * career platforms RoleOwl reads — trim/extend as the tracked set is verified.
- */
-const MORE_COMPANIES = [
-  "Reddit", "Discord", "Notion", "Figma", "Airbnb", "DoorDash", "Instacart",
-  "Robinhood", "Coinbase", "Twilio", "Snowflake", "Datadog", "Plaid", "Ramp",
-  "Brex", "Gusto", "Rippling", "Vercel", "Retool", "Airtable", "Asana",
-  "Dropbox", "Affirm", "Chime", "Grammarly", "Miro", "Canva", "Zapier",
-  "GitLab", "HashiCorp", "MongoDB", "Elastic", "Nubank", "Klarna", "Wise",
-  "Deel", "Cohere", "Scale AI", "Verkada", "Samsara",
-];
-
-/**
  * Sample roles for the landing marquee. Static by design — a curated list is
  * provided by product (no backend). Sources (ATS names) are intentionally
  * omitted; we surface role + company + city only.
@@ -241,29 +227,26 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 2 — trust grid */}
           <section id="sources" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 2, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, minHeight: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 960, width: "100%", textAlign: "center" }}>
                 <p style={overline}>Their open roles, tracked here</p>
-                <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Jobs from companies like these are listed on RoleOwl</h2>
+                <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Find jobs from companies like these</h2>
                 <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
                   {FEATURED.map((c) => (
-                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 128, boxSizing: "border-box", padding: "24px 28px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
+                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 115, boxSizing: "border-box", padding: "22px 28px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "50%", maxHeight: 38, objectFit: "contain" }} />
+                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "50%", maxHeight: 36, objectFit: "contain" }} />
                     </div>
                   ))}
                 </div>
-                <p style={{ margin: "20px auto 0", maxWidth: 840, fontSize: 12.5, fontWeight: 600, lineHeight: 1.9, color: "var(--text-faint)" }}>
-                  <span style={{ fontWeight: 800, color: "var(--text-muted)" }}>…and thousands more, including </span>
-                  {MORE_COMPANIES.join(" · ")}
-                </p>
+                <p style={{ margin: "18px auto 0", fontSize: 13, fontWeight: 700, color: "var(--text-muted)" }}>…and many more</p>
               </div>
             </div>
           </section>
 
           {/* 3 — scale stats */}
           <section id="stats" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 3, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, minHeight: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 980, width: "100%" }}>
                 <p style={{ ...overline, textAlign: "center" }}>The scale of the hunt</p>
                 <h2 style={{ ...h2Style, fontSize: 36, textAlign: "center", marginBottom: 28 }}>Tracked directly from the source</h2>
@@ -279,7 +262,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
                   ))}
 
                   {/* owl — no card background, spans + centers across both rows */}
-                  <div style={{ gridColumn: "5 / 7", gridRow: "1 / 3", alignSelf: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
+                  <div className="r-scale-owl" style={{ gridColumn: "5 / 7", gridRow: "1 / 3", alignSelf: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
                     <OwlMascot variant="happy" size={104} style={{ animation: "rbob 4.5s ease-in-out infinite" }} />
                     <span style={{ borderRadius: "var(--radius-full)", background: "var(--grape-600)", padding: "4px 14px", fontSize: 12, fontWeight: 800, color: "#fff", whiteSpace: "nowrap", transform: "rotate(-3deg)" }}>hunting 24/7</span>
                   </div>
