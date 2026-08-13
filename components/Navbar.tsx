@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
@@ -57,11 +57,6 @@ export default function Navbar() {
   const [confirmLogout, setConfirmLogout] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  // Close the mobile menu whenever the route changes.
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   // The landing page ("/") ships its own floating design-system nav — suppress
   // the global one there so they don't stack.
