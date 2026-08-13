@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { apiFetch, ApiRequestError } from "@/lib/api";
-import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ds";
 
 function ResetPasswordForm() {
   const token = useSearchParams().get("token") ?? "";
@@ -59,7 +59,7 @@ function ResetPasswordForm() {
         </Alert>
         <Link
           href="/login"
-          className="inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-4 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
+          style={{ display: "inline-block", borderRadius: "var(--radius-2xl)", background: "var(--brand-primary)", color: "var(--brand-primary-text)", padding: "10px 20px", fontSize: 14, fontWeight: 800, boxShadow: "var(--shadow-soft-sm)" }}
         >
           Log in with your new password
         </Link>
@@ -97,7 +97,7 @@ function ResetPasswordForm() {
           minLength={8}
         />
       </div>
-      <Button type="submit" disabled={busy} className="w-full">
+      <Button type="submit" disabled={busy} fullWidth>
         {busy ? "Updating…" : "Set new password"}
       </Button>
     </form>

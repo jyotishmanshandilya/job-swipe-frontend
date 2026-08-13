@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { apiFetch, ApiRequestError } from "@/lib/api";
-import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ds";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ export default function ForgotPasswordPage() {
           </Alert>
           <Link
             href="/login"
-            className="block text-center text-sm font-bold text-amber-700 hover:underline"
+            style={{ display: "block", textAlign: "center", fontSize: 14, fontWeight: 700, color: "var(--amber-600)" }}
           >
             Back to login
           </Link>
@@ -61,7 +61,7 @@ export default function ForgotPasswordPage() {
               required
             />
           </div>
-          <Button type="submit" disabled={busy} className="w-full">
+          <Button type="submit" disabled={busy} fullWidth>
             {busy ? "Sending…" : "Send reset link"}
           </Button>
         </form>

@@ -8,7 +8,7 @@ import JobCard from "@/components/JobCard";
 import JobViewToggle, { useJobView } from "@/components/JobViewToggle";
 import OwlMascot from "@/components/OwlMascot";
 import { Squiggle } from "@/components/Doodles";
-import { Alert, Button, Input, Spinner } from "@/components/ui";
+import { Alert, Button, Input, Spinner } from "@/components/ds";
 import { apiFetch, ApiRequestError, getMyViews, unreportJob } from "@/lib/api";
 import { hydrateViewedJobs } from "@/lib/viewedJobs";
 import type { Job, Page } from "@/lib/types";
@@ -310,20 +310,17 @@ function JobsContent() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="rds mx-auto max-w-3xl px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold text-stone-800">Jobs</h1>
+        <h1 className="text-2xl font-extrabold" style={{ color: "var(--text-primary)", letterSpacing: "var(--tracking-tight)" }}>Jobs</h1>
         <div className="flex items-center gap-2">
-          <div className="flex rounded-full border-2 border-stone-200 bg-white p-1">
+          <div className="flex rounded-full p-1" style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-xs)" }}>
             {(["matched", "all"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => switchTab(t)}
-                className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
-                  tab === t
-                    ? "bg-amber-400 text-amber-950"
-                    : "text-stone-500 hover:text-stone-800"
-                }`}
+                className="cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold"
+                style={tab === t ? { background: "var(--brand-primary)", color: "var(--brand-primary-text)" } : { color: "var(--stone-500)" }}
               >
                 {t === "matched" ? "For you" : "Browse all"}
               </button>
@@ -334,7 +331,7 @@ function JobsContent() {
       </div>
 
       {tab === "all" && (
-        <div className="mt-4 rounded-2xl border-2 border-stone-200 bg-white p-3">
+        <div className="mt-4 rounded-2xl p-3" style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-sm)" }}>
           <form
             className="flex flex-col gap-2 sm:flex-row"
             onSubmit={(e) => {
@@ -342,21 +339,27 @@ function JobsContent() {
               commitStaged();
             }}
           >
-            <Input
-              placeholder="Title contains…"
-              value={staged.title}
-              onChange={(e) => setStaged({ ...staged, title: e.target.value })}
-            />
-            <Input
-              placeholder="Company contains…"
-              value={staged.company}
-              onChange={(e) => setStaged({ ...staged, company: e.target.value })}
-            />
-            <Input
-              placeholder="Location contains…"
-              value={staged.location}
-              onChange={(e) => setStaged({ ...staged, location: e.target.value })}
-            />
+            <div className="flex-1">
+              <Input
+                placeholder="Title contains…"
+                value={staged.title}
+                onChange={(e) => setStaged({ ...staged, title: e.target.value })}
+              />
+            </div>
+            <div className="flex-1">
+              <Input
+                placeholder="Company contains…"
+                value={staged.company}
+                onChange={(e) => setStaged({ ...staged, company: e.target.value })}
+              />
+            </div>
+            <div className="flex-1">
+              <Input
+                placeholder="Location contains…"
+                value={staged.location}
+                onChange={(e) => setStaged({ ...staged, location: e.target.value })}
+              />
+            </div>
             <Button type="submit" variant="secondary" className="shrink-0">
               Search
             </Button>
@@ -373,11 +376,10 @@ function JobsContent() {
                     type="button"
                     onClick={() => toggleWorkplace(w.value)}
                     aria-pressed={on}
-                    className={`cursor-pointer rounded-full border-2 px-3 py-1 text-xs font-extrabold transition-colors ${
-                      on
-                        ? "border-amber-500 bg-amber-100 text-amber-800"
-                        : "border-stone-200 bg-white text-stone-500 hover:border-stone-300"
-                    }`}
+                    className="cursor-pointer rounded-full px-3 py-1 text-xs font-extrabold"
+                    style={on
+                      ? { background: "var(--amber-200)", color: "var(--amber-950)", border: "1.5px solid var(--amber-400)" }
+                      : { background: "var(--surface-card)", color: "var(--stone-500)", border: "1.5px solid var(--border-default)" }}
                   >
                     {w.label}
                   </button>
@@ -401,7 +403,8 @@ function JobsContent() {
                 placeholder="min"
                 value={staged.yoeMin}
                 onChange={(e) => setStaged({ ...staged, yoeMin: e.target.value })}
-                className="w-16 rounded-lg border-2 border-stone-200 bg-white px-2 py-1 text-xs font-bold outline-none focus:border-amber-400"
+                className="w-16 rounded-lg px-2 py-1 text-xs font-bold outline-none"
+                style={{ border: "1.5px solid var(--border-default)", background: "var(--surface-card)" }}
               />
               <span className="text-xs font-bold text-stone-400">–</span>
               <input
@@ -411,7 +414,8 @@ function JobsContent() {
                 placeholder="max"
                 value={staged.yoeMax}
                 onChange={(e) => setStaged({ ...staged, yoeMax: e.target.value })}
-                className="w-16 rounded-lg border-2 border-stone-200 bg-white px-2 py-1 text-xs font-bold outline-none focus:border-amber-400"
+                className="w-16 rounded-lg px-2 py-1 text-xs font-bold outline-none"
+                style={{ border: "1.5px solid var(--border-default)", background: "var(--surface-card)" }}
               />
             </form>
 
@@ -427,11 +431,10 @@ function JobsContent() {
                       patchApplied({ since: on ? "" : (s.value as Filters["since"]) })
                     }
                     aria-pressed={on}
-                    className={`cursor-pointer rounded-full border-2 px-3 py-1 text-xs font-extrabold transition-colors ${
-                      on
-                        ? "border-teal-500 bg-teal-100 text-teal-800"
-                        : "border-stone-200 bg-white text-stone-500 hover:border-stone-300"
-                    }`}
+                    className="cursor-pointer rounded-full px-3 py-1 text-xs font-extrabold"
+                    style={on
+                      ? { background: "var(--grape-100)", color: "var(--grape-700)", border: "1.5px solid var(--grape-300)" }
+                      : { background: "var(--surface-card)", color: "var(--stone-500)", border: "1.5px solid var(--border-default)" }}
                   >
                     {s.label}
                   </button>
@@ -443,7 +446,8 @@ function JobsContent() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="cursor-pointer text-xs font-extrabold text-stone-400 underline decoration-dotted underline-offset-2 hover:text-stone-600"
+                className="cursor-pointer text-xs font-extrabold underline decoration-dotted underline-offset-2"
+                style={{ color: "var(--text-faint)" }}
               >
                 Clear filters
               </button>
@@ -456,20 +460,24 @@ function JobsContent() {
         {loading ? (
           <Spinner />
         ) : noPreferences ? (
-          <div className="rise rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+          <div
+            className="rise rounded-2xl p-8 text-center"
+            style={{ background: "var(--surface-card)", border: "1.5px dashed var(--border-default)" }}
+          >
             <div className="flex justify-center">
               <OwlMascot size={80} />
             </div>
-            <p className="mt-4 font-extrabold text-stone-700">
+            <p className="mt-4 font-extrabold" style={{ color: "var(--stone-700)" }}>
               Tell the owl what to hunt
             </p>
-            <p className="mx-auto mt-1 max-w-sm text-sm font-semibold text-stone-500">
+            <p className="mx-auto mt-1 max-w-sm text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               Set your job preferences to unlock personalised matches and the
               daily email digest.
             </p>
             <Link
               href="/onboarding"
-              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
+              className="mt-5 inline-block text-sm font-extrabold"
+              style={{ borderRadius: "var(--radius-2xl)", background: "var(--brand-primary)", color: "var(--brand-primary-text)", padding: "10px 20px", boxShadow: "var(--shadow-soft-sm)" }}
             >
               Set preferences
             </Link>
@@ -477,22 +485,25 @@ function JobsContent() {
         ) : error ? (
           <Alert kind="error">{error}</Alert>
         ) : !data || data.content.length === 0 ? (
-          <div className="rise rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+          <div
+            className="rise rounded-2xl p-8 text-center"
+            style={{ background: "var(--surface-card)", border: "1.5px dashed var(--border-default)" }}
+          >
             <div className="flex justify-center">
               <OwlMascot size={80} variant="sleepy" className="owl-snooze" />
             </div>
-            <p className="mx-auto mt-4 max-w-sm text-sm font-semibold text-stone-500">
+            <p className="mx-auto mt-4 max-w-sm text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               {tab === "matched"
                 ? "The owl found nothing new for you — it hunts every night, so check back tomorrow or broaden your preferences."
                 : "Even the owl came back empty-taloned for those filters. Loosen the search a little?"}
             </p>
-            <span className="mt-3 inline-block text-amber-400">
+            <span className="mt-3 inline-block" style={{ color: "var(--amber-400)" }}>
               <Squiggle size={44} />
             </span>
           </div>
         ) : (
           <>
-            <p className="mb-3 text-sm font-semibold text-stone-500">
+            <p className="mb-3 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               {data.totalElements.toLocaleString()} job
               {data.totalElements === 1 ? "" : "s"}
               {tab === "matched" ? " matching your profile" : ""}
@@ -527,7 +538,7 @@ function JobsContent() {
                 >
                   ← Previous
                 </Button>
-                <span className="text-sm font-bold text-stone-500">
+                <span className="text-sm font-bold" style={{ color: "var(--text-muted)" }}>
                   Page {data.number + 1} of {data.totalPages}
                 </span>
                 <Button
@@ -544,10 +555,13 @@ function JobsContent() {
       </div>
 
       {undo && undo.key === queryKey && (
-        <div className="rise fixed bottom-6 left-1/2 z-40 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-2xl border-2 border-stone-800/90 bg-stone-800 px-4 py-3 shadow-lg">
-          <p className="min-w-0 flex-1 truncate text-sm font-bold text-[#FFF8ED]">
+        <div
+          className="rise fixed bottom-6 left-1/2 z-40 flex w-[calc(100%-2rem)] max-w-md -translate-x-1/2 items-center gap-3 rounded-2xl px-4 py-3"
+          style={{ background: "var(--stone-800)", boxShadow: "var(--shadow-soft-lg)" }}
+        >
+          <p className="min-w-0 flex-1 truncate text-sm font-bold" style={{ color: "var(--cream)" }}>
             Reported{" "}
-            <span className="font-extrabold text-amber-300">
+            <span className="font-extrabold" style={{ color: "var(--amber-300)" }}>
               {undo.job.jobTitle}
             </span>
           </p>
@@ -555,7 +569,8 @@ function JobsContent() {
             type="button"
             onClick={performUndo}
             disabled={undoBusy}
-            className="shrink-0 cursor-pointer rounded-xl border-2 border-b-4 border-amber-600 bg-amber-400 px-3 py-1 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs disabled:bg-amber-200"
+            className="shrink-0 cursor-pointer rounded-xl px-3 py-1 text-sm font-extrabold"
+            style={{ background: "var(--brand-primary)", color: "var(--brand-primary-text)", boxShadow: "var(--shadow-soft-sm)", opacity: undoBusy ? 0.6 : 1 }}
           >
             {undoBusy ? "Undoing…" : "Undo"}
           </button>
@@ -563,7 +578,8 @@ function JobsContent() {
             type="button"
             aria-label="Dismiss"
             onClick={dismissUndo}
-            className="shrink-0 cursor-pointer text-lg font-bold text-stone-400 hover:text-white"
+            className="shrink-0 cursor-pointer text-lg font-bold"
+            style={{ color: "var(--stone-400)" }}
           >
             ×
           </button>
@@ -577,7 +593,7 @@ export default function JobsPage() {
   return (
     <RequireAuth>
       {/* useSearchParams needs Suspense or the production build fails. */}
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<div className="rds"><Spinner /></div>}>
         <JobsContent />
       </Suspense>
     </RequireAuth>

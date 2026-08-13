@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import JobCard from "@/components/JobCard";
 import OwlMascot from "@/components/OwlMascot";
-import { Alert, Button, Spinner } from "@/components/ui";
+import { Alert, Button, Spinner } from "@/components/ds";
 import { ApiRequestError, getAppliedJobs, getSavedJobs } from "@/lib/api";
 import type { Job, Page } from "@/lib/types";
 
@@ -76,19 +76,16 @@ function InventoryContent() {
       : "No applications tracked yet. After you view a role, tell the owl if you applied.";
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="rds mx-auto max-w-3xl px-4 py-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-extrabold text-stone-800">My jobs</h1>
-        <div className="flex rounded-full border-2 border-stone-200 bg-white p-1">
+        <h1 className="text-2xl font-extrabold" style={{ color: "var(--text-primary)", letterSpacing: "var(--tracking-tight)" }}>My jobs</h1>
+        <div className="flex rounded-full p-1" style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-xs)" }}>
           {(["saved", "applied"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => switchTab(t)}
-              className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold transition-colors ${
-                tab === t
-                  ? "bg-amber-400 text-amber-950"
-                  : "text-stone-500 hover:text-stone-800"
-              }`}
+              className="cursor-pointer rounded-full px-4 py-1.5 text-sm font-extrabold"
+              style={tab === t ? { background: "var(--brand-primary)", color: "var(--brand-primary-text)" } : { color: "var(--stone-500)" }}
             >
               {t === "saved" ? "Saved" : "Applied"}
             </button>
@@ -102,23 +99,27 @@ function InventoryContent() {
         ) : error ? (
           <Alert kind="error">{error}</Alert>
         ) : !data || data.content.length === 0 ? (
-          <div className="rise rounded-2xl border-2 border-dashed border-stone-300 bg-white p-8 text-center">
+          <div
+            className="rise rounded-2xl p-8 text-center"
+            style={{ background: "var(--surface-card)", border: "1.5px dashed var(--border-default)" }}
+          >
             <div className="flex justify-center">
               <OwlMascot size={80} variant="sleepy" className="owl-snooze" />
             </div>
-            <p className="mx-auto mt-4 max-w-sm text-sm font-semibold text-stone-500">
+            <p className="mx-auto mt-4 max-w-sm text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               {emptyCopy}
             </p>
             <Link
               href="/jobs"
-              className="mt-5 inline-block rounded-2xl border-2 border-b-4 border-amber-600 bg-amber-400 px-5 py-2 text-sm font-extrabold text-amber-950 shadow-hard-sm transition-all hover:bg-amber-300 active:translate-y-[2px] active:border-b-2 active:shadow-hard-xs"
+              className="mt-5 inline-block text-sm font-extrabold"
+              style={{ borderRadius: "var(--radius-2xl)", background: "var(--brand-primary)", color: "var(--brand-primary-text)", padding: "10px 20px", boxShadow: "var(--shadow-soft-sm)" }}
             >
               Browse jobs
             </Link>
           </div>
         ) : (
           <>
-            <p className="mb-3 text-sm font-semibold text-stone-500">
+            <p className="mb-3 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               {data.totalElements.toLocaleString()}{" "}
               {tab === "saved" ? "saved" : "applied to"}
             </p>
@@ -142,7 +143,7 @@ function InventoryContent() {
                 >
                   ← Previous
                 </Button>
-                <span className="text-sm font-bold text-stone-500">
+                <span className="text-sm font-bold" style={{ color: "var(--text-muted)" }}>
                   Page {data.number + 1} of {data.totalPages}
                 </span>
                 <Button
@@ -165,7 +166,7 @@ export default function SavedPage() {
   return (
     <RequireAuth>
       {/* useSearchParams needs Suspense or the production build fails. */}
-      <Suspense fallback={<Spinner />}>
+      <Suspense fallback={<div className="rds"><Spinner /></div>}>
         <InventoryContent />
       </Suspense>
     </RequireAuth>

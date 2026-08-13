@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import "./ds/tokens.css";
 import { AuthProvider } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
 import PreferencesForm from "@/components/PreferencesForm";
 import { REASONS } from "@/components/ReportJobButton";
-import { Alert, Button, Input, Label, Modal, Spinner, Toggle } from "@/components/ui";
+import { Alert, Button, Input, Label, Modal, Spinner, Toggle } from "@/components/ds";
 import {
   apiFetch,
   ApiRequestError,
@@ -222,7 +222,7 @@ function ReportedJobsSection() {
     REASONS.find((r) => r.value === reason)?.label ?? reason;
 
   return (
-    <section className="shadow-hard rounded-2xl border-2 border-stone-800/90 bg-white">
+    <section className="rounded-2xl" style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-sm)" }}>
       <button
         type="button"
         onClick={toggle}
@@ -230,8 +230,8 @@ function ReportedJobsSection() {
         className="flex w-full cursor-pointer items-center justify-between gap-3 p-6 text-left"
       >
         <div>
-          <h2 className="text-lg font-extrabold text-stone-800">Reported jobs</h2>
-          <p className="mt-0.5 text-xs font-semibold text-stone-500">
+          <h2 className="text-lg font-extrabold" style={{ color: "var(--text-primary)" }}>Reported jobs</h2>
+          <p className="mt-0.5 text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
             Jobs you&apos;ve flagged and hidden from your feed — restore any you
             reported by mistake.
           </p>
@@ -247,7 +247,7 @@ function ReportedJobsSection() {
       </button>
 
       {open && (
-        <div className="border-t-2 border-stone-100 p-6 pt-4">
+        <div className="p-6 pt-4" style={{ borderTop: "1px solid var(--stone-200)" }}>
           {error && (
             <div className="mb-3">
               <Alert kind="error">{error}</Alert>
@@ -264,19 +264,20 @@ function ReportedJobsSection() {
               {reports.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-center gap-3 rounded-xl border-2 border-stone-200 px-3.5 py-2.5"
+                  className="flex items-center gap-3 rounded-xl px-3.5 py-2.5"
+                  style={{ boxShadow: "var(--shadow-soft-xs)", background: "var(--surface-card)" }}
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-extrabold text-stone-800">
+                    <p className="truncate text-sm font-extrabold" style={{ color: "var(--text-primary)" }}>
                       {r.jobTitle ?? "Job no longer listed"}
                       {r.companyName && (
-                        <span className="font-semibold capitalize text-stone-500">
+                        <span className="font-semibold capitalize" style={{ color: "var(--text-muted)" }}>
                           {" "}
                           · {r.companyName}
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 truncate text-xs font-semibold text-stone-500">
+                    <p className="mt-0.5 truncate text-xs font-semibold" style={{ color: "var(--text-muted)" }}>
                       {reasonLabel(r.reason)} ·{" "}
                       {new Date(r.createdAt).toLocaleDateString()}
                     </p>
@@ -304,18 +305,27 @@ function DangerZoneSection() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
+  const [confirmText, setConfirmText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // Second, deliberate check on top of the password: the user must type DELETE.
+  const confirmed = confirmText.trim().toUpperCase() === "DELETE";
 
   const close = () => {
     setOpen(false);
     setPassword("");
+    setConfirmText("");
     setError(null);
   };
 
   const confirm = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    if (!confirmed) {
+      setError('Type DELETE (in capitals) to confirm.');
+      return;
+    }
     setBusy(true);
     try {
       await deleteAccount(password);
@@ -366,11 +376,23 @@ function DangerZoneSection() {
               required
             />
           </div>
+          <div>
+            <Label htmlFor="delete-confirm">
+              Type <span className="font-extrabold text-rose-700">DELETE</span> to confirm
+            </Label>
+            <Input
+              id="delete-confirm"
+              value={confirmText}
+              onChange={(e) => setConfirmText(e.target.value)}
+              placeholder="DELETE"
+              autoComplete="off"
+            />
+          </div>
           <div className="flex justify-end gap-2">
             <Button type="button" variant="secondary" onClick={close}>
               Cancel
             </Button>
-            <Button type="submit" variant="danger" disabled={busy || !password}>
+            <Button type="submit" variant="danger" disabled={busy || !password || !confirmed}>
               {busy ? "Deleting…" : "Delete forever"}
             </Button>
           </div>
@@ -392,15 +414,10 @@ function Section({
   const danger = tone === "danger";
   return (
     <section
-      className={`shadow-hard rounded-2xl border-2 bg-white p-6 ${
-        danger ? "border-rose-300" : "border-stone-800/90"
-      }`}
+      className="rounded-2xl p-6"
+      style={{ background: "var(--surface-card)", boxShadow: "var(--shadow-soft-sm)", border: danger ? "1.5px solid var(--rose-300)" : "none" }}
     >
-      <h2
-        className={`mb-4 text-lg font-extrabold ${
-          danger ? "text-rose-700" : "text-stone-800"
-        }`}
-      >
+      <h2 className="mb-4 text-lg font-extrabold" style={{ color: danger ? "var(--rose-700)" : "var(--text-primary)" }}>
         {title}
       </h2>
       {children}
@@ -411,7 +428,7 @@ function Section({
 export default function SettingsPage() {
   return (
     <RequireAuth>
-      <div className="mx-auto max-w-lg space-y-6 px-4 py-8">
+      <div className="rds mx-auto max-w-lg space-y-6 px-4 py-8">
         <h1 className="text-2xl font-extrabold text-stone-800">Settings</h1>
         <Section title="Profile">
           <ProfileSection />

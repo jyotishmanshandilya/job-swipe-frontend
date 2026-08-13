@@ -44,3 +44,12 @@ next-env.d.ts
 # local agent handover notes, not for the repo
 BACKEND_HANDOVER.md
 FRONTEND_HANDOFF.md
+
+# design-sync (claude.ai/design) — staged scripts, build output, machine state
+.ds-sync/
+ds-bundle/
+.ds-tmp/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
+.design-sync/tw-input.css

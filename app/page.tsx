@@ -10,10 +10,9 @@ import HomeClient from "./HomeClient";
  */
 export async function generateMetadata(): Promise<Metadata> {
   const stats = await fetchJobStats();
-  const boards = stats ? plusLabel(stats.totalBoards, 100) : "300+";
   const jobs = stats ? plusLabel(stats.totalJobs, 1000) : "25,000+";
   return {
-    description: `RoleOwl reads ${boards} company hiring systems directly — ${jobs} live tech roles right now — and emails you fresh matches every morning, before the big job boards have them.`,
+    description: `RoleOwl reads roles straight from company career pages — ${jobs} live tech roles right now — and emails you fresh matches every morning, before the big job boards have them.`,
   };
 }
 

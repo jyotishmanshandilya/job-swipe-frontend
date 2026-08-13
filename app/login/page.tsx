@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { ApiRequestError } from "@/lib/api";
-import { Alert, AuthShell, Button, Input, Label } from "@/components/ui";
+import { Alert, AuthShell, Button, Input, Label } from "@/components/ds";
 import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 
 function LoginForm() {
@@ -86,24 +86,24 @@ function LoginForm() {
           />
         </div>
 
-        <Button type="submit" disabled={busy} className="w-full">
+        <Button type="submit" disabled={busy} fullWidth>
           {busy ? "Logging in…" : "Log in"}
         </Button>
       </form>
 
-      <div className="my-5 flex items-center gap-3 text-sm font-bold text-amber-800/60">
-        <span className="h-px flex-1 bg-amber-900/15" />
+      <div style={{ margin: "20px 0", display: "flex", alignItems: "center", gap: 12, fontSize: 14, fontWeight: 700, color: "var(--text-faint)" }}>
+        <span style={{ height: 1, flex: 1, background: "var(--stone-200)" }} />
         or
-        <span className="h-px flex-1 bg-amber-900/15" />
+        <span style={{ height: 1, flex: 1, background: "var(--stone-200)" }} />
       </div>
 
       <GoogleSignInButton onCredential={handleGoogle} onError={setError} />
 
-      <div className="mt-4 flex justify-between text-sm font-bold">
-        <Link href="/forgot-password" className="text-amber-700 hover:underline">
+      <div style={{ marginTop: 16, display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: 700 }}>
+        <Link href="/forgot-password" style={{ color: "var(--amber-600)" }}>
           Forgot password?
         </Link>
-        <Link href="/register" className="text-amber-700 hover:underline">
+        <Link href="/register" style={{ color: "var(--amber-600)" }}>
           Create an account
         </Link>
       </div>

@@ -1,0 +1,257 @@
+/*
+ * RoleOwl design system tokens — exported from Claude Design.
+ * Scoped under `.rds` (not :root) so this new visual language only applies to
+ * surfaces that opt in, leaving the current /jobs and /login pages untouched.
+ * Wrap any subtree that uses components/ds/* in <div className="rds"> (or add
+ * the class to the page root).
+ */
+
+/* Display face. Vendored locally (public/fonts) rather than next/font so the
+   build never depends on a Google Fonts fetch at runtime. */
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/space-grotesk.woff2") format("woff2");
+}
+
+.rds {
+  /* colors */
+  --cream: #fff8ed;
+  --ink: #292524;
+  --amber-200: #fde68a;
+  --amber-300: #fcd34d;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --amber-600: #d97706;
+  --amber-950: #451a03;
+  --grape-50: #f3f2f8;
+  --grape-100: #e6e4f1;
+  --grape-200: #cdc9e3;
+  --grape-300: #a79fce;
+  --grape-400: #7d72b3;
+  --grape-500: #5d5197;
+  --grape-600: #4a3f7b;
+  --grape-700: #3b3364;
+  --grape-800: #2f294f;
+  --grape-900: #241f3c;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-300: #d6d3d1;
+  --stone-400: #a8a29e;
+  --stone-500: #78716c;
+  --stone-600: #57534e;
+  --stone-700: #44403c;
+  --stone-800: #292524;
+  --rose-50: #fff1f2;
+  --rose-300: #fda4af;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+  --rose-600: #e11d48;
+  --rose-700: #be123c;
+  --emerald-50: #ecfdf5;
+  --emerald-100: #d1fae5;
+  --emerald-300: #6ee7b7;
+  --emerald-700: #047857;
+  --emerald-800: #065f46;
+  --night-bg-start: #262143;
+  --night-bg-end: #3b3364;
+  --night-border: #211c3d;
+  --night-text: #fff8ed;
+  --night-lilac: #cdc8ee;
+  --night-btn-bg: #3e3768;
+  --night-btn-border: #4b4478;
+  --night-star: #fcd34d;
+  --night-glow: #fde68a;
+  --night-moon-crescent: #2a2549;
+  --surface-canvas: var(--cream);
+  --surface-card: #ffffff;
+  --text-primary: var(--ink);
+  --text-muted: var(--stone-500);
+  --text-faint: var(--stone-400);
+  --brand-primary: var(--amber-400);
+  --brand-primary-hover: var(--amber-300);
+  --brand-primary-active: var(--amber-400);
+  --brand-primary-text: var(--amber-950);
+  --brand-primary-border: var(--amber-600);
+  --accent-grape: var(--grape-600);
+  --accent-grape-border: var(--grape-800);
+  --semantic-success-bg: var(--emerald-50);
+  --semantic-success-border: var(--emerald-300);
+  --semantic-success-text: var(--emerald-800);
+  --semantic-warning-bg: #fffbeb;
+  --semantic-warning-border: var(--amber-300);
+  --semantic-warning-text: #92400e;
+  --semantic-danger-bg: var(--rose-50);
+  --semantic-danger-border: var(--rose-300);
+  --semantic-danger-text: var(--rose-700);
+  --border-default: var(--stone-300);
+  --border-ink: rgb(41 37 36 / 0.9);
+
+  /* typography — mapped to the app's next/font instances (literal-name
+     fallbacks keep the DS renderable outside next/font too) */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: var(--font-nunito), "Nunito", system-ui, sans-serif;
+  --weight-regular: 400;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+  --tracking-tight: -0.02em;
+  --tracking-widest: 0.12em;
+
+  /* spacing + radii */
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-4xl: 32px;
+  --radius-full: 9999px;
+
+  /* effects */
+  --shadow-soft-xs: 0 1px 3px rgb(41 37 36 / 0.08);
+  --shadow-soft-sm: 0 6px 16px rgb(41 37 36 / 0.1);
+  --shadow-soft-md: 0 14px 34px rgb(41 37 36 / 0.14);
+  --shadow-soft-lg: 0 28px 64px rgb(41 37 36 / 0.2);
+  --glass-bg: rgb(255 255 255 / 0.55);
+  --glass-border: rgb(255 255 255 / 0.4);
+  --blur-md: 14px;
+  --blur-lg: 24px;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  font-family: var(--font-body);
+  background: var(--surface-canvas);
+  color: var(--text-primary);
+}
+
+.rds h1,
+.rds h2,
+.rds h3,
+.rds h4,
+.rds h5,
+.rds h6 {
+  font-family: var(--font-display);
+}
+
+/* Motion used by the DS patterns/templates (keyframes can't be scoped). */
+@keyframes rbob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes rmarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@keyframes rtwinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes rfadeup {
+  0% {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes rstepglow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(109 78 189 / 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgb(109 78 189 / 0);
+  }
+}
+@keyframes rflow {
+  0% {
+    stroke-dashoffset: 24;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes rspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rds *,
+  .rds *::before,
+  .rds *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Responsive overrides for the landing (components use inline styles for the
+   desktop layout; these !important rules win over inline on small screens). */
+@media (max-width: 860px) {
+  .rds .r-hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .rds .r-grid-6 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .rds .r-grid-4,
+  .rds .r-logos {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .rds .r-grid-3,
+  .rds .r-grid-2,
+  .rds .r-faq {
+    grid-template-columns: 1fr !important;
+  }
+  /* The 2×6 scale grid uses explicit column/row placement; on mobile drop the
+     grid entirely so children stack in DOM order (placement props ignored). */
+  .rds .r-scale-grid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .rds .r-stack {
+    position: static !important;
+    height: auto !important;
+    padding: 92px 16px 24px !important;
+  }
+  .rds .r-stack-inner {
+    height: auto !important;
+    padding: 28px 20px !important;
+  }
+  .rds .r-hero-inner {
+    height: auto !important;
+    padding: 32px 24px !important;
+  }
+  .rds .r-hero-cards {
+    display: none !important;
+  }
+  .rds .r-flowline {
+    display: none !important;
+  }
+  .rds .r-nav-links {
+    display: none !important;
+  }
+  .rds .r-sec {
+    margin-top: 56px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}

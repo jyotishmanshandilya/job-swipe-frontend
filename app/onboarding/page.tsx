@@ -13,7 +13,7 @@ export default function OnboardingPage() {
 
   return (
     <RequireAuth>
-      <div className="mx-auto max-w-lg px-4 py-10">
+      <div className="rds mx-auto max-w-lg px-4 py-10">
         <div className="rise flex items-center gap-4">
           <OwlMascot
             size={64}
@@ -21,10 +21,10 @@ export default function OnboardingPage() {
             className={awake ? "" : "owl-snooze"}
           />
           <div>
-            <h1 className="text-2xl font-extrabold text-stone-800">
+            <h1 className="text-2xl font-extrabold" style={{ color: "var(--text-primary)", letterSpacing: "var(--tracking-tight)" }}>
               What should the owl hunt for?
             </h1>
-            <p className="mt-1 text-sm font-semibold text-stone-500">
+            <p className="mt-1 text-sm font-semibold" style={{ color: "var(--text-muted)" }}>
               {awake
                 ? "The owl is awake and taking notes. Change any of this later in Settings."
                 : "The owl is dozing until it knows what to hunt. Add a job title to wake it."}
@@ -32,8 +32,8 @@ export default function OnboardingPage() {
           </div>
         </div>
         <div
-          className="rise shadow-hard mt-8 rounded-3xl border-2 border-stone-800/90 bg-white p-6"
-          style={{ animationDelay: "80ms" }}
+          className="rise mt-8 p-6"
+          style={{ animationDelay: "80ms", borderRadius: "var(--radius-3xl)", background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)" }}
         >
           <PreferencesForm
             submitLabel="Save and see my matches"
