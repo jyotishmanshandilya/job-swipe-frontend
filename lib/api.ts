@@ -3,7 +3,7 @@ import type {
   AuthResponse,
   Job,
   JobReport,
-  JobStats,
+  LatestRole,
   MyJobReport,
   Page,
   ReportReason,
@@ -248,12 +248,12 @@ export function deleteAccount(password: string): Promise<void> {
 }
 
 /**
- * Public landing-page counts. Deliberately a bare fetch (no token, no
- * 401-refresh handling): a stale token must never bounce a landing-page
- * visitor to /login.
+ * Latest active roles for the public landing marquee. Bare fetch (no token, no
+ * 401-refresh): a stale token must never bounce a landing visitor. Callers fall
+ * back to a static list on any failure — see BACKEND_HANDOVER.md for the endpoint.
  */
-export async function getJobStats(): Promise<JobStats> {
-  const res = await fetch(`${API_URL}/api/jobs/stats`);
+export async function getLatestRoles(limit = 8): Promise<LatestRole[]> {
+  const res = await fetch(`${API_URL}/api/jobs/latest?limit=${limit}`);
   if (!res.ok) throw new ApiRequestError(res.status, `Request failed (${res.status})`);
-  return (await res.json()) as JobStats;
+  return (await res.json()) as LatestRole[];
 }
