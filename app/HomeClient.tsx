@@ -231,11 +231,11 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
               <div style={{ maxWidth: 960, width: "100%", textAlign: "center" }}>
                 <p style={overline}>Their open roles, tracked here</p>
                 <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Find jobs from companies like these</h2>
-                <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+                <div className="r-logos" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, maxWidth: 780, margin: "0 auto" }}>
                   {FEATURED.map((c) => (
-                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 94, boxSizing: "border-box", padding: "16px 24px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
+                    <div key={c.slug} style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 75, boxSizing: "border-box", padding: "13px 20px", background: "#fff", border: "1px solid var(--border-default)", borderRadius: "var(--radius-2xl)", boxShadow: "var(--shadow-soft-xs)" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "62%", maxHeight: 46, objectFit: "contain" }} />
+                      <img src={`/logos/${c.slug}.png`} alt={c.name} style={{ maxWidth: "62%", maxHeight: 37, objectFit: "contain" }} />
                     </div>
                   ))}
                 </div>
