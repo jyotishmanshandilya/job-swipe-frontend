@@ -1,11 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth";
-import { getJobStats } from "@/lib/api";
-import { plusLabel } from "@/lib/stats";
-import type { JobStats } from "@/lib/types";
 import { Button, OwlMascot } from "@/components/ds";
 
 /*
@@ -129,19 +126,13 @@ function FeatureIcon({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function HomeClient({ initialStats }: { initialStats: JobStats | null }) {
+export default function HomeClient() {
   const { authenticated } = useAuth();
-  const [stats, setStats] = useState<JobStats | null>(initialStats);
   const [openFaq, setOpenFaq] = useState(0);
 
-  useEffect(() => {
-    getJobStats().then(setStats).catch(() => {});
-  }, []);
-
-  const jobsStat = stats ? plusLabel(stats.totalJobs, 1000) : "25,000+";
-  // Static positioning number (per product): the size of the tracked universe,
-  // not the DB row count.
-  const companiesStat = "80,000+";
+  // Static positioning numbers (per product), not live DB counts.
+  const jobsStat = "80,000+";
+  const companiesStat = "1,000+";
 
   const primaryHref = authenticated ? "/jobs" : "/register";
   const primaryLabel = authenticated ? "Go to my jobs" : "Start free";
@@ -172,8 +163,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
         <div style={{ position: "relative" }}>
           {/* 1 — night hero */}
           <section className="r-stack" style={{ position: "sticky", top: 0, zIndex: 1, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-hero-inner r-hero-grid" style={{ position: "relative", width: "100%", maxWidth: 1080, height: "70vh", overflow: "hidden", borderRadius: 20, background: "linear-gradient(150deg,var(--night-bg-start),var(--night-bg-end))", display: "grid", gridTemplateColumns: "1.2fr 0.8fr", alignItems: "center", padding: "0 84px" }}>
-              <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgb(255 255 255 / .5) 1px,transparent 1.5px)", backgroundSize: "26px 26px", opacity: 0.18 }} />
+            <div className="r-hero-inner r-hero-grid" style={{ position: "relative", width: "100%", maxWidth: 1080, height: "70vh", overflow: "hidden", borderRadius: 20, background: "linear-gradient(150deg,var(--night-bg-start),var(--night-bg-end))", boxShadow: "var(--shadow-soft-xs)", display: "grid", gridTemplateColumns: "1.2fr 0.8fr", alignItems: "center", padding: "0 84px" }}>
               <span style={{ position: "absolute", left: "6%", top: "16%", color: "var(--night-star)", animation: "rtwinkle 3s ease-in-out infinite" }}>✦</span>
               <span style={{ position: "absolute", left: "34%", top: "10%", color: "var(--amber-200)", fontSize: 9, animation: "rtwinkle 3s ease-in-out infinite .7s" }}>✦</span>
               <span style={{ position: "absolute", right: "8%", top: "14%", color: "var(--night-star)", fontSize: 10, animation: "rtwinkle 3s ease-in-out infinite .4s" }}>✦</span>
@@ -209,7 +199,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
                       <div><p style={{ margin: 0, fontSize: 14, fontWeight: 800, color: "#fff", lineHeight: 1.2 }}>Product Designer</p><p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "var(--night-lilac)" }}>Growth-stage co.</p></div>
                     </div>
                   </div>
-                  <div style={{ position: "absolute", left: 0, top: 0, width: 320, transform: "skewY(-8deg) translate(0,20px)", borderRadius: "var(--radius-2xl)", background: "var(--surface-card)", border: "1px solid var(--border-default)", boxShadow: "var(--shadow-soft-lg)", padding: "22px 26px" }}>
+                  <div style={{ position: "absolute", left: 0, top: 0, width: 320, transform: "skewY(-8deg) translate(0,20px)", borderRadius: "var(--radius-2xl)", background: "var(--surface-card)", border: "1px solid var(--border-default)", boxShadow: "var(--shadow-soft-xs)", padding: "22px 26px" }}>
                     <span style={{ position: "absolute", top: 12, right: 18, borderRadius: "var(--radius-full)", background: "var(--emerald-700)", color: "#fff", fontSize: 12, fontWeight: 800, padding: "3px 12px", boxShadow: "var(--shadow-soft-sm)" }}>New match</span>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                       <span style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: "50%", background: "var(--amber-200)", color: "var(--amber-950)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 17 }}>S</span>
@@ -227,7 +217,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 2 — trust grid */}
           <section id="sources" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 2, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", border: "1px solid var(--border-default)", boxShadow: "var(--shadow-soft-xs)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 960, width: "100%", textAlign: "center" }}>
                 <p style={overline}>Their open roles, tracked here</p>
                 <h2 style={{ ...h2Style, fontSize: 36, marginBottom: 28 }}>Find jobs from companies like these</h2>
@@ -246,7 +236,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
           {/* 3 — scale stats */}
           <section id="stats" className="r-stack" style={{ position: "sticky", top: 0, zIndex: 3, height: "100vh", padding: "104px 24px 24px", boxSizing: "border-box", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", boxShadow: "var(--shadow-soft-lg)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
+            <div className="r-stack-inner" style={{ width: "100%", maxWidth: 1080, height: "70vh", borderRadius: 20, background: "var(--surface-card)", border: "1px solid var(--border-default)", boxShadow: "var(--shadow-soft-xs)", overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 84px", boxSizing: "border-box" }}>
               <div style={{ maxWidth: 980, width: "100%" }}>
                 <p style={{ ...overline, textAlign: "center" }}>The scale of the hunt</p>
                 <h2 style={{ ...h2Style, fontSize: 36, textAlign: "center", marginBottom: 28 }}>Tracked directly from the source</h2>
@@ -255,9 +245,9 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
                     departments (r2 c1–4). Collapses to a stack on mobile. */}
                 <div className="r-scale-grid" style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 20, alignItems: "start" }}>
                   {([["1 / 3", jobsStat, "jobs surfaced"], ["3 / 5", companiesStat, "companies tracked"]] as const).map(([col, big, small]) => (
-                    <div key={small} style={{ gridColumn: col, gridRow: 1, ...card, padding: "22px 24px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-                      <p style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 28, letterSpacing: "var(--tracking-tight)", background: "linear-gradient(135deg,var(--grape-700),var(--grape-500))", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{big}</p>
-                      <p style={{ margin: "6px 0 0", fontSize: 13, fontWeight: 700, color: "var(--text-muted)" }}>{small}</p>
+                    <div key={small} style={{ gridColumn: col, gridRow: 1, ...card, padding: "17px 20px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+                      <p style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 23, letterSpacing: "var(--tracking-tight)", background: "linear-gradient(135deg,var(--grape-700),var(--grape-500))", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>{big}</p>
+                      <p style={{ margin: "5px 0 0", fontSize: 12, fontWeight: 700, color: "var(--text-muted)" }}>{small}</p>
                     </div>
                   ))}
 
@@ -380,7 +370,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
               {FAQS.map((f, i) => {
                 const open = openFaq === i;
                 return (
-                  <div key={f.q} onClick={() => setOpenFaq(open ? -1 : i)} style={{ ...card, borderRadius: "var(--radius-2xl)", marginBottom: 12, padding: "18px 22px", cursor: "pointer", boxShadow: open ? "var(--shadow-soft-md)" : "var(--shadow-soft-xs)" }}>
+                  <div key={f.q} onClick={() => setOpenFaq(open ? -1 : i)} style={{ ...card, borderRadius: "var(--radius-2xl)", marginBottom: 12, padding: "18px 22px", cursor: "pointer", boxShadow: "var(--shadow-soft-xs)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                       <span style={{ flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, borderRadius: "50%", background: "var(--amber-200)", color: "var(--amber-950)", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 16 }}>{open ? "–" : "+"}</span>
                       <p style={{ margin: 0, fontWeight: 800, fontSize: 15 }}>{f.q}</p>
@@ -395,7 +385,7 @@ export default function HomeClient({ initialStats }: { initialStats: JobStats | 
 
         {/* final CTA */}
         <section style={{ ...section, padding: "0 24px 96px" }}>
-          <div style={{ borderRadius: 28, background: "linear-gradient(135deg,var(--grape-700),var(--grape-600))", boxShadow: "var(--shadow-soft-lg)", padding: "32px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+          <div style={{ borderRadius: 28, background: "linear-gradient(135deg,var(--grape-700),var(--grape-600))", boxShadow: "var(--shadow-soft-xs)", padding: "32px 40px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <OwlMascot variant="happy" size={44} />
               <h3 style={{ margin: 0, fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 24, color: "#fff", letterSpacing: "var(--tracking-tight)" }}>Let the owl start hunting for you.</h3>
