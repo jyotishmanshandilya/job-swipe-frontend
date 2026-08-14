@@ -39,7 +39,10 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}
+      // `background: transparent` overrides the opaque `--surface-canvas` fill
+      // that `.rds` sets (tokens.css) — without it this portal paints a solid
+      // page-colour panel over whatever screen the dialog opened on.
+      style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, background: "transparent" }}
     >
       <div
         onClick={onClose}
