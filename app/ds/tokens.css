@@ -212,17 +212,39 @@
   .rds .r-grid-6 {
     grid-template-columns: repeat(3, 1fr) !important;
   }
+  /* How it works: single vertical column (4×1) with a vertical animated thread
+     between the badges, mirroring the desktop horizontal flow. Each step becomes
+     a badge-left / text-right row so the line never crosses the copy. */
   .rds .r-grid-4 {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
   }
-  /* Logo wall: 4×2 on mobile — only the eight r-logo-hide-mobile-free names show. */
+  .rds .r-step {
+    display: flex !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 16px !important;
+    padding-bottom: 32px !important;
+  }
+  .rds .r-step:last-child {
+    padding-bottom: 0 !important;
+  }
+  .rds .r-step-badge {
+    margin: 0 !important;
+    flex-shrink: 0 !important; /* keep the badge a perfect circle in the flex row */
+  }
+  .rds .r-flowline-v {
+    display: block !important;
+  }
+  /* Logo wall: 2×4 on mobile — two roomy columns so each card stays legible;
+     only the eight r-logo-hide-mobile-free names show. */
   .rds .r-logos {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
   }
   .rds .r-logos > div {
-    height: 62px !important;
-    padding: 10px 8px !important;
+    height: 72px !important;
+    padding: 12px 16px !important;
   }
   .rds .r-logo-hide-mobile {
     display: none !important;
@@ -250,26 +272,40 @@
   }
   /* Keep the sticky-stack on mobile too: each section is a full-height panel and
      its inner card fills it (content is compacted above so it fits one screen). */
+  /* Nav hugs the top edge with the same 16px inset as the sides, and each stack
+     panel leaves a matching 16px gap below it before the section card starts. */
+  .rds .r-nav {
+    top: 16px !important;
+  }
   .rds .r-stack {
     height: 100dvh !important;
-    padding: 76px 16px 16px !important;
+    padding: 80px 16px 16px !important;
   }
   .rds .r-stack-inner {
-    height: calc(100dvh - 92px) !important;
+    height: calc(100dvh - 96px) !important;
     min-height: 0 !important;
     padding: 24px 18px !important;
   }
   .rds .r-hero-inner {
-    height: calc(100dvh - 92px) !important;
+    height: calc(100dvh - 96px) !important;
     padding: 28px 20px !important;
   }
-  /* Owl sits in its own centered row between the stat cards and the fields card. */
+  /* Owl is dropped on mobile so the stat cards and fields never get clipped. */
   .rds .r-scale-owl {
-    grid-column: 1 / -1 !important;
-    grid-row: auto !important;
+    display: none !important;
   }
-  .rds .r-scale-owl > * {
-    transform: scale(0.82);
+  /* Compact the "fields covered" card so all 12 chips fit inside the fixed-height
+     stack panel without cropping the heading or the last row. */
+  .rds .r-scale-fields {
+    padding: 16px 16px !important;
+  }
+  .rds .r-scale-fields > div {
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .rds .r-scale-fields span {
+    padding: 4px 11px !important;
+    font-size: 12px !important;
   }
   /* Hero on mobile: the busy stacked-card composition is swapped for a single
      centered owl below the (now centered) copy — a clean text-over-owl stack. */
@@ -293,7 +329,7 @@
   .rds .r-hero-grid {
     justify-items: center !important;
     align-content: center !important;
-    gap: 22px !important;
+    gap: 44px !important;
   }
   .rds .r-flowline {
     display: none !important;

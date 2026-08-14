@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import RequireAuth from "@/components/RequireAuth";
@@ -108,6 +108,24 @@ function isAnyFilterActive(f: Filters): boolean {
   );
 }
 
+/**
+ * True on md+ viewports. The list layout is dense-by-design and only earns its
+ * keep on wide screens, so on phones we force card view and hide the toggle.
+ * Server snapshot is `false` (→ card), matching the SSR HTML, so no hydration
+ * mismatch; the real value swaps in right after mount.
+ */
+function useIsWide(): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia("(min-width: 768px)");
+      mq.addEventListener("change", cb);
+      return () => mq.removeEventListener("change", cb);
+    },
+    () => window.matchMedia("(min-width: 768px)").matches,
+    () => false,
+  );
+}
+
 /** Outcome of one fetch, tagged with the query it answered. */
 interface LoadResult {
   key: string;
@@ -131,6 +149,9 @@ function JobsContent() {
   );
   const [result, setResult] = useState<LoadResult | null>(null);
   const [view, setView] = useJobView();
+  const isWide = useIsWide();
+  // List view is desktop-only; narrow screens always render cards.
+  const effectiveView = isWide ? view : "card";
 
   // Browse filters. Text/number fields commit on submit; workplace + recency
   // toggles commit immediately. All ephemeral — they live in the URL only, never
@@ -325,7 +346,7 @@ function JobsContent() {
               </button>
             ))}
           </div>
-          <JobViewToggle mode={view} onChange={setView} />
+          {isWide && <JobViewToggle mode={view} onChange={setView} />}
         </div>
       </div>
 
@@ -498,7 +519,7 @@ function JobsContent() {
             </p>
             <div
               className={
-                view === "card"
+                effectiveView === "card"
                   ? "grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6"
                   : "space-y-4 md:space-y-5"
               }
@@ -511,7 +532,7 @@ function JobsContent() {
                 >
                   <JobCard
                     job={job}
-                    mode={view}
+                    mode={effectiveView}
                     onReported={tab === "matched" ? handleReported : undefined}
                   />
                 </div>

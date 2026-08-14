@@ -165,7 +165,7 @@ export default function HomeClient() {
 
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* floating glass nav */}
-        <nav style={{ position: "fixed", top: 24, left: "50%", transform: "translateX(-50%)", zIndex: 20, width: "calc(100% - 32px)", maxWidth: 920, display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: "var(--radius-full)", border: "1px solid var(--glass-border)", background: "var(--glass-bg)", backdropFilter: "blur(var(--blur-md))", boxShadow: "var(--shadow-soft-sm)", padding: "10px 12px 10px 20px" }}>
+        <nav className="r-nav" style={{ position: "fixed", top: 24, left: "50%", transform: "translateX(-50%)", zIndex: 20, width: "calc(100% - 32px)", maxWidth: 920, display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: "var(--radius-full)", border: "1px solid var(--glass-border)", background: "var(--glass-bg)", backdropFilter: "blur(var(--blur-md))", boxShadow: "var(--shadow-soft-sm)", padding: "10px 12px 10px 20px" }}>
           <Link href="/" style={{ fontFamily: "var(--font-display)", fontWeight: 800, fontSize: 18, display: "flex", alignItems: "center", gap: 8, color: "var(--text-primary)", textDecoration: "none" }}>
             <OwlMascot size={24} />RoleOwl
           </Link>
@@ -356,11 +356,29 @@ export default function HomeClient() {
             >
               <line x1="12.5" y1="2" x2="87.5" y2="2" stroke="var(--grape-300)" strokeWidth="2" strokeDasharray="4 5" strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ animation: "rflow 1s linear infinite" }} />
             </svg>
-            {STEPS.map((s) => (
-              <div key={s.n} style={{ position: "relative", textAlign: "center" }}>
-                <div style={{ position: "relative", zIndex: 1, margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center", width: 52, height: 52, borderRadius: "50%", background: "var(--grape-700)", color: "#fff", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 20, animation: "rstepglow 3s ease-in-out infinite" }}>{s.n}</div>
-                <p style={{ margin: "0 0 6px", fontWeight: 800, fontSize: 15 }}>{s.t}</p>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "var(--text-muted)", lineHeight: 1.5 }}>{s.d}</p>
+            {STEPS.map((s, i) => (
+              <div key={s.n} className="r-step" style={{ position: "relative", textAlign: "center" }}>
+                {/* Mobile-only vertical connector to the next step. On the stacked
+                    single-column layout the horizontal flow line is hidden and
+                    each step (except the last) draws a dashed line from its badge
+                    centre down to the next badge — the opaque badge covers the
+                    junction so the thread reads as continuous. */}
+                {i < STEPS.length - 1 && (
+                  <svg
+                    className="r-flowline-v"
+                    aria-hidden="true"
+                    viewBox="0 0 4 100"
+                    preserveAspectRatio="none"
+                    style={{ position: "absolute", top: 26, bottom: 0, left: 25, width: 4, zIndex: 0, overflow: "visible", display: "none" }}
+                  >
+                    <line x1="2" y1="0" x2="2" y2="100" stroke="var(--grape-300)" strokeWidth="2" strokeDasharray="4 5" strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ animation: "rflow 1s linear infinite" }} />
+                  </svg>
+                )}
+                <div className="r-step-badge" style={{ position: "relative", zIndex: 1, margin: "0 auto 16px", display: "flex", alignItems: "center", justifyContent: "center", width: 52, height: 52, borderRadius: "50%", background: "var(--grape-700)", color: "#fff", fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 20, animation: "rstepglow 3s ease-in-out infinite" }}>{s.n}</div>
+                <div className="r-step-text">
+                  <p style={{ margin: "0 0 6px", fontWeight: 800, fontSize: 15 }}>{s.t}</p>
+                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "var(--text-muted)", lineHeight: 1.5 }}>{s.d}</p>
+                </div>
               </div>
             ))}
           </div>

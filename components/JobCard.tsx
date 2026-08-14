@@ -396,6 +396,14 @@ export default function JobCard({
           <span className="hidden shrink-0 sm:inline-flex">
             <Chip icon="pin">{job.location ?? "Location not listed"}</Chip>
           </span>
+          {job.workplaceType && (
+            <span className="hidden shrink-0 lg:inline-flex">
+              <Chip icon="home">{job.workplaceType}</Chip>
+            </span>
+          )}
+          <span className="hidden shrink-0 md:inline-flex">
+            <Chip icon="briefcase">{yoeLabel(job)}</Chip>
+          </span>
           {onReported && (
             <span className="hidden shrink-0 sm:inline-flex">
               <ReportJobButton job={job} onReported={onReported} />
